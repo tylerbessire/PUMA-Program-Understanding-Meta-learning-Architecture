@@ -13,8 +13,8 @@ from typing import List, Tuple, Dict, Any, Optional
 from collections import Counter, defaultdict
 import json
 
-from ..grid import Array
-from ..dsl import apply_program
+from .grid import Array
+from .dsl import apply_program
 
 
 class ProgramSketch:

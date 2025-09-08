@@ -14,7 +14,7 @@ from typing import List, Tuple, Dict, Any, Optional
 import json
 import os
 
-from ..grid import Array
+from .grid import Array
 from .features import extract_task_features
 
 

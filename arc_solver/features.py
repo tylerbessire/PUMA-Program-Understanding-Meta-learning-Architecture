@@ -11,8 +11,8 @@ from __future__ import annotations
 import numpy as np
 from typing import List, Tuple, Dict, Any
 
-from ..grid import Array, histogram, bg_color, eq
-from ..objects import connected_components
+from .grid import Array, histogram, bg_color, eq
+from .objects import connected_components
 
 
 def extract_task_features(train_pairs: List[Tuple[Array, Array]]) -> Dict[str, Any]:

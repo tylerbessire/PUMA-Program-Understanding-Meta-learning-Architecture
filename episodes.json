@@ -1,0 +1,268 @@
+[
+  {
+    "task_id": "",
+    "signature": "pairs:1|shape:1|colors:2-2|objs:4-4|ops:RFC",
+    "features": {
+      "num_train_pairs": 1,
+      "input_height_mean": 2.0,
+      "input_width_mean": 2.0,
+      "output_height_mean": 2.0,
+      "output_width_mean": 2.0,
+      "shape_preserved": true,
+      "size_ratio_mean": 1.0,
+      "input_colors_mean": 2.0,
+      "output_colors_mean": 2.0,
+      "background_color_consistent": true,
+      "has_color_mapping": true,
+      "color_mapping_size": 2.0,
+      "input_objects_mean": 4.0,
+      "output_objects_mean": 4.0,
+      "object_count_preserved": 1.0,
+      "likely_rotation": 1.0,
+      "likely_reflection": 1.0,
+      "likely_translation": 0.5,
+      "likely_recolor": 1.0,
+      "likely_crop": 0.0,
+      "likely_pad": 0.0
+    },
+    "train_pairs": [
+      [
+        [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ]
+      ]
+    ],
+    "successful_programs": [
+      [
+        [
+          "rotate",
+          {
+            "k": 0
+          }
+        ],
+        [
+          "flip",
+          {
+            "axis": 0
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 0
+          }
+        ],
+        [
+          "flip",
+          {
+            "axis": 1
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 2
+          }
+        ],
+        [
+          "flip",
+          {
+            "axis": 0
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 2
+          }
+        ],
+        [
+          "flip",
+          {
+            "axis": 1
+          }
+        ]
+      ],
+      [
+        [
+          "flip",
+          {
+            "axis": 0
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 0
+          }
+        ]
+      ],
+      [
+        [
+          "flip",
+          {
+            "axis": 0
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 2
+          }
+        ]
+      ],
+      [
+        [
+          "flip",
+          {
+            "axis": 1
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 0
+          }
+        ]
+      ],
+      [
+        [
+          "flip",
+          {
+            "axis": 1
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 2
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 1
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 3
+          }
+        ]
+      ],
+      [
+        [
+          "flip",
+          {
+            "axis": 0
+          }
+        ]
+      ],
+      [
+        [
+          "flip",
+          {
+            "axis": 1
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 0
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 1
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 1
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 0
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 1
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 2
+          }
+        ]
+      ],
+      [
+        [
+          "rotate",
+          {
+            "k": 2
+          }
+        ],
+        [
+          "rotate",
+          {
+            "k": 1
+          }
+        ]
+      ],
+      [
+        [
+          "recolor",
+          {
+            "mapping": {
+              "1": 0,
+              "0": 1
+            }
+          }
+        ]
+      ]
+    ],
+    "difficulty": 0.504,
+    "solution_count": 17
+  }
+]

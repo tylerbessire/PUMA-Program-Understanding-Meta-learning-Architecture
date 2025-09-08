@@ -13,8 +13,8 @@ import numpy as np
 from typing import List, Tuple, Dict, Any, Optional
 from copy import deepcopy
 
-from ..grid import Array, eq
-from ..dsl import apply_program
+from .grid import Array, eq
+from .dsl import apply_program
 
 
 class AdaptiveScorer:

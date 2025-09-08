@@ -1,0 +1,158 @@
+name: PUMA CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+    
+    - name: Verify layout
+      run: |
+        python tools/verify_layout.py
+    
+    - name: Run tests
+      run: |
+        pytest tests/ -v --cov=arc_solver --cov-report=xml --cov-report=term
+    
+    - name: Test submission schema
+      run: |
+        python -m pytest tests/test_submission_schema.py -v
+    
+    - name: Test end-to-end pipeline
+      run: |
+        python -m pytest tests/test_solver_end2end.py -v
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      if: matrix.python-version == '3.9'
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  performance:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run performance benchmarks
+      run: |
+        python -c "
+        import time
+        from arc_solver.solver import solve_task
+        
+        # Simple performance test
+        task = {
+            'train': [{
+                'input': [[1, 0], [0, 1]], 
+                'output': [[0, 1], [1, 0]]
+            }],
+            'test': [{'input': [[1, 1], [0, 0]]}]
+        }
+        
+        start = time.time()
+        result = solve_task(task)
+        duration = time.time() - start
+        
+        print(f'Solve time: {duration:.3f}s')
+        assert duration < 30.0, 'Solver too slow'
+        assert 'attempt_1' in result
+        assert 'attempt_2' in result
+        print('Performance test passed!')
+        "
+
+  kaggle-compatibility:
+    runs-on: ubuntu-latest
+    needs: test
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: 3.9
+    
+    - name: Install minimal dependencies (Kaggle-like)
+      run: |
+        python -m pip install --upgrade pip
+        pip install numpy==1.21.0  # Kaggle numpy version
+    
+    - name: Test basic import and execution
+      run: |
+        python -c "
+        import sys
+        print('Python version:', sys.version)
+        
+        # Test imports work with minimal dependencies
+        from arc_solver.solver import solve_task
+        from arc_solver.grid import to_array, to_list
+        
+        # Test basic functionality
+        task = {
+            'train': [{'input': [[1]], 'output': [[2]]}],
+            'test': [{'input': [[3]]}]
+        }
+        
+        result = solve_task(task)
+        print('Kaggle compatibility test passed!')
+        print('Result structure:', list(result.keys()))
+        "
+    
+    - name: Test submission script
+      run: |
+        python -c "
+        # Test that submission script works
+        import os
+        from pathlib import Path
+        
+        # Create minimal test data
+        test_data = {
+            'test_task': {
+                'train': [{'input': [[1]], 'output': [[2]]}],
+                'test': [{'input': [[3]]}]
+            }
+        }
+        
+        import json
+        Path('data').mkdir(exist_ok=True)
+        with open('data/arc-agi_test_challenges.json', 'w') as f:
+            json.dump(test_data, f)
+        
+        # Test arc_submit.py can be imported and run basic functions
+        exec(open('arc_submit.py').read().replace('if __name__ == \"__main__\":', 'if False:'))
+        print('Submission script compatibility test passed!')
+        "

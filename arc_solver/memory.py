@@ -14,7 +14,7 @@ import json
 import os
 from collections import defaultdict
 
-from ..grid import Array
+from .grid import Array
 from .features import compute_task_signature, extract_task_features
 
 

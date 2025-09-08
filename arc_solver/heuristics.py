@@ -67,7 +67,20 @@ def infer_translation(inp: Array, out: Array) -> Optional[Tuple[str, Dict[str, i
             shifted = np.full_like(inp, bg)
             y0, y1 = max(0, dy), min(H, H + dy)
             x0, x1 = max(0, dx), min(W, W + dx)
-            shifted[y0:y1, x0:x1] = inp[y0 - dy : y1 - dy, x0 - dx : x1 - dx]
+            
+            # Check bounds to avoid empty slices
+            src_y0 = max(0, y0 - dy)
+            src_y1 = min(H, y1 - dy)
+            src_x0 = max(0, x0 - dx)
+            src_x1 = min(W, x1 - dx)
+            
+            dst_y0 = y0 + (src_y0 - (y0 - dy))
+            dst_y1 = y1 - ((y1 - dy) - src_y1)
+            dst_x0 = x0 + (src_x0 - (x0 - dx))
+            dst_x1 = x1 - ((x1 - dx) - src_x1)
+            
+            if src_y1 > src_y0 and src_x1 > src_x0 and dst_y1 > dst_y0 and dst_x1 > dst_x0:
+                shifted[dst_y0:dst_y1, dst_x0:dst_x1] = inp[src_y0:src_y1, src_x0:src_x1]
             if np.array_equal(shifted, out):
                 return ("translate", {"dy": dy, "dx": dx})
     return None
