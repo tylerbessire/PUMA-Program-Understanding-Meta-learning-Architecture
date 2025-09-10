@@ -9,13 +9,14 @@ candidate operations.
 
 from __future__ import annotations
 
-import numpy as np
-from typing import List, Tuple, Dict, Any, Optional
 import json
 import os
+from typing import Any, Dict, List, Optional, Tuple
 
-from .grid import Array
-from .features import extract_task_features
+import numpy as np
+
+from ..grid import Array
+from ..features import extract_task_features
 
 
 class SimpleClassifier:
@@ -180,13 +181,51 @@ class NeuralGuidance:
         
         return scores
     
-    def load_model(self, model_path: str):
-        """Load a trained neural model."""
-        # Placeholder for model loading logic
-        # In practice, this would load weights from disk
-        pass
-    
-    def save_model(self, model_path: str):
-        """Save the trained neural model."""
-        # Placeholder for model saving logic
-        pass
+    def load_model(self, model_path: str) -> None:
+        """Load a trained neural model from ``model_path``.
+
+        The model is stored as JSON containing the network weights and
+        configuration.  If loading fails, a :class:`ValueError` is raised to
+        signal the caller that the model file is invalid.
+        """
+        try:
+            with open(model_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
+        except FileNotFoundError as exc:  # pragma: no cover - defensive
+            raise FileNotFoundError(f"model file not found: {model_path}") from exc
+        except json.JSONDecodeError as exc:  # pragma: no cover - defensive
+            raise ValueError(f"invalid model file: {exc}") from exc
+
+        try:
+            self.neural_model = SimpleClassifier(
+                input_dim=int(data["input_dim"]),
+                hidden_dim=int(data.get("hidden_dim", 32)),
+            )
+            self.neural_model.weights1 = np.array(data["weights1"], dtype=float)
+            self.neural_model.bias1 = np.array(data["bias1"], dtype=float)
+            self.neural_model.weights2 = np.array(data["weights2"], dtype=float)
+            self.neural_model.bias2 = np.array(data["bias2"], dtype=float)
+            if "operations" in data:
+                self.neural_model.operations = list(data["operations"])
+        except KeyError as exc:  # pragma: no cover - defensive
+            raise ValueError(f"missing field in model file: {exc}") from exc
+
+    def save_model(self, model_path: str) -> None:
+        """Persist the neural model to ``model_path`` in JSON format."""
+        if self.neural_model is None:
+            raise ValueError("no neural model to save")
+
+        data = {
+            "input_dim": self.neural_model.input_dim,
+            "hidden_dim": self.neural_model.hidden_dim,
+            "weights1": self.neural_model.weights1.tolist(),
+            "bias1": self.neural_model.bias1.tolist(),
+            "weights2": self.neural_model.weights2.tolist(),
+            "bias2": self.neural_model.bias2.tolist(),
+            "operations": self.neural_model.operations,
+        }
+
+        tmp_path = f"{model_path}.tmp"
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+        os.replace(tmp_path, model_path)

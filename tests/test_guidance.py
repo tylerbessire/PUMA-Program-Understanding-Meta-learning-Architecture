@@ -15,7 +15,11 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from arc_solver.grid import to_array
 from arc_solver.features import extract_task_features
-from arc_solver.guidance import NeuralGuidance, SimpleClassifier, HeuristicGuidance
+from arc_solver.neural.guidance import (
+    NeuralGuidance,
+    SimpleClassifier,
+    HeuristicGuidance,
+)
 
 
 class TestNeuralGuidance:

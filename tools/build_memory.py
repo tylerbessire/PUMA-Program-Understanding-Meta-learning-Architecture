@@ -17,7 +17,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from arc_solver.grid import to_array
 from arc_solver.features import compute_task_signature
-from arc_solver.memory import EpisodicRetrieval
+from arc_solver.neural.episodic import EpisodicRetrieval
 from arc_solver.heuristics import consistent_program_single_step, score_candidate
 
 
