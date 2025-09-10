@@ -1,33 +1,30 @@
-"""
-Domain-specific language (DSL) primitives for ARC program synthesis.
+"""Domain-specific language (DSL) primitives for ARC program synthesis.
 
-This module defines a small set of composable operations that act on grids.
-Each operation is represented by an `Op` object with a name, a function, and
-metadata about its parameters. Programs are sequences of these operations.
+This module defines a set of composable operations that act on grids. Each
+operation is represented by an :class:`Op` and registered in :data:`OPS`.
+Programs are sequences of these operations applied to a grid.
 """
 
 from __future__ import annotations
 
+from typing import Any, Callable, Dict, List, Tuple, Optional
 import numpy as np
-from typing import Any, Callable, Dict, List, Tuple
 
-from .grid import Array, rotate90, flip, transpose, translate, color_map, crop, pad_to, bg_color
+from arc_solver.grid import (
+    Array,
+    rotate90,
+    flip as flip_grid,
+    transpose as transpose_grid,
+    translate as translate_grid,
+    color_map as color_map_grid,
+    crop as crop_array,
+    pad_to,
+    bg_color,
+)
 
 
 class Op:
-    """Represents a primitive transformation on a grid.
-
-    Attributes
-    ----------
-    name : str
-        Human-readable name of the operation.
-    fn : Callable
-        Function implementing the operation.
-    arity : int
-        Number of input grids (arity=1 for single-grid ops).
-    param_names : List[str]
-        Names of parameters accepted by the operation.
-    """
+    """Represents a primitive transformation on a grid."""
 
     def __init__(self, name: str, fn: Callable[..., Array], arity: int, param_names: List[str]):
         self.name = name
@@ -35,80 +32,181 @@ class Op:
         self.arity = arity
         self.param_names = param_names
 
-    def __call__(self, *args, **kwargs) -> Array:
+    def __call__(self, *args: Any, **kwargs: Any) -> Array:
         return self.fn(*args, **kwargs)
 
 
-# Primitive operations (single-grid)
+# ---------------------------------------------------------------------------
+# Primitive operation implementations
+# ---------------------------------------------------------------------------
+
 def op_identity(a: Array) -> Array:
-    return a
+    """Return a copy of the input grid."""
+    return a.copy()
 
 
 def op_rotate(a: Array, k: int) -> Array:
-    return rotate90(a, k)
+    """Rotate grid by ``k`` quarter turns clockwise."""
+    return rotate90(a, -k)
 
 
 def op_flip(a: Array, axis: int) -> Array:
-    return flip(a, axis)
+    """Flip grid along the specified axis (0=vertical, 1=horizontal)."""
+    return flip_grid(a, axis)
 
 
 def op_transpose(a: Array) -> Array:
-    return transpose(a)
+    """Transpose the grid."""
+    return transpose_grid(a)
 
 
-def op_translate(a: Array, dy: int, dx: int) -> Array:
-    return translate(a, dy, dx, fill=bg_color(a))
+def op_translate(a: Array, dy: int, dx: int, fill: Optional[int] = None) -> Array:
+    """Translate the grid by ``(dy, dx)`` filling uncovered cells.
+
+    Parameters
+    ----------
+    a:
+        Input grid.
+    dy, dx:
+        Translation offsets. Positive values move content down/right.
+    fill:
+        Optional fill value for uncovered cells. If ``None`` the background
+        colour of ``a`` is used.
+    """
+    fill_val = 0 if fill is None else fill
+    return translate_grid(a, dy, dx, fill=fill_val)
 
 
 def op_recolor(a: Array, mapping: Dict[int, int]) -> Array:
-    return color_map(a, mapping)
+    """Recolour grid according to a mapping from old to new colours."""
+    return color_map_grid(a, mapping)
 
 
 def op_crop_bbox(a: Array, top: int, left: int, height: int, width: int) -> Array:
-    # ensure cropping stays inside bounds
+    """Crop a bounding box from the grid ensuring bounds are valid."""
     h, w = a.shape
     top = max(0, min(top, h - 1))
     left = max(0, min(left, w - 1))
     height = max(1, min(height, h - top))
     width = max(1, min(width, w - left))
-    return crop(a, top, left, height, width)
+    return crop_array(a, top, left, height, width)
 
 
 def op_pad(a: Array, out_h: int, out_w: int) -> Array:
+    """Pad grid to a specific height and width using background colour."""
     return pad_to(a, (out_h, out_w), fill=bg_color(a))
 
 
-# Register operations in a dictionary for easy lookup
+# Registry of primitive operations ---------------------------------------------------------
 OPS: Dict[str, Op] = {
     "identity": Op("identity", op_identity, 1, []),
     "rotate": Op("rotate", op_rotate, 1, ["k"]),
     "flip": Op("flip", op_flip, 1, ["axis"]),
     "transpose": Op("transpose", op_transpose, 1, []),
-    "translate": Op("translate", op_translate, 1, ["dy", "dx"]),
+    "translate": Op("translate", op_translate, 1, ["dy", "dx", "fill"]),
     "recolor": Op("recolor", op_recolor, 1, ["mapping"]),
     "crop": Op("crop", op_crop_bbox, 1, ["top", "left", "height", "width"]),
     "pad": Op("pad", op_pad, 1, ["out_h", "out_w"]),
 }
 
 
-def apply_program(a: Array, program: List[Tuple[str, Dict[str, Any]]]) -> Array:
-    """Apply a sequence of operations (program) to the input array.
+# Semantic cache -------------------------------------------------------------------------
+_sem_cache: Dict[Tuple[bytes, str, Tuple[Tuple[str, Any], ...]], Array] = {}
 
-    Parameters
-    ----------
-    a : Array
-        Input grid.
-    program : List of (op_name, params)
-        Sequence of operations with parameters. The operations are looked up in
-        OPS.
 
-    Returns
-    -------
-    Array
-        Resulting grid after applying the program.
+def apply_op(a: Array, name: str, params: Dict[str, Any]) -> Array:
+    """Apply a primitive operation with semantic caching."""
+    key = (a.tobytes(), name, tuple(sorted(params.items())))
+    cached = _sem_cache.get(key)
+    if cached is not None:
+        return cached
+    op = OPS[name]
+    out = op(a, **params)
+    _sem_cache[key] = out
+    return out
+
+
+# User-facing convenience wrappers --------------------------------------------------------
+
+def identity(a: Array) -> Array:
+    """Return a copy of the input grid."""
+    return op_identity(a)
+
+
+def rotate(a: Array, k: int) -> Array:
+    """Rotate grid by ``k`` quarter turns clockwise."""
+    return op_rotate(a, k)
+
+
+def flip(a: Array, axis: int) -> Array:
+    """Flip grid along the specified axis."""
+    return op_flip(a, axis)
+
+
+def transpose(a: Array) -> Array:
+    """Transpose the grid."""
+    return op_transpose(a)
+
+
+def translate(a: Array, dx: int, dy: int, fill_value: Optional[int] = None) -> Array:
+    """Translate grid by ``(dy, dx)`` with optional fill value."""
+    return op_translate(a, dy, dx, fill=fill_value)
+
+
+def recolor(a: Array, color_map: Dict[int, int]) -> Array:
+    """Recolour grid according to a mapping."""
+    return op_recolor(a, color_map)
+
+
+def crop(a: Array, top: int, bottom: int, left: int, right: int) -> Array:
+    """Crop a region specified by inclusive-exclusive bounds.
+
+    Args:
+        top, bottom, left, right: Bounds following Python slice semantics where
+            ``bottom`` and ``right`` are exclusive.
     """
+    if bottom <= top or right <= left:
+        raise ValueError("Invalid crop bounds")
+    h, w = a.shape
+    top = max(0, min(top, h))
+    bottom = max(top, min(bottom, h))
+    left = max(0, min(left, w))
+    right = max(left, min(right, w))
+    return a[top:bottom, left:right].copy()
+
+
+def pad(a: Array, top: int, bottom: int, left: int, right: int, fill_value: int = 0) -> Array:
+    """Pad grid with ``fill_value`` on each side."""
+    if min(top, bottom, left, right) < 0:
+        raise ValueError("Pad widths must be non-negative")
+    h, w = a.shape
+    out = np.full((h + top + bottom, w + left + right), fill_value, dtype=a.dtype)
+    out[top:top + h, left:left + w] = a
+    return out
+
+
+# Program application --------------------------------------------------------------------
+
+def apply_program(a: Array, program: List[Tuple[str, Dict[str, Any]]]) -> Array:
+    """Apply a sequence of operations to the input grid."""
     out = a
     for name, params in program:
-        op = OPS[name]
-        out = op(out, **params)
+        out = apply_op(out, name, params)
     return out
+
+
+__all__ = [
+    "Array",
+    "Op",
+    "OPS",
+    "apply_program",
+    "apply_op",
+    "identity",
+    "rotate",
+    "flip",
+    "transpose",
+    "translate",
+    "recolor",
+    "crop",
+    "pad",
+]
