@@ -9,12 +9,17 @@ patterns and requirements.
 
 from __future__ import annotations
 
+import logging
 import numpy as np
 from typing import List, Tuple, Dict, Any, Optional
 from copy import deepcopy
 
 from .grid import Array, eq
 from .dsl import apply_program
+
+logger = logging.getLogger(__name__)
+
+__all__ = ["AdaptiveScorer", "TestTimeTrainer", "DataAugmentation"]
 
 
 class AdaptiveScorer:
@@ -51,8 +56,11 @@ class AdaptiveScorer:
                     # Compute partial match (e.g., correct shape)
                     if pred_out.shape == target_out.shape:
                         partial_matches += 1
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.warning(
+                    "Program execution failed during feature extraction: %s", exc
+                )
+                continue
         
         features[2] = exact_matches / len(train_pairs)
         features[3] = partial_matches / len(train_pairs)
@@ -167,8 +175,11 @@ class TestTimeTrainer:
                 pred_out = apply_program(inp, program)
                 if eq(pred_out, target_out):
                     successes += 1
-            except Exception:
-                pass
+            except Exception as exc:
+                logger.warning(
+                    "Program evaluation failed during adaptation: %s", exc
+                )
+                continue
         
         return successes / len(train_pairs) if train_pairs else 0.0
     
@@ -216,8 +227,11 @@ class DataAugmentation:
                         aug_inp = np.rot90(inp, k)
                         aug_out = np.rot90(out, k)
                         augmented.append((aug_inp, aug_out))
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logger.warning(
+                            "Rotation augmentation failed (k=%s): %s", k, exc
+                        )
+                        continue
             
             # Try reflections
             for axis in [0, 1]:
@@ -227,8 +241,11 @@ class DataAugmentation:
                     aug_inp = np.flip(inp, axis=axis)
                     aug_out = np.flip(out, axis=axis)
                     augmented.append((aug_inp, aug_out))
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logger.warning(
+                        "Reflection augmentation failed (axis=%s): %s", axis, exc
+                    )
+                    continue
         
         return augmented[:max_augmentations]
     
