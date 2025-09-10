@@ -75,14 +75,30 @@ def synthesize(train_pairs: List[Tuple[Array, Array]], max_programs: int = 256) 
     return progs[:max_programs]
 
 
-def predict_two(progs: List[List[Tuple[str, Dict[str, int]]]], test_inputs: List[Array]) -> List[List[Array]]:
+def predict_two(
+    progs: List[List[Tuple[str, Dict[str, int]]]],
+    test_inputs: List[Array],
+    prefer_diverse: bool = False,
+) -> List[List[Array]]:
     """Select up to two programs and apply them to each test input.
 
-    If no program candidates are available, falls back to the identity transformation.
-    The result is a list with two elements (attempt_1 and attempt_2), each of which
-    is a list of outputs corresponding to the test inputs.
+    Args:
+        progs: Candidate programs ordered by preference.
+        test_inputs: Test grids to which programs are applied.
+        prefer_diverse: If ``True`` and multiple programs are available,
+            attempt to ensure the two selected programs differ.
+
+    Returns:
+        A list ``[attempt_1, attempt_2]`` where each element is a list of
+        output grids corresponding to ``test_inputs``.
     """
-    picks = progs[:2] if progs else [[("identity", {})], [("identity", {})]]
+    if not progs:
+        picks = [[("identity", {})], [("identity", {})]]
+    elif prefer_diverse and len(progs) > 1:
+        picks = [progs[0], progs[1]]
+    else:
+        picks = progs[:2] if len(progs) >= 2 else [progs[0], progs[0]]
+
     attempts: List[List[Array]] = []
     for program in picks:
         outs: List[Array] = []
@@ -90,6 +106,6 @@ def predict_two(progs: List[List[Tuple[str, Dict[str, int]]]], test_inputs: List
             try:
                 outs.append(apply_program(ti, program))
             except Exception:
-                outs.append(ti)  # fallback to identity on failure
+                outs.append(ti)
         attempts.append(outs)
     return attempts

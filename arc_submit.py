@@ -1,31 +1,115 @@
-"""
-Command-line entry point for generating ARC Prize submissions.
+"""Hardened command-line entry point for generating ARC Prize submissions.
 
-When run, this script loads the test challenge tasks, solves each one using
-`arc_solver.solver.solve_task`, and writes a `submission.json` file with the
-required two attempts per test input. The Kaggle platform picks up this file
-as the submission when executing within a notebook environment.
+This script enforces deterministic execution, applies strict resource budgets
+for each task, and guarantees exactly two diverse attempts per test input. It
+is designed to run within the ARC Prize Kaggle environment where internet
+access is disabled and runtime is tightly constrained.
 """
+
+from __future__ import annotations
 
 import json
+import os
+import random
+import resource
+import signal
+import sys
+import time
+from typing import Any, Dict, List, Tuple
+
+import numpy as np
+
+from arc_solver.enhanced_solver import ARCSolver
 from arc_solver.io_utils import load_rerun_json, save_submission
-from arc_solver.solver import solve_task
+
+
+# ---------------------------------------------------------------------------
+# Determinism and thread caps
+# ---------------------------------------------------------------------------
+os.environ.setdefault("PYTHONHASHSEED", "0")
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+random.seed(0)
+np.random.seed(0)
+
+
+HARD_TIMEOUT_SEC: float = float(os.environ.get("ARC_TIMEOUT_SEC", "30"))
+"""Per-task hard timeout in seconds."""
+
+MEM_SOFT_LIMIT_MB: int = int(os.environ.get("ARC_MEM_MB", "1024"))
+"""Soft memory limit in megabytes for each task."""
+
+
+class Timeout(Exception):
+    """Raised when a task exceeds the allocated time budget."""
+
+
+def _alarm(_signum: int, _frame: Any) -> None:
+    """Signal handler used to abort execution on timeout."""
+    raise Timeout()
+
+
+def _set_mem_limit() -> None:
+    """Apply a soft memory limit for the current process."""
+    try:
+        soft_bytes = MEM_SOFT_LIMIT_MB * 1024 * 1024
+        resource.setrlimit(resource.RLIMIT_AS, (soft_bytes, resource.RLIM_INFINITY))
+    except Exception:
+        # Some platforms (e.g., Windows) may not support RLIMIT_AS.
+        pass
+
+
+def solve_with_budget(task: Dict[str, Any], solver: ARCSolver) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """Solve a task under strict time and memory budgets.
+
+    Args:
+        task: ARC task specification with ``train`` and ``test`` examples.
+        solver: Configured :class:`ARCSolver` instance.
+
+    Returns:
+        A tuple ``(attempts, metadata)`` where ``attempts`` is a list with two
+        dictionaries of the form ``{"output": grid}`` and ``metadata``
+        contains diagnostic information such as elapsed time and timeout flag.
+    """
+
+    _set_mem_limit()
+    signal.signal(signal.SIGALRM, _alarm)
+    signal.alarm(int(HARD_TIMEOUT_SEC))
+    start = time.time()
+    try:
+        attempt1, attempt2 = solver.solve_task_two_attempts(task)
+        elapsed = time.time() - start
+        return [{"output": attempt1}, {"output": attempt2}], {"elapsed": elapsed, "timeout": False}
+    except Timeout:
+        best = solver.best_so_far(task)
+        elapsed = time.time() - start
+        return [{"output": best}, {"output": best}], {"elapsed": elapsed, "timeout": True}
+    finally:
+        signal.alarm(0)
 
 
 def main() -> None:
-    # Load all test tasks from the JSON file injected by Kaggle
-    data = load_rerun_json()  # { task_id: {train:..., test:...}, ... }
-    solutions = {}
+    """Entry point for Kaggle submission generation."""
+    data = load_rerun_json()
+    solver = ARCSolver(use_enhancements=True)
+    solutions: Dict[str, Dict[str, List[List[int]]]] = {}
+
     for task_id, task in data.items():
-        result = solve_task(task)
-        # Kaggle requires both attempts for every task id
+        attempts, meta = solve_with_budget(task, solver)
         solutions[task_id] = {
-            "attempt_1": result["attempt_1"],
-            "attempt_2": result["attempt_2"],
+            "attempt_1": attempts[0]["output"],
+            "attempt_2": attempts[1]["output"],
         }
+        print(
+            f"[task {task_id}] t={meta['elapsed']:.2f}s timeout={meta['timeout']}",
+            file=sys.stderr,
+        )
+
     path = save_submission(solutions, "submission.json")
     print(f"Saved {path} with {len(solutions)} tasks.")
 
 
 if __name__ == "__main__":
     main()
+

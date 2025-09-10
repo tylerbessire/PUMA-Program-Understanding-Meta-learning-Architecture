@@ -236,20 +236,19 @@ class EnhancedSearch:
         self.sketch_miner.save_sketches("sketches.json")
 
 
-def predict_two_enhanced(progs: List[List[Tuple[str, Dict[str, int]]]], 
-                        test_inputs: List[Array]) -> List[List[Array]]:
+def predict_two_enhanced(
+    progs: List[List[Tuple[str, Dict[str, int]]]],
+    test_inputs: List[Array],
+    prefer_diverse: bool = False,
+) -> List[List[Array]]:
     """Enhanced prediction with better fallback strategies."""
-    if len(progs) == 0:
-        # No programs found, use identity
+    if not progs:
         picks = [[("identity", {})], [("identity", {})]]
-    elif len(progs) == 1:
-        # Only one program, use it twice with slight variation if possible
-        main_prog = progs[0]
-        picks = [main_prog, main_prog]
+    elif prefer_diverse and len(progs) > 1:
+        picks = [progs[0], progs[1]]
     else:
-        # Use top 2 programs
-        picks = progs[:2]
-    
+        picks = progs[:2] if len(progs) >= 2 else [progs[0], progs[0]]
+
     attempts: List[List[Array]] = []
     for program in picks:
         outs: List[Array] = []
@@ -258,25 +257,26 @@ def predict_two_enhanced(progs: List[List[Tuple[str, Dict[str, int]]]],
                 result = apply_program(ti, program)
                 outs.append(result)
             except Exception:
-                # Fallback to identity on failure
                 outs.append(ti)
         attempts.append(outs)
-    
+
     return attempts
 
 
 # Integration function to use enhanced search in the main solver
-def synthesize_with_enhancements(train_pairs: List[Tuple[Array, Array]], 
-                               max_programs: int = 256) -> List[List[Tuple[str, Dict[str, int]]]]:
+def synthesize_with_enhancements(
+    train_pairs: List[Tuple[Array, Array]],
+    max_programs: int = 256,
+    force_alt: bool = False,
+) -> List[List[Tuple[str, Dict[str, int]]]]:
     """Main function to synthesize programs with all enhancements."""
-    
-    # Initialize enhanced search (this will be cached across calls in practice)
+
     enhanced_search = EnhancedSearch()
-    
-    # Try enhanced synthesis
     programs = enhanced_search.synthesize_enhanced(train_pairs, max_programs)
-    
-    # Save learned components periodically
+
+    if force_alt and len(programs) > 1:
+        programs = programs[1:]
+
     enhanced_search.save_components()
-    
+
     return programs

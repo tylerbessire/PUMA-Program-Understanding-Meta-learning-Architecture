@@ -13,6 +13,7 @@ import numpy as np
 from typing import List, Tuple, Dict, Any
 
 from .grid import Array, bg_color
+from .canonical import canonicalize_D4
 
 
 def neighbors4(y: int, x: int) -> List[Tuple[int, int]]:
@@ -21,14 +22,21 @@ def neighbors4(y: int, x: int) -> List[Tuple[int, int]]:
 
 
 def connected_components(a: Array) -> List[Dict[str, Any]]:
-    """Find all 4-connected components in the grid, grouping by exact color.
+    """Find all 4-connected components in a canonicalised grid.
 
-    Each component dictionary contains:
+    The input grid is first normalised under D4 symmetries and colour
+    relabelling to ensure deterministic component extraction. Each component
+    dictionary contains:
       - color: the color value of the component
       - bbox: (top, left, height, width) of the bounding box
       - mask: a 2D array of shape (height, width) with the component values
       - pixels: list of (row, col) indices in original grid
     """
+    try:
+        a = canonicalize_D4(a)
+    except TypeError as exc:
+        raise ValueError(f"invalid grid: {exc}") from exc
+
     h, w = a.shape
     visited = np.zeros_like(a, dtype=bool)
     comps: List[Dict[str, Any]] = []
@@ -65,11 +73,13 @@ def connected_components(a: Array) -> List[Dict[str, Any]]:
 
 
 def infer_symmetries(a: Array) -> Dict[str, bool]:
-    """Return a simple dictionary of possible symmetries in the grid.
+    """Return a dictionary of potential symmetries for a canonicalised grid."""
+    try:
+        a = canonicalize_D4(a)
+    except TypeError as exc:
+        raise ValueError(f"invalid grid: {exc}") from exc
 
-    For speed, this function does not check each symmetry but sets flags to True.
-    More precise symmetry detection can be incorporated later based on heuristics.
-    """
+    # Placeholder flags; symmetry detection can be refined with heuristics.
     return {
         "rot90": True,
         "rot180": True,
