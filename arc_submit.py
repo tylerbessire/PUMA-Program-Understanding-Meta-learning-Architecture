@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 
-from arc_solver.enhanced_solver import ARCSolver
+from arc_solver.solver import ARCSolver
 from arc_solver.io_utils import load_rerun_json, save_submission
 
 

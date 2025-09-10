@@ -29,20 +29,23 @@ arc_solver_project/
 │   ├── dsl.py                 # Domain-specific language primitives
 │   ├── heuristics.py          # Heuristic rule inference
 │   ├── search.py              # Basic brute-force search
-│   ├── solver.py              # Main solver interface (enhanced)
-│   ├── enhanced_solver.py     # Enhanced solver with neural components
+│   ├── solver.py              # Main solver interface with enhancements
 │   ├── enhanced_search.py     # Neural-guided program synthesis
+│   ├── features.py            # Task feature extraction
+│   ├── ttt.py                 # Test-time training utilities
 │   ├── io_utils.py            # JSON loading and submission helpers
-│   └── neural/                # Neural guidance components
-│       ├── features.py        # Task feature extraction
+│   └── neural/                # Neural components
 │       ├── guidance.py        # Neural operation prediction
-│       ├── sketches.py        # Program sketch mining
 │       ├── episodic.py        # Episodic retrieval system
-│       └── ttt.py             # Test-time training
+│       └── sketches.py        # Program sketch mining
 │
 ├── arc_submit.py              # Command-line submission script
-├── train_neural_guidance.py   # Training script for neural components
-├── benchmark.py               # Benchmarking and evaluation tools
+├── tools/                     # Training and benchmarking utilities
+│   ├── train_guidance.py
+│   ├── mine_sketches.py
+│   ├── build_memory.py
+│   └── benchmark.py
+├── tests/                     # Unit and integration tests
 └── README.md                  # This file
 ```
 
@@ -62,22 +65,21 @@ ARC_USE_BASELINE=1 python arc_submit.py
 
 ```bash
 # Train neural guidance (requires training data)
-python train_neural_guidance.py
+python tools/train_guidance.py
 
 # Or setup environment with defaults
-python benchmark.py
+python tools/benchmark.py
 ```
 
 ### 3. Python API
 
 ```python
-from arc_solver.enhanced_solver import solve_task_enhanced
+from arc_solver.solver import solve_task_enhanced, ARCSolver
 
 # Solve a single task with full enhancements
 result = solve_task_enhanced(task)
 
 # Configure solver behavior
-from arc_solver.enhanced_solver import ARCSolver
 solver = ARCSolver(use_enhancements=True)
 result = solver.solve_task(task)
 ```

@@ -14,7 +14,7 @@ from typing import Dict, List, Any, Optional
 from pathlib import Path
 import os
 
-from arc_solver.enhanced_solver import ARCSolver, solve_task_enhanced, solve_task_baseline
+from arc_solver.solver import ARCSolver, solve_task_enhanced, solve_task_baseline
 from arc_solver.neural.episodic import EpisodicRetrieval
 from arc_solver.neural.sketches import SketchMiner
 

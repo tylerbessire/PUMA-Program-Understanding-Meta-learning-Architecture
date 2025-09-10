@@ -6,11 +6,11 @@ PUMA (Program Understanding and Meta-learning for ARC) is a neuroscience-inspire
 
 ### Neuroscience-Inspired Components
 
-1. **Multiple-Demand (MD) Network Analog**: The neural guidance system (`arc_solver/guidance.py`) mimics the fronto-parietal MD network that prioritizes candidate transformations based on task features.
+1. **Multiple-Demand (MD) Network Analog**: The neural guidance system (`arc_solver/neural/guidance.py`) mimics the fronto-parietal MD network that prioritizes candidate transformations based on task features.
 
 2. **Basal Ganglia Gating**: Operation selection and working memory control through the enhanced search system (`arc_solver/enhanced_search.py`) that gates which programs enter the beam search.
 
-3. **Hippocampal-mPFC Loop**: Episodic retrieval (`arc_solver/memory.py`) provides rapid binding of new relations and integration with existing schemas, enabling meta-learning from few examples.
+3. **Hippocampal-mPFC Loop**: Episodic retrieval (`arc_solver/neural/episodic.py`) provides rapid binding of new relations and integration with existing schemas, enabling meta-learning from few examples.
 
 4. **Test-Time Adaptation**: The TTT system (`arc_solver/ttt.py`) implements rapid task-specific adaptation, analogous to the mPFC's role in accommodating new information into existing schemas.
 
@@ -26,10 +26,11 @@ PUMA/
 │   ├── search.py                 # Basic search algorithms
 │   ├── solver.py                 # Main solver interface
 │   ├── features.py               # Task feature extraction
-│   ├── guidance.py               # Neural guidance (MD network analog)
-│   ├── sketches.py               # Program sketch mining
-│   ├── memory.py                 # Episodic retrieval (hippocampus analog)
-│   └── ttt.py                    # Test-time training (mPFC analog)
+│   ├── ttt.py                    # Test-time training (mPFC analog)
+│   └── neural/                   # Neural components
+│       ├── guidance.py           # Neural guidance (MD network analog)
+│       ├── sketches.py           # Program sketch mining
+│       └── episodic.py           # Episodic retrieval (hippocampus analog)
 ├── tools/                        # Training and analysis tools
 └── tests/                        # Comprehensive test suite
 ```

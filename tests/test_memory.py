@@ -16,7 +16,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 from arc_solver.grid import to_array
-from arc_solver.memory import EpisodicRetrieval, EpisodeDatabase, Episode
+from arc_solver.neural.episodic import EpisodicRetrieval, EpisodeDatabase, Episode
 from arc_solver.features import compute_task_signature
 
 

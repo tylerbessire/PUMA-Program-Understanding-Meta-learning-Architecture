@@ -14,15 +14,15 @@ environment.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple
 from collections import defaultdict
 import json
 import os
 
 import numpy as np
 
-from .grid import Array
-from .features import compute_task_signature, extract_task_features
+from ..grid import Array
+from ..features import compute_task_signature, extract_task_features
 
 # Type alias for a DSL program representation used across the project
 Program = List[Tuple[str, Dict[str, Any]]]

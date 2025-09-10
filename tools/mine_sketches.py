@@ -17,7 +17,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from arc_solver.grid import to_array
 from arc_solver.features import extract_task_features
-from arc_solver.sketches import SketchMiner, ProgramSketch
+from arc_solver.neural.sketches import SketchMiner, ProgramSketch
 from arc_solver.heuristics import consistent_program_single_step
 
 

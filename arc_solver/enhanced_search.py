@@ -15,9 +15,9 @@ from copy import deepcopy
 from .grid import Array, eq
 from .dsl import OPS, apply_program
 from .heuristics import consistent_program_single_step, score_candidate, diversify_programs
-from .guidance import NeuralGuidance
-from .memory import EpisodicRetrieval
-from .sketches import SketchMiner, generate_parameter_grid
+from .neural.guidance import NeuralGuidance
+from .neural.episodic import EpisodicRetrieval
+from .neural.sketches import SketchMiner, generate_parameter_grid
 from .ttt import TestTimeTrainer, DataAugmentation
 
 
