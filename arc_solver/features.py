@@ -13,6 +13,7 @@ from typing import List, Tuple, Dict, Any
 
 from .grid import Array, histogram, bg_color, eq
 from .objects import connected_components
+from .canonical import canonicalize_D4
 
 
 def extract_task_features(train_pairs: List[Tuple[Array, Array]]) -> Dict[str, Any]:
@@ -21,7 +22,15 @@ def extract_task_features(train_pairs: List[Tuple[Array, Array]]) -> Dict[str, A
     These features capture task-level properties that can help predict which
     DSL operations are likely to be relevant for solving the task.
     """
-    features = {}
+    try:
+        train_pairs = [
+            (canonicalize_D4(inp), canonicalize_D4(out))
+            for inp, out in train_pairs
+        ]
+    except TypeError as exc:
+        raise ValueError(f"invalid grid in train_pairs: {exc}") from exc
+
+    features: Dict[str, Any] = {}
     
     # Basic grid statistics
     input_shapes = [inp.shape for inp, _ in train_pairs]

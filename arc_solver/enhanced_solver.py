@@ -8,19 +8,22 @@ solutions for ARC tasks.
 
 from __future__ import annotations
 
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import os
 
 from .grid import to_array, to_list, Array
-from .search import synthesize, predict_two  # Keep original as fallback
+from .search import (
+    synthesize as synth_baseline,
+    predict_two as predict_two_baseline,
+)
 from .enhanced_search import synthesize_with_enhancements, predict_two_enhanced
 
 
 class ARCSolver:
     """Enhanced ARC solver with neural components and episodic memory."""
     
-    def __init__(self, use_enhancements: bool = True, 
+    def __init__(self, use_enhancements: bool = True,
                  guidance_model_path: str = None,
                  episode_db_path: str = "episodes.json"):
         self.use_enhancements = use_enhancements
@@ -32,6 +35,7 @@ class ARCSolver:
             'enhancement_success_rate': 0.0,
             'fallback_used': 0,
         }
+        self._last_outputs: Optional[Tuple[List[List[List[int]]], List[List[List[int]]]]] = None
     
     def solve_task(self, task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
         """Solve a single ARC task using enhanced or baseline methods."""
@@ -71,14 +75,77 @@ class ARCSolver:
                 
         except Exception:
             # Fall back to baseline approach
-            progs = synthesize(train_pairs)
-            attempts = predict_two(progs, test_inputs)
+            progs = synth_baseline(train_pairs)
+            attempts = predict_two_baseline(progs, test_inputs)
         
         # Convert outputs back to nested lists
         return {
             "attempt_1": [to_list(arr) for arr in attempts[0]],
             "attempt_2": [to_list(arr) for arr in attempts[1]],
         }
+
+    def solve_task_two_attempts(
+        self, task: Dict[str, List[Dict[str, List[List[int]]]]]
+    ) -> Tuple[List[List[List[int]]], List[List[List[int]]]]:
+        """Solve a task and ensure two diverse attempts.
+
+        Args:
+            task: ARC task specification.
+
+        Returns:
+            A tuple ``(attempt1, attempt2)`` each being a list of output grids
+            corresponding to the test inputs.
+        """
+
+        result = self.solve_task(task)
+        attempt1 = result["attempt_1"]
+        attempt2 = result["attempt_2"]
+
+        if attempt1 == attempt2:
+            alt = self._second_pass_diversified(task)
+            if alt is not None:
+                attempt2 = alt
+
+        self._last_outputs = (attempt1, attempt2)
+        return attempt1, attempt2
+
+    def _second_pass_diversified(
+        self, task: Dict[str, List[Dict[str, List[List[int]]]]]
+    ) -> Optional[List[List[List[int]]]]:
+        """Run a diversified second search pass to obtain an alternative output."""
+
+        train_pairs = [
+            (to_array(p["input"]), to_array(p["output"])) for p in task["train"]
+        ]
+        test_inputs = [to_array(p["input"]) for p in task["test"]]
+
+        try:
+            programs = synthesize_with_enhancements(train_pairs, force_alt=True)
+            attempts = predict_two_enhanced(programs, test_inputs, prefer_diverse=True)
+            return [to_list(x) for x in attempts[0]]
+        except Exception:
+            try:
+                programs = synth_baseline(train_pairs)
+                attempts = predict_two_baseline(
+                    programs, test_inputs, prefer_diverse=True
+                )
+                return [to_list(x) for x in attempts[0]]
+            except Exception:
+                return None
+
+    def best_so_far(
+        self, task: Dict[str, List[Dict[str, List[List[int]]]]]
+    ) -> List[List[List[int]]]:
+        """Return the best outputs computed so far for the current task.
+
+        If the solver has produced at least one attempt, that attempt is
+        returned. Otherwise, the identity transformation of the first test
+        input is used as a safe fallback.
+        """
+
+        if self._last_outputs is not None:
+            return self._last_outputs[0]
+        return [task["test"][0]["input"]]
     
     def _validate_solution(self, attempts: List[List[Array]], test_inputs: List[Array]) -> bool:
         """Basic validation to check if solution seems reasonable."""
