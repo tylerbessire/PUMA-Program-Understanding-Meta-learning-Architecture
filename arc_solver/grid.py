@@ -16,6 +16,23 @@ from typing import List, Tuple, Dict, Any
 # Type alias for clarity. ARC grids are small 2D arrays of integers.
 Array = np.ndarray
 
+__all__ = [
+    "Array",
+    "to_array",
+    "to_list",
+    "same_shape",
+    "rotate90",
+    "flip",
+    "transpose",
+    "pad_to",
+    "crop",
+    "translate",
+    "color_map",
+    "histogram",
+    "eq",
+    "bg_color",
+]
+
 
 def to_array(grid: List[List[int]]) -> Array:
     """Convert a nested Python list into a numpy array of dtype int16."""

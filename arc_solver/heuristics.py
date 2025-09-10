@@ -10,11 +10,24 @@ programs.
 
 from __future__ import annotations
 
+import logging
 import numpy as np
 from typing import List, Dict, Tuple, Optional
 
 from .grid import Array, eq, rotate90, flip, histogram, bg_color, to_array
 from .dsl import apply_program
+
+logger = logging.getLogger(__name__)
+
+__all__ = [
+    "infer_color_mapping",
+    "match_rotation_reflection",
+    "infer_translation",
+    "consistent_program_single_step",
+    "guess_output_shape",
+    "score_candidate",
+    "diversify_programs",
+]
 
 
 def infer_color_mapping(inp: Array, out: Array) -> Optional[Dict[int, int]]:
@@ -123,8 +136,8 @@ def score_candidate(program: List[Tuple[str, Dict[str, int]]], train_pairs: List
         try:
             out = apply_program(a, program)
             good += int(eq(out, b))
-        except Exception:
-            pass
+        except Exception as exc:
+            logger.warning("Program execution failed on training pair: %s", exc)
     return good / len(train_pairs)
 
 

@@ -22,6 +22,8 @@ CANDIDATE_PATHS = [
     "/kaggle/input/arc-agi-2/arc-agi_test_challenges.json",
 ]
 
+__all__ = ["load_rerun_json", "save_submission"]
+
 
 def load_rerun_json() -> Dict[str, Any]:
     """Load the JSON file containing all test tasks for the competition.
