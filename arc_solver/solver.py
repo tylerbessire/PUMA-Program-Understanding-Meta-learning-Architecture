@@ -35,25 +35,61 @@ def solve_task(task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, L
     
     if not use_baseline:
         try:
-            return solve_task_enhanced(task)
+            result = solve_task_enhanced(task)
+            # If enhanced solver returns degenerate zeros, retry with baseline
+            if any(
+                arr and isinstance(arr, list) and np.all(np.array(arr) == 0)
+                for arr in result.get("attempt_1", [])
+            ):
+                raise ValueError("degenerate enhanced result")
+            return result
         except Exception:
-            # Fall back to baseline if enhanced fails
+            # Fall back to baseline if enhanced fails or produces invalid output
             pass
     
     # Baseline implementation
     # Extract training pairs as numpy arrays
     train_pairs: List[Tuple[Array, Array]] = []
     for pair in task["train"]:
-        a = to_array(pair["input"])
-        b = to_array(pair["output"])
+        try:
+            a = to_array(pair["input"])
+            b = to_array(pair["output"])
+        except Exception:
+            # Skip malformed training examples
+            continue
         train_pairs.append((a, b))
-    # Extract test inputs
+
+    # Extract test inputs with graceful degradation
     test_inputs: List[Array] = []
     for pair in task["test"]:
-        test_inputs.append(to_array(pair["input"]))
+        try:
+            test_inputs.append(to_array(pair["input"]))
+        except Exception:
+            test_inputs.append(np.zeros((1, 1), dtype=np.int16))
+
+    if not train_pairs:
+        # Without training data we can only echo the inputs
+        return {
+            "attempt_1": [to_list(arr) for arr in test_inputs],
+            "attempt_2": [to_list(arr) for arr in test_inputs],
+        }
+
     # Synthesize candidate programs and predict outputs
     progs = synthesize(train_pairs)
-    attempts = predict_two(progs, test_inputs)
+    if not progs:
+        attempts = [test_inputs, test_inputs]
+    else:
+        attempts = predict_two(progs, test_inputs)
+        # Basic sanity fallback: if predictions look degenerate, use identity
+        fixed_attempts: List[List[Array]] = [[], []]
+        for idx, pred in enumerate(attempts[0]):
+            if pred is None or pred.size == 0 or np.all(pred == 0):
+                fixed_attempts[0].append(test_inputs[idx])
+            else:
+                fixed_attempts[0].append(pred)
+        fixed_attempts[1] = attempts[1] if len(attempts) > 1 else fixed_attempts[0]
+        attempts = fixed_attempts
+
     # Convert outputs back to nested lists
     return {
         "attempt_1": [to_list(arr) for arr in attempts[0]],
