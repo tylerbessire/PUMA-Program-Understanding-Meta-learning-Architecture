@@ -38,20 +38,22 @@ class SimpleClassifier:
     
     def forward(self, x: np.ndarray) -> np.ndarray:
         """Forward pass through the network."""
+        if x.ndim == 1:
+            x = x.reshape(1, -1)
         # First layer
         h = np.maximum(0, np.dot(x, self.weights1) + self.bias1)  # ReLU
         # Output layer with sigmoid
         out = 1.0 / (1.0 + np.exp(-(np.dot(h, self.weights2) + self.bias2)))
-        return out
+        return out.squeeze()
     
     def predict_operations(self, features: Dict[str, Any], threshold: float = 0.5) -> List[str]:
         """Predict which operations are likely relevant."""
         feature_vector = self._features_to_vector(features)
-        probabilities = self.forward(feature_vector)
-        
+        probabilities = self.forward(feature_vector).ravel()
+
         relevant_ops = []
         for i, prob in enumerate(probabilities):
-            if prob > threshold:
+            if float(prob) > threshold:
                 relevant_ops.append(self.operations[i])
         
         return relevant_ops if relevant_ops else ['identity']
