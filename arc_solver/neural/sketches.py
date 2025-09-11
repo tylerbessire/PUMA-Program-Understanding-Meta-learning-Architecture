@@ -209,5 +209,26 @@ def generate_parameter_grid(operation: str, constraints: Dict[str, Any] = None) 
         return [{'dy': dy, 'dx': dx} for dy in dy_range for dx in dx_range]
     elif operation == 'identity':
         return [{}]
+    elif operation == 'crop':
+        tops = range(3) if 'top' not in constraints else constraints['top']
+        lefts = range(3) if 'left' not in constraints else constraints['left']
+        heights = range(1, 4) if 'height' not in constraints else constraints['height']
+        widths = range(1, 4) if 'width' not in constraints else constraints['width']
+        return [
+            {"top": t, "left": l, "height": h, "width": w}
+            for t in tops for l in lefts for h in heights for w in widths
+        ]
+    elif operation == 'pad':
+        out_h = range(5, 20) if 'out_h' not in constraints else constraints['out_h']
+        out_w = range(5, 20) if 'out_w' not in constraints else constraints['out_w']
+        return [{"out_h": h, "out_w": w} for h in out_h for w in out_w]
+    elif operation == 'recolor':
+        mappings = []
+        colors = range(10)
+        for src in colors:
+            for dst in colors:
+                if src != dst:
+                    mappings.append({"mapping": {src: dst}})
+        return mappings
     else:
-        return [{}]  # Default empty params for other operations
+        return [{}]  # Default empty params for unknown operations
