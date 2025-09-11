@@ -1,293 +1,530 @@
-# AGENTS.md - Development Guidelines for AI Assistants
+# AGENTS.md - Step-by-Step ARC Solver Enhancement Guide
 
-## Production-Ready Mindset
+## 🎯 MISSION: Transform ARC Solver from 0% to Competition-Ready Fluid Intelligence System
 
-When working on PUMA (Program Understanding and Meta-learning for ARC), **ALWAYS** maintain a production-ready mindset. This is not a prototype or research demo - this is a competition-grade solver designed to win ARC Prize 2025.
+This document provides a comprehensive, step-by-step implementation guide for enhancing the ARC solver. **FOLLOW EACH STEP IN ORDER** and mark your progress after completing each step.
 
-### Fundamental Principles
+---
 
-**NO MINIMAL IMPLEMENTATIONS**
-- Every component must be complete, robust, and production-ready
-- No "TODO" comments or placeholder functions
-- No shortcuts that sacrifice functionality for speed of development
-- Every feature must be fully implemented with proper error handling
+## 📋 IMPLEMENTATION PHASES
 
-**NO PLACEHOLDERS TO PASS TESTS**
-- Tests should validate real functionality, not mock implementations
-- If a test passes, the underlying feature must actually work
-- No fake return values or dummy implementations
-- Every assertion in tests must reflect genuine system capabilities
+### PHASE 1: CRITICAL FIXES (Get to Working Baseline)
+**Goal**: Fix fatal bugs preventing any solutions from being generated
+**Target**: Get from 0% to 5-15% accuracy on evaluation set
 
-**COMPLETE IMPLEMENTATIONS ONLY**
-- Functions must handle all specified parameters and edge cases
-- Error handling must be comprehensive and graceful
-- Documentation must be complete and accurate
-- Performance must meet production requirements
+### PHASE 2: CORE INTELLIGENCE (Add Fluid Reasoning)
+**Goal**: Implement missing cognitive mechanisms for human-level reasoning
+**Target**: Achieve 25-40% accuracy with proper reasoning traces
 
-### Code Quality Standards
+### PHASE 3: LEARNING ENHANCEMENT (Unlock Learning Potential)
+**Goal**: Build robust training and adaptation systems
+**Target**: Reach 50-70% accuracy through learned patterns
 
-**Type Safety**
+### PHASE 4: COMPETITION OPTIMIZATION (Maximize Performance)
+**Goal**: Optimize for ARC Prize 2025 competition constraints
+**Target**: Achieve 80%+ accuracy with reliable performance
+
+---
+
+# PHASE 1: CRITICAL FIXES ⚡
+
+## Step 1.1: Fix DSL Operation Parameter Generation
+
+**ISSUE**: DSL operations missing required arguments, causing 100% program execution failures
+
+**FILES TO MODIFY**:
+- `arc_solver/search.py` (lines ~30-50)
+- `arc_solver/enhanced_search.py` (parameter generation sections)
+
+**SPECIFIC FIXES NEEDED**:
+
+1. **Fix crop operation parameters**:
 ```python
-def process_task(task: Dict[str, Any]) -> Dict[str, List[List[List[int]]]]:
-    """Every function must have complete type hints."""
-    pass
+# BROKEN (current):
+"crop": [{}]
+
+# FIX TO:
+"crop": [{"top": t, "left": l, "height": h, "width": w} 
+         for t in range(0, 3) for l in range(0, 3) 
+         for h in range(1, 4) for w in range(1, 4)]
 ```
 
-**Error Handling**
+2. **Fix pad operation parameters**:
 ```python
-def safe_operation(data: Any) -> Optional[Result]:
-    """Every operation must handle errors gracefully."""
-    try:
-        result = complex_operation(data)
-        return result
-    except SpecificError as e:
-        logger.error(f"Operation failed: {e}")
-        return fallback_strategy(data)
-    except Exception as e:
-        logger.critical(f"Unexpected error: {e}")
-        return None
+# BROKEN (current):
+"pad": [{}]
+
+# FIX TO:
+"pad": [{"out_h": h, "out_w": w} 
+        for h in range(5, 20) for w in range(5, 20)]
 ```
 
-**Documentation**
+3. **Fix recolor operation parameters**:
 ```python
-def enhanced_search_function(features: np.ndarray, 
-                            programs: List[Program],
-                            timeout: float = 30.0) -> List[Solution]:
-    """
-    Search for solutions using neural guidance and episodic retrieval.
-    
-    This function implements the core PUMA search algorithm, combining
-    neural guidance for operation selection, episodic retrieval for
-    analogical reasoning, and test-time training for task adaptation.
-    
-    Args:
-        features: Task feature vector (17-dimensional)
-        programs: Candidate program sketches 
-        timeout: Maximum search time in seconds
-        
-    Returns:
-        List of solutions ranked by estimated quality
-        
-    Raises:
-        SearchTimeout: If search exceeds timeout
-        InvalidFeatures: If feature vector is malformed
-        
-    Example:
-        >>> features = extract_task_features(train_pairs)
-        >>> programs = sketch_miner.get_relevant_sketches(features)
-        >>> solutions = enhanced_search_function(features, programs)
-    """
+# BROKEN (current):
+"recolor": [{}]
+
+# FIX TO:
+"recolor": [{"mapping": {i: j}} 
+           for i in range(10) for j in range(10) if i != j]
 ```
 
-### Performance Requirements
+**VALIDATION**: Run evaluation script - should see actual program attempts instead of parameter errors
 
-**Kaggle Constraints**
-- Memory usage < 4GB total
-- Runtime < 30 seconds per task
-- CPU optimization for single-core performance
-- No external network access required
-
-**Benchmarking**
-```python
-def benchmark_component(component_func, test_data, max_time=1.0):
-    """Every major component must meet performance targets."""
-    import time
-    
-    start_time = time.time()
-    result = component_func(test_data)
-    elapsed = time.time() - start_time
-    
-    assert elapsed < max_time, f"Component too slow: {elapsed:.3f}s"
-    assert result is not None, "Component must return valid result"
-    return result
+**PROGRESS MARKER**: 
 ```
-
-### Testing Standards
-
-**Comprehensive Coverage**
-- Unit tests for every function
-- Integration tests for component interactions  
-- End-to-end tests for full pipeline
-- Performance regression tests
-- Edge case validation
-
-**Real Functionality Testing**
-```python
-def test_neural_guidance_actual_prediction():
-    """Test that neural guidance actually predicts operations."""
-    guidance = NeuralGuidance()
-    train_pairs = create_rotation_task()
-    
-    # This must be a real prediction, not a placeholder
-    predicted_ops = guidance.predict_operations(train_pairs)
-    
-    assert len(predicted_ops) > 0
-    assert all(op in VALID_OPERATIONS for op in predicted_ops)
-    
-    # Verify prediction makes sense for rotation task
-    assert "rotate" in predicted_ops or "flip" in predicted_ops
-    
-    # Test consistency
-    predicted_ops2 = guidance.predict_operations(train_pairs)
-    assert predicted_ops == predicted_ops2
-```
-
-### Architecture Decisions
-
-**Neuroscience Grounding**
-Every component must map to known cognitive mechanisms:
-- Neural guidance → Multiple-demand (MD) network
-- Episodic retrieval → Hippocampal-mPFC system
-- Test-time training → Prefrontal adaptation
-- Program sketches → Procedural memory consolidation
-
-**Fallback Strategies**
-```python
-def solve_with_enhancements(task):
-    """Always provide graceful degradation."""
-    try:
-        return enhanced_solver.solve(task)
-    except EnhancementFailure:
-        logger.warning("Enhanced features failed, using baseline")
-        return baseline_solver.solve(task)
-    except Exception:
-        logger.error("All methods failed, using identity fallback")
-        return identity_solution(task)
-```
-
-### Research Integration
-
-**Evidence-Based Development**
-- Every algorithmic choice must be justified by cognitive science literature
-- Performance improvements must be measured quantitatively
-- Ablation studies must validate each component's contribution
-- Failure modes must be analyzed and documented
-
-**Scientific Rigor**
-```python
-class ComponentValidation:
-    """Every component must validate its scientific claims."""
-    
-    def validate_cognitive_mapping(self):
-        """Verify component behavior matches brain imaging data."""
-        pass
-    
-    def measure_performance_gain(self):
-        """Quantify improvement over baseline."""
-        pass
-    
-    def analyze_failure_modes(self):
-        """Document when and why component fails."""
-        pass
-```
-
-### Submission Requirements
-
-**Kaggle Readiness**
-- `arc_submit.py` must generate valid submissions
-- Output format must exactly match competition requirements
-- No debugging prints or verbose output in submission mode
-- Deterministic behavior for reproducible results
-
-**Competition Strategy**
-```python
-def competition_solve(task):
-    """Production solver optimized for ARC Prize 2025."""
-    
-    # Phase 1: Neural guidance for operation selection
-    guidance = load_trained_guidance_model()
-    relevant_ops = guidance.predict_operations(task)
-    
-    # Phase 2: Episodic retrieval for analogical reasoning
-    memory = load_episodic_database()
-    similar_solutions = memory.query_analogous_tasks(task)
-    
-    # Phase 3: Test-time training for task adaptation
-    ttt = TestTimeTrainer()
-    adapted_scorer = ttt.adapt_to_task(task)
-    
-    # Phase 4: Generate and rank candidate solutions
-    candidates = generate_solutions(task, relevant_ops, similar_solutions)
-    ranked = adapted_scorer.rank_solutions(candidates)
-    
-    # Phase 5: Return top 2 diverse solutions as required
-    return select_diverse_solutions(ranked, count=2)
-```
-
-### Continuous Improvement
-
-**Performance Monitoring**
-- Track success rates on validation sets
-- Monitor component utilization and effectiveness
-- Identify bottlenecks and optimization opportunities
-- Maintain backwards compatibility
-
-**Research Pipeline**
-1. Implement baseline functionality
-2. Add neuroscience-inspired enhancements
-3. Validate improvements empirically
-4. Optimize for competition constraints
-5. Document learnings and failure modes
-
-### Anti-Patterns to Avoid
-
-**❌ NEVER DO THIS:**
-```python
-def placeholder_function():
-    """TODO: Implement this later."""
-    return None
-
-def fake_neural_guidance(task):
-    """Fake implementation to pass tests."""
-    return ["rotate", "flip"]  # Random operations
-
-def minimal_test():
-    """Minimal test that doesn't validate real functionality."""
-    assert True  # This passes but tests nothing
-```
-
-**✅ ALWAYS DO THIS:**
-```python
-def production_neural_guidance(task):
-    """Complete neural guidance implementation."""
-    features = extract_comprehensive_features(task)
-    classifier = load_trained_classifier()
-    predictions = classifier.predict(features)
-    return postprocess_predictions(predictions, task)
-
-def comprehensive_test():
-    """Test that validates actual functionality."""
-    guidance = NeuralGuidance()
-    task = create_challenging_test_task()
-    
-    predictions = guidance.predict_operations(task)
-    
-    # Validate predictions are reasonable
-    assert len(predictions) > 0
-    assert all(op in VALID_OPERATIONS for op in predictions)
-    
-    # Validate prediction quality for known task type
-    if is_rotation_task(task):
-        assert "rotate" in predictions[:3]  # Top 3 predictions
-    
-    # Validate consistency
-    assert guidance.predict_operations(task) == predictions
+[ ] Step 1.1 COMPLETED - DSL parameters fixed, no more "missing required arguments" errors
+    Date: ___________
+    Test Result: ___% accuracy (should be > 0%)
+    Notes: ________________________________
 ```
 
 ---
 
-## Remember: PUMA is designed to win ARC Prize 2025
+## Step 1.2: Fix Solver Result Collection
 
-Every line of code, every architectural decision, every optimization must contribute to that goal. We're not building a research prototype - we're building a competition-winning system that demonstrates genuine progress toward artificial general intelligence.
+**ISSUE**: `solve_task()` claims success but returns empty test results
 
-**Production-ready means:**
-- ✅ Complete implementations
-- ✅ Robust error handling  
-- ✅ Performance optimization
-- ✅ Comprehensive testing
-- ✅ Scientific validation
-- ✅ Competition compliance
+**FILES TO MODIFY**:
+- `arc_solver/solver.py` (around lines 45-70)
 
-**NO compromises. NO shortcuts. NO placeholders.**
+**SPECIFIC FIXES NEEDED**:
 
-The future of AI reasoning depends on getting this right.
+1. **Debug result dictionary structure**:
+```python
+# In solve_task method, ensure proper result collection:
+def solve_task(self, task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
+    # ... existing code ...
+    
+    # ENSURE this section properly collects results:
+    test_predictions = []
+    for test_input in test_inputs:
+        # Get predictions from enhanced or baseline search
+        predictions = self._get_predictions(train_pairs, test_input)
+        if predictions:
+            test_predictions.append(predictions[0])  # Take first prediction
+        else:
+            test_predictions.append([])  # Empty fallback
+    
+    return {"test": test_predictions}
+```
+
+2. **Fix prediction collection logic**:
+- Ensure `_get_predictions` method actually returns predictions
+- Add debug logging to trace where predictions are lost
+- Verify test input processing pipeline
+
+**VALIDATION**: Solver should return non-empty test results for at least some tasks
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 1.2 COMPLETED - Solver returns actual predictions instead of empty results
+    Date: ___________
+    Test Result: ___% accuracy (should show some correct/incorrect attempts)
+    Notes: ________________________________
+```
+
+---
+
+## Step 1.3: Fix Array Comparison Errors
+
+**ISSUE**: Numpy array comparison failures in baseline solver
+
+**FILES TO MODIFY**:
+- `arc_solver/search.py` (array equality checks)
+- `arc_solver/grid.py` (eq function)
+
+**SPECIFIC FIXES NEEDED**:
+
+1. **Fix array equality comparisons**:
+```python
+# In search.py, replace problematic comparisons:
+# BROKEN:
+if predicted == expected:
+
+# FIX TO:
+if isinstance(predicted, np.ndarray) and isinstance(expected, np.ndarray):
+    if predicted.shape == expected.shape and np.array_equal(predicted, expected):
+        # Match found
+elif predicted == expected:
+    # Non-array comparison
+```
+
+2. **Fix broadcasting errors**:
+- Add shape validation before array operations
+- Handle mismatched dimensions gracefully
+- Add proper error handling for malformed grids
+
+**VALIDATION**: Baseline solver should run without numpy errors
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 1.3 COMPLETED - No more array comparison or broadcasting errors
+    Date: ___________
+    Test Result: ___% accuracy (baseline solver functional)
+    Notes: ________________________________
+```
+
+---
+
+## Step 1.4: Validate Phase 1 Completion
+
+**GOAL**: Confirm all critical bugs are fixed
+
+**VALIDATION SCRIPT**:
+```python
+# Run this test to confirm Phase 1 completion:
+python3 -c "
+from arc_solver.solver import ARCSolver
+import json
+
+# Load test data
+with open('data/arc-agi_evaluation_challenges.json', 'r') as f:
+    challenges = json.load(f)
+
+solver = ARCSolver()
+task_id = list(challenges.keys())[0]
+result = solver.solve_task(challenges[task_id])
+
+print(f'Task {task_id}:')
+print(f'  Results returned: {len(result.get(\"test\", []))}')
+print(f'  Non-empty results: {sum(1 for r in result.get(\"test\", []) if r)}')
+print('Phase 1 SUCCESS if no errors above and non-empty results > 0')
+"
+```
+
+**PROGRESS MARKER**: 
+```
+[ ] PHASE 1 COMPLETED - Critical bugs fixed, solver produces actual attempts
+    Date: ___________
+    Final Test Result: ___% accuracy (target: > 0%)
+    Ready for Phase 2: [ ] YES / [ ] NO
+    Notes: ________________________________
+```
+
+---
+
+# PHASE 2: CORE INTELLIGENCE 🧠
+
+## Step 2.1: Implement Hypothesis Generation Framework
+
+**GOAL**: Add explicit hypothesis formation - core of fluid intelligence
+
+**NEW FILE TO CREATE**: `arc_solver/hypothesis.py`
+
+**IMPLEMENTATION**:
+```python
+"""
+Hypothesis generation and testing for fluid intelligence in ARC tasks.
+"""
+
+from dataclasses import dataclass
+from typing import List, Dict, Any, Optional, Tuple
+import numpy as np
+from .grid import Array
+
+@dataclass
+class Hypothesis:
+    """Represents a hypothesis about task transformation."""
+    description: str
+    transformation_type: str  # "rotation", "color_swap", "pattern_fill", etc.
+    confidence: float
+    evidence: List[Dict[str, Any]]
+    program_sketch: Optional[List[Tuple[str, Dict[str, Any]]]] = None
+    
+class HypothesisEngine:
+    """Generates and tests hypotheses about ARC task transformations."""
+    
+    def generate_hypotheses(self, train_pairs: List[Tuple[Array, Array]]) -> List[Hypothesis]:
+        """Generate multiple competing hypotheses about the task transformation."""
+        hypotheses = []
+        
+        # 1. Geometric transformation hypotheses
+        hypotheses.extend(self._generate_geometric_hypotheses(train_pairs))
+        
+        # 2. Color transformation hypotheses  
+        hypotheses.extend(self._generate_color_hypotheses(train_pairs))
+        
+        # 3. Pattern completion hypotheses
+        hypotheses.extend(self._generate_pattern_hypotheses(train_pairs))
+        
+        # 4. Object manipulation hypotheses
+        hypotheses.extend(self._generate_object_hypotheses(train_pairs))
+        
+        return sorted(hypotheses, key=lambda h: h.confidence, reverse=True)
+    
+    def test_hypothesis(self, hypothesis: Hypothesis, train_pairs: List[Tuple[Array, Array]]) -> float:
+        """Test hypothesis validity against training data."""
+        # Implement hypothesis testing logic
+        pass
+    
+    def refine_hypothesis(self, hypothesis: Hypothesis, feedback: Dict) -> Hypothesis:
+        """Refine hypothesis based on test results."""
+        # Implement hypothesis refinement logic
+        pass
+```
+
+**INTEGRATION POINTS**:
+- Add to `arc_solver/solver.py` as primary reasoning layer
+- Connect with episodic retrieval for hypothesis seeding
+- Link with neural guidance for hypothesis scoring
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 2.1 COMPLETED - Hypothesis generation framework implemented
+    Date: ___________
+    Test Result: Can generate hypotheses for test tasks
+    Notes: ________________________________
+```
+
+---
+
+## Step 2.2: Enhance Analogical Reasoning
+
+**GOAL**: Upgrade episodic retrieval with deep analogical mapping
+
+**FILES TO MODIFY**:
+- `arc_solver/neural/episodic.py` (enhance existing implementation)
+
+**NEW CLASS TO ADD**:
+```python
+class AnalogicalReasoner:
+    """Advanced analogical reasoning for ARC tasks."""
+    
+    def find_structural_analogies(self, current_task: Task, memory: EpisodicMemory) -> List[Analogy]:
+        """Find tasks with similar abstract structure, not just surface features."""
+        # Implement structural similarity matching
+        pass
+        
+    def map_solution_structure(self, source_solution: Program, target_task: Task) -> Program:
+        """Map solution from analogous task to current task."""
+        # Implement solution transfer logic
+        pass
+        
+    def abstract_common_patterns(self, similar_tasks: List[Task]) -> AbstractPattern:
+        """Extract abstract transformation rules from multiple similar tasks."""
+        # Implement pattern abstraction
+        pass
+```
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 2.2 COMPLETED - Analogical reasoning enhanced beyond surface similarity
+    Date: ___________
+    Test Result: ___% accuracy improvement from analogical transfer
+    Notes: ________________________________
+```
+
+---
+
+## Step 2.3: Add Meta-Cognitive Monitoring
+
+**GOAL**: System monitors its own reasoning and adapts strategies
+
+**NEW FILE TO CREATE**: `arc_solver/metacognition.py`
+
+**IMPLEMENTATION**:
+```python
+class MetaCognition:
+    """Meta-cognitive monitoring and strategy adaptation."""
+    
+    def monitor_solving_progress(self, attempts: List[Program], success_rate: float) -> Strategy:
+        """Monitor solving attempts and suggest strategy changes."""
+        pass
+        
+    def assess_confidence(self, solution: Program, task: Task) -> float:
+        """Assess confidence in proposed solution."""
+        pass
+        
+    def switch_strategy(self, current_strategy: Strategy, performance: Dict) -> Strategy:
+        """Switch reasoning strategy based on performance."""
+        pass
+```
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 2.3 COMPLETED - Meta-cognitive monitoring system active
+    Date: ___________
+    Test Result: System adapts strategies based on performance
+    Notes: ________________________________
+```
+
+---
+
+## Step 2.4: Validate Phase 2 Completion
+
+**VALIDATION**: System should show reasoning traces and adapt behavior
+
+**PROGRESS MARKER**: 
+```
+[ ] PHASE 2 COMPLETED - Core fluid intelligence mechanisms implemented
+    Date: ___________
+    Final Test Result: ___% accuracy (target: 25-40%)
+    Ready for Phase 3: [ ] YES / [ ] NO
+    Notes: ________________________________
+```
+
+---
+
+# PHASE 3: LEARNING ENHANCEMENT 📚
+
+## Step 3.1: Build Self-Supervised Learning Pipeline
+
+**GOAL**: Enable system to learn from experience and improve over time
+
+**FILES TO MODIFY**:
+- `tools/train_guidance.py` (enhance existing training)
+
+**NEW COMPONENTS TO ADD**:
+- Data augmentation for synthetic task generation
+- Curriculum learning for progressive difficulty
+- Continual learning without catastrophic forgetting
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 3.1 COMPLETED - Self-supervised learning pipeline operational
+    Date: ___________
+    Test Result: Model improves with additional training
+    Notes: ________________________________
+```
+
+---
+
+## Step 3.2: Enhance Program Sketch Learning
+
+**GOAL**: Learn hierarchical program structures and reusable components
+
+**FILES TO MODIFY**:
+- `arc_solver/neural/sketches.py`
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 3.2 COMPLETED - Advanced program sketch learning implemented
+    Date: ___________
+    Test Result: ___% accuracy from learned sketches
+    Notes: ________________________________
+```
+
+---
+
+## Step 3.3: Upgrade Episodic Memory
+
+**GOAL**: Hierarchical memory organization and consolidation
+
+**FILES TO MODIFY**:
+- `arc_solver/neural/episodic.py`
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 3.3 COMPLETED - Advanced episodic memory system operational
+    Date: ___________
+    Test Result: Better retrieval and memory consolidation
+    Notes: ________________________________
+```
+
+---
+
+## Step 3.4: Validate Phase 3 Completion
+
+**PROGRESS MARKER**: 
+```
+[ ] PHASE 3 COMPLETED - Learning systems unlock performance potential
+    Date: ___________
+    Final Test Result: ___% accuracy (target: 50-70%)
+    Ready for Phase 4: [ ] YES / [ ] NO
+    Notes: ________________________________
+```
+
+---
+
+# PHASE 4: COMPETITION OPTIMIZATION 🏆
+
+## Step 4.1: Advanced Search Strategies
+
+**GOAL**: Implement beam search, MCTS, and constraint propagation
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 4.1 COMPLETED - Advanced search strategies implemented
+    Date: ___________
+    Test Result: ___% accuracy improvement from better search
+    Notes: ________________________________
+```
+
+---
+
+## Step 4.2: Multi-Modal Reasoning
+
+**GOAL**: Ensemble methods and voting mechanisms
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 4.2 COMPLETED - Multi-modal reasoning system operational
+    Date: ___________
+    Test Result: ___% accuracy from ensemble methods
+    Notes: ________________________________
+```
+
+---
+
+## Step 4.3: Competition-Specific Optimizations
+
+**GOAL**: Two-attempt diversity, resource management, deterministic execution
+
+**PROGRESS MARKER**: 
+```
+[ ] Step 4.3 COMPLETED - Competition optimizations implemented
+    Date: ___________
+    Test Result: Optimized for ARC Prize 2025 constraints
+    Notes: ________________________________
+```
+
+---
+
+## Step 4.4: Final Validation
+
+**PROGRESS MARKER**: 
+```
+[ ] PHASE 4 COMPLETED - Competition-ready ARC solver with fluid intelligence
+    Date: ___________
+    Final Test Result: ___% accuracy (target: 80%+)
+    Competition Ready: [ ] YES / [ ] NO
+    Notes: ________________________________
+```
+
+---
+
+# 🚨 CRITICAL INSTRUCTIONS FOR AI AGENT
+
+## Mandatory Process:
+1. **Work on ONE STEP at a time** - Do not skip ahead
+2. **Complete each step fully** before moving to the next
+3. **Fill in EVERY progress marker** when you complete a step
+4. **Test your implementation** after each step
+5. **Document any issues** in the Notes section
+
+## After Each Step:
+```
+ALWAYS add your progress marker like this:
+
+[X] Step X.X COMPLETED - [Brief description of what was implemented]
+    Date: 2024-MM-DD
+    Test Result: [Specific test results or accuracy improvement]
+    Notes: [Any issues, observations, or important details]
+```
+
+## Before Starting Phase 2, 3, or 4:
+- **Verify ALL previous steps are marked complete**
+- **Confirm test results meet the phase targets**
+- **Do not proceed if previous phase is incomplete**
+
+## Emergency Procedures:
+- If a step fails or causes regressions, **STOP** and fix before proceeding
+- If test accuracy decreases, **investigate and resolve** before continuing
+- If you encounter issues beyond the scope of these instructions, **document thoroughly** and request guidance
+
+---
+
+**SUCCESS CRITERIA**: System achieves 80%+ accuracy on ARC evaluation set with clear reasoning traces and adaptive behavior demonstrating fluid intelligence.
+
+**START HERE**: Begin with Step 1.1 - Fix DSL Operation Parameter Generation
