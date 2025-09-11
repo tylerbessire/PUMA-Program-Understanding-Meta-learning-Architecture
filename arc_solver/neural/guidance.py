@@ -144,12 +144,17 @@ class NeuralGuidance:
     def __init__(self, model_path: Optional[str] = None):
         self.heuristic_guidance = HeuristicGuidance()
         self.neural_model = None
-        
+        expected_dim = 17
+
         if model_path and os.path.exists(model_path):
-            self.load_model(model_path)
+            try:
+                self.load_model(model_path)
+                if getattr(self.neural_model, "input_dim", expected_dim) != expected_dim:
+                    raise ValueError("model input dimension mismatch")
+            except Exception:
+                self.neural_model = SimpleClassifier(expected_dim)
         else:
-            # For now, create a dummy neural model
-            self.neural_model = SimpleClassifier(17)  # 17 features
+            self.neural_model = SimpleClassifier(expected_dim)
     
     def predict_operations(self, train_pairs: List[Tuple[Array, Array]]) -> List[str]:
         """Predict which operations are likely relevant for the task."""

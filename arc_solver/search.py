@@ -32,12 +32,36 @@ def enumerate_programs(depth: int = 2) -> List[List[Tuple[str, Dict[str, int]]]]
             for dy in range(-2, 3)
             for dx in range(-2, 3)
         ],
-        "recolor": [],  # Recolor handled separately via heuristics
-        "crop": [],
-        "pad": [],
+        "crop": [
+            {"top": t, "left": l, "height": h, "width": w}
+            for t in range(3)
+            for l in range(3)
+            for h in range(1, 4)
+            for w in range(1, 4)
+        ],
+        "pad": [
+            {"out_h": h, "out_w": w}
+            for h in range(5, 20)
+            for w in range(5, 20)
+        ],
+        "recolor": [
+            {"mapping": {i: j}}
+            for i in range(10)
+            for j in range(10)
+            if i != j
+        ],
         "identity": [{}],
     }
-    base_ops = ["rotate", "flip", "transpose", "translate", "identity"]
+    base_ops = [
+        "rotate",
+        "flip",
+        "transpose",
+        "translate",
+        "crop",
+        "pad",
+        "recolor",
+        "identity",
+    ]
     # Generate all length-1 programs
     if depth == 1:
         return [[(op, params)] for op in base_ops for params in param_space[op]]

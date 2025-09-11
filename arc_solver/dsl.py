@@ -190,8 +190,13 @@ def pad(a: Array, top: int, bottom: int, left: int, right: int, fill_value: int 
 def apply_program(a: Array, program: List[Tuple[str, Dict[str, Any]]]) -> Array:
     """Apply a sequence of operations to the input grid."""
     out = a
-    for name, params in program:
-        out = apply_op(out, name, params)
+    for idx, (name, params) in enumerate(program):
+        try:
+            out = apply_op(out, name, params)
+        except Exception as exc:
+            raise ValueError(
+                f"Failed to apply operation '{name}' at position {idx} with params {params}"
+            ) from exc
     return out
 
 
