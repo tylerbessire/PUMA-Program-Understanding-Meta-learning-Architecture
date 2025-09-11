@@ -39,7 +39,7 @@ class ARCSolver:
     def solve_task(self, task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
         """Solve a single ARC task using enhanced or baseline methods."""
         self.stats['total_tasks'] += 1
-        
+
         # Extract training pairs as numpy arrays, skipping malformed ones
         train_pairs: List[Tuple[Array, Array]] = []
         for pair in task.get("train", []):
@@ -59,52 +59,51 @@ class ARCSolver:
                 test_inputs.append(np.zeros((1, 1), dtype=np.int16))
 
         if not train_pairs:
-            return {
-                "attempt_1": [to_list(arr) for arr in test_inputs],
-                "attempt_2": [to_list(arr) for arr in test_inputs],
-            }
-        
-        # Try enhanced synthesis first, fall back to baseline if needed
+            identity = [to_list(arr) for arr in test_inputs]
+            return {"attempt_1": identity, "attempt_2": identity}
+
+        # Collect predictions for each test input individually
+        attempt1: List[List[List[int]]] = []
+        attempt2: List[List[List[int]]] = []
+        for test_input in test_inputs:
+            predictions = self._get_predictions(train_pairs, test_input)
+            if predictions and predictions[0]:
+                first = to_list(predictions[0][0])
+                second_arr = predictions[1][0] if len(predictions) > 1 else predictions[0][0]
+                second = to_list(second_arr)
+                attempt1.append(first)
+                attempt2.append(second)
+            else:
+                # Use identity grid as safe fallback
+                fallback = to_list(test_input)
+                attempt1.append(fallback)
+                attempt2.append(fallback)
+
+        return {"attempt_1": attempt1, "attempt_2": attempt2}
+
+    def _get_predictions(
+        self, train_pairs: List[Tuple[Array, Array]], test_input: Array
+    ) -> List[List[Array]]:
+        """Get prediction attempts for a single test input."""
         try:
             if self.use_enhancements:
+                print("Using enhanced search for prediction")
                 progs = synthesize_with_enhancements(train_pairs)
-                attempts = predict_two_enhanced(progs, test_inputs)
-                
-                # Check if we got a reasonable solution
-                if self._validate_solution(attempts, test_inputs):
-                    if any(np.all(out == 0) for out in attempts[0]):
-                        self.stats['fallback_used'] += 1
-                        raise Exception("Enhanced search produced degenerate output")
-                    self.stats['tasks_solved'] += 1
-                    return {
-                        "attempt_1": [to_list(arr) for arr in attempts[0]],
-                        "attempt_2": [to_list(arr) for arr in attempts[1]],
-                    }
+                attempts = predict_two_enhanced(progs, [test_input])
+                if self._validate_solution(attempts, [test_input]):
+                    return attempts
                 else:
-                    # Enhancement didn't work, try fallback
-                    self.stats['fallback_used'] += 1
-                    raise Exception("Enhanced search failed validation")
+                    print("Enhanced prediction failed validation")
             else:
-                raise Exception("Enhancements disabled")
-                
-        except Exception:
-            # Fall back to baseline approach
-            progs = synth_baseline(train_pairs)
-            attempts = predict_two_baseline(progs, test_inputs)
+                print("Enhancements disabled, using baseline search")
+        except Exception as e:
+            print(f"Enhanced prediction error: {e}")
 
-            # Sanity check predictions and fall back to identity if needed
-            fixed_attempts: List[List[Array]] = [[], []]
-            for idx, pred in enumerate(attempts[0]):
-                if pred is None or pred.size == 0 or np.all(pred == 0):
-                    fixed_attempts[0].append(test_inputs[idx])
-                else:
-                    fixed_attempts[0].append(pred)
-            fixed_attempts[1] = attempts[1] if len(attempts) > 1 else fixed_attempts[0]
-
-            return {
-                "attempt_1": [to_list(arr) for arr in fixed_attempts[0]],
-                "attempt_2": [to_list(arr) for arr in fixed_attempts[1]],
-            }
+        # Fall back to baseline search
+        self.stats['fallback_used'] += 1
+        print("Falling back to baseline search")
+        progs = synth_baseline(train_pairs)
+        return predict_two_baseline(progs, [test_input])
 
     def solve_task_two_attempts(
         self, task: Dict[str, List[Dict[str, List[List[int]]]]]
