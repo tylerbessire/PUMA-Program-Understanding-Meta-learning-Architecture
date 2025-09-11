@@ -364,3 +364,67 @@ class EpisodicRetrieval:
         """Return statistics about the episodic database."""
         return self.database.get_statistics()
 
+
+class AnalogicalReasoner:
+    """Advanced analogical reasoning for ARC tasks."""
+
+    def find_structural_analogies(
+        self,
+        current_task: List[Tuple[Array, Array]],
+        memory: EpisodicRetrieval,
+        threshold: float = 0.6,
+        max_results: int = 5,
+    ) -> List[Tuple[Episode, float]]:
+        """Find tasks with similar abstract structure, not just surface features."""
+
+        if not current_task:
+            return []
+        query_features = extract_task_features(current_task)
+        results: List[Tuple[Episode, float]] = []
+        for episode in memory.database.episodes.values():
+            sim = memory.database._compute_similarity(query_features, episode.features)
+            if sim >= threshold:
+                results.append((episode, sim))
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:max_results]
+
+    def map_solution_structure(
+        self,
+        source_solution: Program,
+        target_task: List[Tuple[Array, Array]],
+    ) -> Program:
+        """Map solution from analogous task to current task."""
+
+        if not source_solution:
+            return []
+        recolor_mapping: Dict[int, int] = {}
+        if target_task:
+            inp, out = target_task[0]
+            for ci, co in zip(inp.flat, out.flat):
+                if ci != co:
+                    recolor_mapping[int(ci)] = int(co)
+        mapped: Program = []
+        for op, params in source_solution:
+            if op == "recolor" and recolor_mapping:
+                mapped.append((op, {"mapping": recolor_mapping}))
+            else:
+                mapped.append((op, params))
+        return mapped
+
+    def abstract_common_patterns(
+        self, similar_tasks: List[List[Tuple[Array, Array]]]
+    ) -> Dict[str, float]:
+        """Extract abstract transformation rules from multiple similar tasks."""
+
+        if not similar_tasks:
+            return {}
+        feature_dicts = [extract_task_features(t) for t in similar_tasks if t]
+        if not feature_dicts:
+            return {}
+        keys = set().union(*(fd.keys() for fd in feature_dicts))
+        pattern: Dict[str, float] = {}
+        for k in keys:
+            vals = [float(fd.get(k, 0.0)) for fd in feature_dicts]
+            pattern[k] = float(np.mean(vals))
+        return pattern
+

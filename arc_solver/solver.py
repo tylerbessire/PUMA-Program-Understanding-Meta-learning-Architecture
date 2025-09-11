@@ -17,6 +17,7 @@ from .search import (
     predict_two as predict_two_baseline,
 )
 from .enhanced_search import synthesize_with_enhancements, predict_two_enhanced
+from .hypothesis import HypothesisEngine, Hypothesis
 
 
 class ARCSolver:
@@ -35,6 +36,9 @@ class ARCSolver:
             'fallback_used': 0,
         }
         self._last_outputs: Optional[Tuple[List[List[List[int]]], List[List[List[int]]]]] = None
+        # Hypothesis engine powers the primary reasoning layer
+        self.hypothesis_engine = HypothesisEngine()
+        self._last_hypotheses: List[Hypothesis] = []
     
     def solve_task(self, task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
         """Solve a single ARC task using enhanced or baseline methods."""
@@ -61,6 +65,29 @@ class ARCSolver:
         if not train_pairs:
             identity = [to_list(arr) for arr in test_inputs]
             return {"attempt_1": identity, "attempt_2": identity}
+
+        # Generate and store hypotheses about the transformation.
+        self._last_hypotheses = self.hypothesis_engine.generate_hypotheses(train_pairs)
+        best_hypothesis: Optional[Hypothesis] = (
+            self._last_hypotheses[0] if self._last_hypotheses else None
+        )
+        if best_hypothesis:
+            # Update confidence using training pairs to double check
+            best_hypothesis.confidence = self.hypothesis_engine.test_hypothesis(
+                best_hypothesis, train_pairs
+            )
+            if best_hypothesis.confidence == 1.0:
+                attempt1: List[List[List[int]]] = []
+                attempt2: List[List[List[int]]] = []
+                for test_input in test_inputs:
+                    transformed = self.hypothesis_engine.apply(best_hypothesis, test_input)
+                    if transformed is None:
+                        break
+                    attempt1.append(to_list(transformed))
+                    attempt2.append(to_list(transformed))
+                else:
+                    # All test inputs transformed successfully
+                    return {"attempt_1": attempt1, "attempt_2": attempt2}
 
         # Collect predictions for each test input individually
         attempt1: List[List[List[int]]] = []
