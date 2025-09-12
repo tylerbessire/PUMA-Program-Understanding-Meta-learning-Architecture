@@ -1,10 +1,12 @@
 """Episodic memory and retrieval for the ARC solver.
 
 This module implements a lightweight yet fully functional episodic memory
-system.  Previously solved tasks (episodes) are stored together with the
-programs that solved them and rich feature representations.  At inference
-time the solver can query this database for tasks with similar signatures or
-feature vectors and reuse their solutions as candidates.
+system. Previously solved tasks (episodes) are stored together with the
+programs that solved them and rich feature representations. A hierarchical
+index organises episodes into coarse feature buckets while repeated solutions
+are consolidated to avoid unbounded growth. At inference time the solver can
+query this database for tasks with similar signatures or feature vectors and
+reuse their solutions as candidates.
 
 The implementation is intentionally deterministic and avoids any external
 dependencies so that it remains compatible with the Kaggle competition
@@ -110,6 +112,10 @@ class EpisodeDatabase:
         self.episodes: Dict[int, Episode] = {}
         self.signature_index: Dict[str, List[int]] = defaultdict(list)
         self.program_index: Dict[str, List[int]] = defaultdict(list)
+        # Hierarchical index groups episodes by coarse feature buckets.
+        # This enables fast retrieval of structurally similar tasks while
+        # keeping the system deterministic and lightweight.
+        self.hierarchy_index: Dict[str, List[int]] = defaultdict(list)
         self.db_path = db_path
         self._next_id = 1
 
@@ -126,6 +132,20 @@ class EpisodeDatabase:
             (op, tuple(sorted(params.items()))) for op, params in program
         ]
         return json.dumps(normalised)
+
+    def _hierarchy_key(self, features: Dict[str, Any]) -> str:
+        """Return a coarse key used for hierarchical organisation.
+
+        The key buckets episodes by basic properties such as number of
+        training pairs, average input colours and whether recolouring is
+        likely.  These buckets act as top-level memory regions that group
+        broadly similar tasks.
+        """
+
+        num_pairs = int(features.get("num_train_pairs", 0))
+        colours = int(features.get("input_colors_mean", 0))
+        recolor = int(bool(features.get("likely_recolor", False)))
+        return f"{num_pairs}:{colours}:{recolor}"
 
     def _compute_similarity(self, f1: Dict[str, Any], f2: Dict[str, Any]) -> float:
         """Compute cosine similarity between two feature dictionaries."""
@@ -186,7 +206,6 @@ class EpisodeDatabase:
         metadata: Optional[Dict[str, Any]] = None,
     ) -> int:
         """Store a solved episode and return its identifier."""
-
         episode = Episode(
             task_signature=task_signature,
             programs=programs,
@@ -203,6 +222,8 @@ class EpisodeDatabase:
         for program in programs:
             key = self._program_key(program)
             self.program_index[key].append(episode_id)
+        hier_key = self._hierarchy_key(episode.features)
+        self.hierarchy_index[hier_key].append(episode_id)
 
         return episode_id
 
@@ -235,12 +256,42 @@ class EpisodeDatabase:
         results.sort(key=lambda x: x[1], reverse=True)
         return results[:max_results]
 
+    def query_hierarchy(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        similarity_threshold: float = 0.5,
+        max_results: int = 5,
+    ) -> List[Tuple[Episode, float]]:
+        """Return episodes from the same hierarchical bucket.
+
+        Episodes are grouped into coarse buckets based on simple features.
+        This allows a two-level lookup: first by bucket, then by detailed
+        similarity within that bucket.
+        """
+
+        if not train_pairs:
+            return []
+        query_features = extract_task_features(train_pairs)
+        key = self._hierarchy_key(query_features)
+        ids = self.hierarchy_index.get(key, [])
+        results: List[Tuple[Episode, float]] = []
+        for eid in ids:
+            episode = self.episodes[eid]
+            similarity = self._compute_similarity(query_features, episode.features)
+            if similarity >= similarity_threshold:
+                results.append((episode, similarity))
+        results.sort(key=lambda x: x[1], reverse=True)
+        return results[:max_results]
+
     def get_candidate_programs(
         self, train_pairs: List[Tuple[Array, Array]], max_programs: int = 10
     ) -> List[Program]:
         """Return programs from similar episodes for reuse."""
         candidates: List[Program] = []
-        for episode, _ in self.query_by_similarity(train_pairs, 0.0, max_programs):
+        results = self.query_hierarchy(train_pairs, 0.0, max_programs)
+        if not results:
+            results = self.query_by_similarity(train_pairs, 0.0, max_programs)
+        for episode, _ in results:
             for program in episode.programs:
                 candidates.append(program)
                 if len(candidates) >= max_programs:
@@ -260,6 +311,30 @@ class EpisodeDatabase:
             self.program_index[key] = [
                 i for i in self.program_index[key] if i != episode_id
             ]
+        hier_key = self._hierarchy_key(episode.features)
+        self.hierarchy_index[hier_key] = [
+            i for i in self.hierarchy_index[hier_key] if i != episode_id
+        ]
+
+    def consolidate(self) -> None:
+        """Merge episodes with identical signature and program set."""
+
+        signature_map: Dict[Tuple[str, str], int] = {}
+        to_remove: List[int] = []
+        for eid, episode in self.episodes.items():
+            program_key = json.dumps(
+                sorted(self._program_key(p) for p in episode.programs)
+            )
+            key = (episode.task_signature, program_key)
+            if key in signature_map:
+                target_id = signature_map[key]
+                self.episodes[target_id].success_count += episode.success_count
+                to_remove.append(eid)
+            else:
+                signature_map[key] = eid
+
+        for eid in to_remove:
+            self.remove_episode(eid)
 
     # ------------------------------------------------------------------
     # Persistence
@@ -296,11 +371,14 @@ class EpisodeDatabase:
         # Rebuild indexes deterministically
         self.signature_index.clear()
         self.program_index.clear()
+        self.hierarchy_index.clear()
         for eid, episode in self.episodes.items():
             self.signature_index[episode.task_signature].append(eid)
             for program in episode.programs:
                 key = self._program_key(program)
                 self.program_index[key].append(eid)
+            hier_key = self._hierarchy_key(episode.features)
+            self.hierarchy_index[hier_key].append(eid)
 
     # ------------------------------------------------------------------
     # Statistics
