@@ -70,7 +70,10 @@ class EnhancedSearch:
         
         # Step 3: Beam search for deeper exploration
         if self.enable_beam_search and len(all_candidates) < max_programs:
-            beam_programs, stats = beam_search(train_pairs, beam_width=16, depth=3)
+            op_scores = self.neural_guidance.score_operations(train_pairs)
+            beam_programs, stats = beam_search(
+                train_pairs, beam_width=16, depth=3, op_scores=op_scores
+            )
             all_candidates.extend(beam_programs)
             self.search_stats['beam_candidates'] = len(beam_programs)
             self.search_stats['beam_nodes_expanded'] = stats['nodes_expanded']

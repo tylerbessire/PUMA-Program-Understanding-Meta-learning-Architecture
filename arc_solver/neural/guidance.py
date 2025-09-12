@@ -27,11 +27,12 @@ class SimpleClassifier:
     """
     
     def __init__(self, input_dim: int, hidden_dim: int = 32):
+        rng = np.random.default_rng(0)
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
-        self.weights1 = np.random.randn(input_dim, hidden_dim) * 0.1
+        self.weights1 = rng.standard_normal((input_dim, hidden_dim)) * 0.1
         self.bias1 = np.zeros(hidden_dim)
-        self.weights2 = np.random.randn(hidden_dim, 7)  # 7 operation types
+        self.weights2 = rng.standard_normal((hidden_dim, 7))
         self.bias2 = np.zeros(7)
         
         # Operation mapping
@@ -46,6 +47,35 @@ class SimpleClassifier:
         # Output layer with sigmoid
         out = 1.0 / (1.0 + np.exp(-(np.dot(h, self.weights2) + self.bias2)))
         return out.squeeze()
+
+    def train(
+        self, X: np.ndarray, Y: np.ndarray, epochs: int = 50, lr: float = 0.1
+    ) -> None:
+        """Train the network using simple gradient descent."""
+        if X.shape[0] != Y.shape[0]:
+            raise ValueError("X and Y must have matching first dimension")
+
+        for _ in range(epochs):
+            # Forward pass
+            h = np.maximum(0, X @ self.weights1 + self.bias1)
+            out = 1.0 / (1.0 + np.exp(-(h @ self.weights2 + self.bias2)))
+
+            # Gradients for output layer (sigmoid + BCE)
+            grad_out = (out - Y) / X.shape[0]
+            grad_w2 = h.T @ grad_out
+            grad_b2 = grad_out.sum(axis=0)
+
+            # Backprop into hidden layer (ReLU)
+            grad_h = grad_out @ self.weights2.T
+            grad_h[h <= 0] = 0
+            grad_w1 = X.T @ grad_h
+            grad_b1 = grad_h.sum(axis=0)
+
+            # Parameter update
+            self.weights2 -= lr * grad_w2
+            self.bias2 -= lr * grad_b2
+            self.weights1 -= lr * grad_w1
+            self.bias1 -= lr * grad_b1
     
     def predict_operations(self, features: Dict[str, Any], threshold: float = 0.5) -> List[str]:
         """Predict which operations are likely relevant."""
@@ -185,6 +215,94 @@ class NeuralGuidance:
         }
         
         return scores
+
+    def train_from_episode_db(
+        self, db_path: str, epochs: int = 50, lr: float = 0.1
+    ) -> None:
+        """Train the neural model from an episodic memory database."""
+        if self.neural_model is None:
+            raise ValueError("neural model not initialised")
+
+        from .episodic import EpisodeDatabase  # Local import to avoid cycle
+
+        db = EpisodeDatabase(db_path)
+        db.load()
+        features_list: List[np.ndarray] = []
+        labels: List[np.ndarray] = []
+        for episode in db.episodes.values():
+            feat = extract_task_features(episode.train_pairs)
+            features_list.append(self.neural_model._features_to_vector(feat).ravel())
+            label_vec = np.zeros(len(self.neural_model.operations))
+            for program in episode.programs:
+                for op, _ in program:
+                    if op in self.neural_model.operations:
+                        idx = self.neural_model.operations.index(op)
+                        label_vec[idx] = 1.0
+            labels.append(label_vec)
+
+        if not features_list:
+            raise ValueError("episode database is empty")
+
+        X = np.vstack(features_list)
+        Y = np.vstack(labels)
+        self.neural_model.train(X, Y, epochs=epochs, lr=lr)
+
+    def train_from_task_pairs(
+        self, tasks: List[List[Tuple[Array, Array]]], epochs: int = 50, lr: float = 0.1
+    ) -> None:
+        """Train the neural model from raw ARC tasks.
+
+        Tasks are provided as lists of training input/output pairs. Operation
+        labels are derived heuristically from extracted features.  This enables
+        supervised training even when explicit programs are unavailable.
+
+        Parameters
+        ----------
+        tasks:
+            Iterable of tasks where each task is a list of `(input, output)`
+            array pairs.
+        epochs:
+            Number of training epochs for gradient descent.
+        lr:
+            Learning rate for gradient descent.
+        """  # [S:ALG v1] train_from_task_pairs pass
+        if self.neural_model is None:
+            raise ValueError("neural model not initialised")
+
+        features_list: List[np.ndarray] = []
+        labels: List[np.ndarray] = []
+        for train_pairs in tasks:
+            feat = extract_task_features(train_pairs)
+            features_list.append(self.neural_model._features_to_vector(feat).ravel())
+            label_vec = np.zeros(len(self.neural_model.operations))
+            if feat.get("likely_rotation", 0) > 0.5:
+                idx = self.neural_model.operations.index("rotate")
+                label_vec[idx] = 1.0
+            if feat.get("likely_reflection", 0) > 0.5:
+                idx_flip = self.neural_model.operations.index("flip")
+                idx_tr = self.neural_model.operations.index("transpose")
+                label_vec[idx_flip] = 1.0
+                label_vec[idx_tr] = 1.0
+            if feat.get("likely_translation", 0) > 0.5:
+                idx = self.neural_model.operations.index("translate")
+                label_vec[idx] = 1.0
+            if feat.get("likely_recolor", 0) > 0.5:
+                idx = self.neural_model.operations.index("recolor")
+                label_vec[idx] = 1.0
+            if feat.get("likely_crop", 0) > 0.5:
+                idx = self.neural_model.operations.index("crop")
+                label_vec[idx] = 1.0
+            if feat.get("likely_pad", 0) > 0.5:
+                idx = self.neural_model.operations.index("pad")
+                label_vec[idx] = 1.0
+            labels.append(label_vec)
+
+        if not features_list:
+            raise ValueError("no tasks provided")
+
+        X = np.vstack(features_list)
+        Y = np.vstack(labels)
+        self.neural_model.train(X, Y, epochs=epochs, lr=lr)
     
     def load_model(self, model_path: str) -> None:
         """Load a trained neural model from ``model_path``.

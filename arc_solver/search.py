@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from typing import List, Tuple, Dict
 
+import numpy as np
 from .grid import Array, eq
 from .dsl import OPS, apply_program
 from .heuristics import consistent_program_single_step, score_candidate, diversify_programs
@@ -132,4 +133,10 @@ def predict_two(
             except Exception:
                 outs.append(ti)
         attempts.append(outs)
+
+    # Ensure second attempt differs from the first using safe array comparison
+    if len(attempts) == 2 and all(eq(a, b) for a, b in zip(attempts[0], attempts[1])):
+        attempts[1] = [np.copy(ti) for ti in test_inputs]
+
+    # [S:ALG v1] attempt-dedup=eq-fallback pass
     return attempts
