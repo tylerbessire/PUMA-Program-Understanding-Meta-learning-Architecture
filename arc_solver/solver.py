@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import os
+import logging
 
 from .grid import to_array, to_list, Array
 from .search import (
@@ -35,6 +36,15 @@ class ARCSolver:
             'enhancement_success_rate': 0.0,
             'fallback_used': 0,
         }
+
+        # Structured logger for observability
+        self.logger = logging.getLogger(self.__class__.__name__)
+        if not self.logger.handlers:
+            handler = logging.StreamHandler()
+            formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s: %(message)s')
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
+            self.logger.setLevel(logging.INFO)
         self._last_outputs: Optional[Tuple[List[List[List[int]]], List[List[List[int]]]]] = None
         # Hypothesis engine powers the primary reasoning layer
         self.hypothesis_engine = HypothesisEngine()
@@ -112,25 +122,29 @@ class ARCSolver:
         self, train_pairs: List[Tuple[Array, Array]], test_input: Array
     ) -> List[List[Array]]:
         """Get prediction attempts for a single test input."""
-        try:
-            if self.use_enhancements:
-                print("Using enhanced search for prediction")
+        enhanced: List[List[Array]] = []
+        if self.use_enhancements:
+            try:
+                self.logger.info("Using enhanced search for prediction")
                 progs = synthesize_with_enhancements(train_pairs)
-                attempts = predict_two_enhanced(progs, [test_input])
-                if self._validate_solution(attempts, [test_input]):
-                    return attempts
-                else:
-                    print("Enhanced prediction failed validation")
-            else:
-                print("Enhancements disabled, using baseline search")
-        except Exception as e:
-            print(f"Enhanced prediction error: {e}")
+                enhanced = predict_two_enhanced(progs, [test_input])
+            except Exception as e:
+                self.logger.exception("Enhanced prediction error: %s", e)
 
-        # Fall back to baseline search
+        # Baseline predictions for ensemble
+        progs_base = synth_baseline(train_pairs)
+        baseline = predict_two_baseline(progs_base, [test_input])
+
+        # Validate enhanced prediction
+        if enhanced and self._validate_solution(enhanced, [test_input]):
+            self.logger.info("Enhanced prediction valid")
+            return [enhanced[0], baseline[0]]
+
         self.stats['fallback_used'] += 1
-        print("Falling back to baseline search")
-        progs = synth_baseline(train_pairs)
-        return predict_two_baseline(progs, [test_input])
+        self.logger.info("Using baseline prediction")
+        return baseline
+
+# [S:OBS v1] logging=structured fallback_metric=fallback_used pass
 
     def solve_task_two_attempts(
         self, task: Dict[str, List[Dict[str, List[List[int]]]]]

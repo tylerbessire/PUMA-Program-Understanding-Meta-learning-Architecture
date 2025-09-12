@@ -122,8 +122,16 @@ def histogram(a: Array) -> Dict[int, int]:
 
 
 def eq(a: Array, b: Array) -> bool:
-    """Check equality of two arrays (shape and element-wise)."""
-    return a.shape == b.shape and np.array_equal(a, b)
+    """Check equality of two arrays (shape and element-wise).
+
+    Safely handles non-array comparisons by falling back to Python's
+    equality semantics when either operand is not a ``numpy.ndarray``.
+    """
+    if isinstance(a, np.ndarray) and isinstance(b, np.ndarray):
+        return a.shape == b.shape and np.array_equal(a, b)
+    return a == b
+
+# [S:ALG v1] eq-check=shape+elementwise fallthrough=python-eq pass
 
 
 def bg_color(a: Array) -> int:

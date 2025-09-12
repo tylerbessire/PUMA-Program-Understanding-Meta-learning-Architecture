@@ -14,6 +14,7 @@ def beam_search(
     beam_width: int = 10,
     depth: int = 2,
     max_expansions: int = 10000,
+    op_scores: Dict[str, float] | None = None,
 ) -> Tuple[List[List[Tuple[str, Dict[str, Any]]]], Dict[str, int]]:
     """Beam search over DSL programs.
 
@@ -22,6 +23,7 @@ def beam_search(
         beam_width: Number of candidates kept per level.
         depth: Maximum program length.
         max_expansions: Safety limit on node expansions.
+        op_scores: Optional prior weights for DSL operations.
 
     Returns:
         A tuple ``(programs, stats)`` where ``programs`` is a list of candidate
@@ -43,6 +45,8 @@ def beam_search(
                     candidate = program + [(op_name, params)]
                     try:
                         score = score_candidate(candidate, train_pairs)
+                        if op_scores and op_name in op_scores:
+                            score *= float(op_scores[op_name])
                     except Exception:
                         continue  # constraint violation
                     nodes_expanded += 1

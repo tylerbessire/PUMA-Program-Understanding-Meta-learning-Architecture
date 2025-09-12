@@ -39,3 +39,11 @@ def test_mcts_search_finds_rotation():
     out = np.rot90(inp, -1)
     progs = mcts_search([(inp, out)], iterations=1000, max_depth=1, seed=0)
     assert any(np.array_equal(apply_program(inp, p), out) for p in progs)
+
+def test_beam_search_respects_operation_scores():
+    inp = to_array([[1, 0], [0, 0]])
+    out = np.rot90(inp, -1)
+    scores = {op: 1.0 for op in ['rotate', 'flip', 'transpose', 'translate', 'recolor', 'crop', 'pad']}
+    scores['flip'] = 0.0
+    progs, _ = beam_search([(inp, out)], beam_width=5, depth=2, op_scores=scores)
+    assert all('flip' not in [op for op, _ in p] for p in progs)
