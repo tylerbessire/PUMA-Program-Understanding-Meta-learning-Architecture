@@ -17,6 +17,7 @@ This repository contains an advanced solver for the **ARC Prize 2025** competiti
 - **Two-attempt diversity** as required by ARC Prize 2025 rules
 - **Fallback resilience** with graceful degradation to baseline methods
 - **Performance monitoring** with detailed statistics and benchmarking
+- **Beam search with constraint propagation** for deeper program synthesis
 
 ## Directory Structure
 

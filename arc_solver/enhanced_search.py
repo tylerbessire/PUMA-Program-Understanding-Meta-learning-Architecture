@@ -19,18 +19,22 @@ from .neural.guidance import NeuralGuidance
 from .neural.episodic import EpisodicRetrieval
 from .neural.sketches import SketchMiner, generate_parameter_grid
 from .ttt import TestTimeTrainer, DataAugmentation
+from .beam_search import beam_search
+from .mcts_search import mcts_search
 
 
 class EnhancedSearch:
     """Enhanced program synthesis search with neural guidance and episodic retrieval."""
     
-    def __init__(self, guidance_model_path: Optional[str] = None, 
-                 episode_db_path: str = "episodes.json"):
+    def __init__(self, guidance_model_path: Optional[str] = None,
+                 episode_db_path: str = "episodes.json",
+                 enable_beam_search: bool = True):
         self.neural_guidance = NeuralGuidance(guidance_model_path)
         self.episodic_retrieval = EpisodicRetrieval(episode_db_path)
         self.sketch_miner = SketchMiner()
         self.test_time_trainer = TestTimeTrainer()
         self.search_stats = {}
+        self.enable_beam_search = enable_beam_search
         
         # Load any existing sketches
         try:
@@ -44,6 +48,9 @@ class EnhancedSearch:
         self.search_stats = {
             'episodic_candidates': 0,
             'heuristic_candidates': 0,
+            'beam_candidates': 0,
+            'beam_nodes_expanded': 0,
+            'mcts_candidates': 0,
             'sketch_candidates': 0,
             'neural_guided_candidates': 0,
             'ttt_adapted': False,
@@ -61,19 +68,32 @@ class EnhancedSearch:
         all_candidates.extend(heuristic_candidates)
         self.search_stats['heuristic_candidates'] = len(heuristic_candidates)
         
-        # Step 3: Neural-guided search if we need more candidates
+        # Step 3: Beam search for deeper exploration
+        if self.enable_beam_search and len(all_candidates) < max_programs:
+            beam_programs, stats = beam_search(train_pairs, beam_width=16, depth=3)
+            all_candidates.extend(beam_programs)
+            self.search_stats['beam_candidates'] = len(beam_programs)
+            self.search_stats['beam_nodes_expanded'] = stats['nodes_expanded']
+
+        # Step 4: Monte Carlo Tree Search if still limited
+        if self.enable_beam_search and len(all_candidates) < max_programs // 2:
+            mcts_programs = mcts_search(train_pairs, iterations=200, max_depth=2, seed=0)
+            all_candidates.extend(mcts_programs)
+            self.search_stats['mcts_candidates'] = len(mcts_programs)
+
+        # Step 5: Neural-guided search if we need more candidates
         if len(all_candidates) < max_programs // 4:
             neural_candidates = self._neural_guided_search(train_pairs, max_programs // 2)
             all_candidates.extend(neural_candidates)
             self.search_stats['neural_guided_candidates'] = len(neural_candidates)
-        
-        # Step 4: Sketch-based search if still need more
+
+        # Step 6: Sketch-based search if still need more
         if len(all_candidates) < max_programs // 2:
             sketch_candidates = self._sketch_based_search(train_pairs, max_programs // 3)
             all_candidates.extend(sketch_candidates)
             self.search_stats['sketch_candidates'] = len(sketch_candidates)
-        
-        # Step 5: Test-time adaptation if we have candidates
+
+        # Step 7: Test-time adaptation if we have candidates
         if all_candidates:
             all_candidates = self._apply_test_time_adaptation(train_pairs, all_candidates)
             self.search_stats['ttt_adapted'] = True
