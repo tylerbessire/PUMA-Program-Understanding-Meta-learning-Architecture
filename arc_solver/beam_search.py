@@ -23,7 +23,9 @@ def beam_search(
         beam_width: Number of candidates kept per level.
         depth: Maximum program length.
         max_expansions: Safety limit on node expansions.
-        op_scores: Optional prior weights for DSL operations.
+        op_scores: Optional prior weights for DSL operations. These weights
+            influence candidate ordering/ranking but do not affect the success
+            threshold check - valid programs are never filtered out due to low priors.
 
     Returns:
         A tuple ``(programs, stats)`` where ``programs`` is a list of candidate
@@ -44,16 +46,23 @@ def beam_search(
                 for params in generate_parameter_grid(op_name):
                     candidate = program + [(op_name, params)]
                     try:
-                        score = score_candidate(candidate, train_pairs)
-                        if op_scores and op_name in op_scores:
-                            score *= float(op_scores[op_name])
+                        # Get base score for correctness evaluation
+                        base_score = score_candidate(candidate, train_pairs)
                     except Exception:
                         continue  # constraint violation
+                    
                     nodes_expanded += 1
-                    if score >= 0.999:
+                    
+                    # Use unmodified base score for solution detection
+                    # This ensures valid programs are never filtered out by low priors
+                    if base_score >= 0.999:
                         complete.append(candidate)
                     else:
-                        expansions.append((candidate, score))
+                        # Apply prior weighting only for ordering/ranking purposes
+                        ranking_score = base_score
+                        if op_scores and op_name in op_scores:
+                            ranking_score *= float(op_scores[op_name])
+                        expansions.append((candidate, ranking_score))
                     if nodes_expanded >= max_expansions:
                         logger.warning(
                             "beam_search max expansions reached",

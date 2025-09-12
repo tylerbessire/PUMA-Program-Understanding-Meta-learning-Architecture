@@ -1,0 +1,11 @@
+{
+  "use_neural_guidance": true,
+  "use_episodic_retrieval": true,
+  "use_program_sketches": true,
+  "use_test_time_training": true,
+  "max_programs": 256,
+  "neural_guidance_model_path": "neural_guidance_model.json",
+  "episode_db_path": "episodes.json",
+  "sketches_path": "sketches.json",
+  "timeout_per_task": 30.0
+}

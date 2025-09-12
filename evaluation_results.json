@@ -1,0 +1,632 @@
+{
+  "enhanced": {
+    "attempt1_correct": 0,
+    "attempt2_correct": 0,
+    "task_solved": 0,
+    "total_tasks": 50,
+    "solve_times": [
+      8.949198722839355,
+      1235.564908027649,
+      6.433271169662476,
+      937.1517581939697,
+      1047.790097951889,
+      5.041221857070923,
+      9.609745979309082,
+      8.424811840057373,
+      2028.5909600257874,
+      10.605244874954224,
+      11.321046590805054,
+      194.2193958759308,
+      11.82600712776184,
+      11.863852977752686,
+      3624.5727219581604,
+      25.42367696762085,
+      796.9743051528931,
+      6.0637171268463135,
+      7.514026165008545,
+      4.457986116409302,
+      8.118711233139038,
+      16.874796152114868,
+      131.37727093696594,
+      18.053327083587646,
+      23.18437695503235,
+      984.3085687160492,
+      206.14992499351501,
+      24.885817050933838,
+      82.77231001853943,
+      21.7243869304657,
+      31.622931241989136,
+      2041.1173131465912,
+      1155.3825697898865,
+      19.89988136291504,
+      1179.572751045227,
+      396.61271595954895,
+      22.132301092147827,
+      1952.3036737442017,
+      394.01110100746155,
+      27.121278047561646,
+      64.70177102088928,
+      40.56433391571045,
+      2299.809624195099,
+      805.9449269771576,
+      28.79127073287964,
+      941.8010880947113,
+      35.17825984954834,
+      19.708332061767578,
+      40.376548051834106,
+      28.186562061309814
+    ],
+    "task_results": {
+      "0934a4d8": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 8.949198722839355
+      },
+      "135a2760": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 1235.564908027649
+      },
+      "136b0064": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.433271169662476
+      },
+      "13e47133": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 937.1517581939697
+      },
+      "142ca369": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 1047.790097951889
+      },
+      "16b78196": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 5.041221857070923
+      },
+      "16de56c4": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 9.609745979309082
+      },
+      "1818057f": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 8.424811840057373
+      },
+      "195c6913": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2028.5909600257874
+      },
+      "1ae2feb7": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 10.605244874954224
+      },
+      "20270e3b": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 11.321046590805054
+      },
+      "20a9e565": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 194.2193958759308
+      },
+      "21897d95": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 11.82600712776184
+      },
+      "221dfab4": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 11.863852977752686
+      },
+      "247ef758": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3624.5727219581604
+      },
+      "269e22fb": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 25.42367696762085
+      },
+      "271d71e2": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 796.9743051528931
+      },
+      "28a6681f": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.0637171268463135
+      },
+      "291dc1e1": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 7.514026165008545
+      },
+      "2b83f449": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 4.457986116409302
+      },
+      "2ba387bc": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 8.118711233139038
+      },
+      "2c181942": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 16.874796152114868
+      },
+      "2d0172a1": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 131.37727093696594
+      },
+      "31f7f899": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 18.053327083587646
+      },
+      "332f06d7": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 23.18437695503235
+      },
+      "35ab12c3": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 984.3085687160492
+      },
+      "36a08778": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 206.14992499351501
+      },
+      "38007db0": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 24.885817050933838
+      },
+      "3a25b0d8": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 82.77231001853943
+      },
+      "3dc255db": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 21.7243869304657
+      },
+      "3e6067c3": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 31.622931241989136
+      },
+      "409aa875": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2041.1173131465912
+      },
+      "446ef5d2": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 1155.3825697898865
+      },
+      "45a5af55": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 19.89988136291504
+      },
+      "4a21e3da": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 1179.572751045227
+      },
+      "4c3d4a41": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 396.61271595954895
+      },
+      "4c416de3": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 22.132301092147827
+      },
+      "4c7dc4dd": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 1952.3036737442017
+      },
+      "4e34c42c": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 394.01110100746155
+      },
+      "53fb4810": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 27.121278047561646
+      },
+      "5545f144": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 64.70177102088928
+      },
+      "581f7754": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 40.56433391571045
+      },
+      "58490d8a": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2299.809624195099
+      },
+      "58f5dbd5": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 805.9449269771576
+      },
+      "5961cc34": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 28.79127073287964
+      },
+      "5dbc8537": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 941.8010880947113
+      },
+      "62593bfd": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 35.17825984954834
+      },
+      "64efde09": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 19.708332061767578
+      },
+      "65b59efc": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 40.376548051834106
+      },
+      "67e490f4": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 28.186562061309814
+      }
+    },
+    "attempt1_accuracy": 0.0,
+    "attempt2_accuracy": 0.0,
+    "task_success_rate": 0.0,
+    "avg_solve_time": 460.69373356342317,
+    "total_solve_time": 23034.686678171158
+  },
+  "baseline": {
+    "attempt1_correct": 0,
+    "attempt2_correct": 0,
+    "task_solved": 0,
+    "total_tasks": 50,
+    "solve_times": [
+      104.70491099357605,
+      2.6827640533447266,
+      3.6186070442199707,
+      942.1766331195831,
+      5.445439100265503,
+      2.3087708950042725,
+      6.343085765838623,
+      3.280134916305542,
+      985.153434753418,
+      6.634734869003296,
+      6.555551052093506,
+      5.411672830581665,
+      6.1465232372283936,
+      3.4722931385040283,
+      5.7299909591674805,
+      6.595628023147583,
+      4.5685319900512695,
+      2.5771660804748535,
+      3.405492067337036,
+      1.857922077178955,
+      399.0549099445343,
+      6.22327184677124,
+      10.430349111557007,
+      1026.1365478038788,
+      7.472689151763916,
+      169.38847994804382,
+      8.964599132537842,
+      3.001011848449707,
+      6.615128040313721,
+      59.96724200248718,
+      4.387693166732788,
+      7.905894041061401,
+      2.8921799659729004,
+      7.268712282180786,
+      4.265460968017578,
+      2.968714952468872,
+      8.448298931121826,
+      3.184534788131714,
+      3.3639369010925293,
+      8.088167905807495,
+      8.645469903945923,
+      4.334535121917725,
+      9.594188690185547,
+      9.61173677444458,
+      160.30450987815857,
+      3.1092350482940674,
+      3.1070170402526855,
+      9.274490118026733,
+      4.086824178695679,
+      10.796298027038574
+    ],
+    "task_results": {
+      "0934a4d8": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 104.70491099357605
+      },
+      "135a2760": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2.6827640533447266
+      },
+      "136b0064": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.6186070442199707
+      },
+      "13e47133": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 942.1766331195831
+      },
+      "142ca369": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 5.445439100265503
+      },
+      "16b78196": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2.3087708950042725
+      },
+      "16de56c4": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.343085765838623
+      },
+      "1818057f": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.280134916305542
+      },
+      "195c6913": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 985.153434753418
+      },
+      "1ae2feb7": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.634734869003296
+      },
+      "20270e3b": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.555551052093506
+      },
+      "20a9e565": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 5.411672830581665
+      },
+      "21897d95": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.1465232372283936
+      },
+      "221dfab4": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.4722931385040283
+      },
+      "247ef758": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 5.7299909591674805
+      },
+      "269e22fb": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.595628023147583
+      },
+      "271d71e2": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 4.5685319900512695
+      },
+      "28a6681f": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2.5771660804748535
+      },
+      "291dc1e1": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.405492067337036
+      },
+      "2b83f449": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 1.857922077178955
+      },
+      "2ba387bc": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 399.0549099445343
+      },
+      "2c181942": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.22327184677124
+      },
+      "2d0172a1": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 10.430349111557007
+      },
+      "31f7f899": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 1026.1365478038788
+      },
+      "332f06d7": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 7.472689151763916
+      },
+      "35ab12c3": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 169.38847994804382
+      },
+      "36a08778": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 8.964599132537842
+      },
+      "38007db0": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.001011848449707
+      },
+      "3a25b0d8": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 6.615128040313721
+      },
+      "3dc255db": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 59.96724200248718
+      },
+      "3e6067c3": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 4.387693166732788
+      },
+      "409aa875": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 7.905894041061401
+      },
+      "446ef5d2": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2.8921799659729004
+      },
+      "45a5af55": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 7.268712282180786
+      },
+      "4a21e3da": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 4.265460968017578
+      },
+      "4c3d4a41": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 2.968714952468872
+      },
+      "4c416de3": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 8.448298931121826
+      },
+      "4c7dc4dd": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.184534788131714
+      },
+      "4e34c42c": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.3639369010925293
+      },
+      "53fb4810": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 8.088167905807495
+      },
+      "5545f144": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 8.645469903945923
+      },
+      "581f7754": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 4.334535121917725
+      },
+      "58490d8a": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 9.594188690185547
+      },
+      "58f5dbd5": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 9.61173677444458
+      },
+      "5961cc34": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 160.30450987815857
+      },
+      "5dbc8537": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.1092350482940674
+      },
+      "62593bfd": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 3.1070170402526855
+      },
+      "64efde09": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 9.274490118026733
+      },
+      "65b59efc": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 4.086824178695679
+      },
+      "67e490f4": {
+        "attempt1_correct": false,
+        "attempt2_correct": false,
+        "solve_time": 10.796298027038574
+      }
+    },
+    "attempt1_accuracy": 0.0,
+    "attempt2_accuracy": 0.0,
+    "task_success_rate": 0.0,
+    "avg_solve_time": 81.63122828960418,
+    "total_solve_time": 4081.5614144802094
+  }
+}
