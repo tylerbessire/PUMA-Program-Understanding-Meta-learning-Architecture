@@ -117,16 +117,19 @@ _sem_cache: Dict[Tuple[bytes, str, Tuple[Tuple[str, Any], ...]], Array] = {}
 
 
 def _canonical_params(name: str, params: Dict[str, Any]) -> Dict[str, Any]:
-    """Return a copy of ``params`` with legacy aliases normalised."""
-    if name == "recolor" and "mapping" not in params and "color_map" in params:
-        new_params = dict(params)
-        new_params["mapping"] = new_params.pop("color_map")
-        return new_params
-    if name == "translate" and "fill" not in params and "fill_value" in params:
-        new_params = dict(params)
-        new_params["fill"] = new_params.pop("fill_value")
-        return new_params
-    return params
+    """Return a copy of ``params`` with legacy aliases normalised and typed."""
+    new_params = dict(params)
+    if name == "recolor":
+        mapping = new_params.get("mapping") or new_params.pop("color_map", {})
+        if mapping:
+            new_params["mapping"] = {int(k): int(v) for k, v in mapping.items()}
+    elif name == "translate":
+        if "fill" not in new_params and "fill_value" in new_params:
+            new_params["fill"] = new_params.pop("fill_value")
+        for key in ("dy", "dx", "fill"):
+            if key in new_params and new_params[key] is not None:
+                new_params[key] = int(new_params[key])
+    return new_params
 
 
 

@@ -95,6 +95,12 @@ class Episode:
                 if op == "recolor":
                     mapping = params.get("mapping") or params.get("color_map") or {}
                     params = {"mapping": {int(k): int(v) for k, v in mapping.items()}}
+                elif op == "translate":
+                    clean = {k: int(v) for k, v in params.items() if v is not None}
+                    if "fill_value" in clean and "fill" not in clean:
+                        clean["fill"] = clean.pop("fill_value")
+                    params = clean
+
                 prog_ops.append((op, params))
             programs.append(prog_ops)
 
