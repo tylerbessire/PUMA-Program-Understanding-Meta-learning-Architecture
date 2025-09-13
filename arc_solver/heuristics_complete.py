@@ -202,9 +202,9 @@ def detect_color_patterns(inp: Array, out: Array) -> List[List[Tuple[str, Dict[s
     # Direct color mapping
     color_map = infer_color_mapping(inp, out)
     if color_map and len(color_map) > 0:
-        recolored = apply_program(inp, [('recolor', {'color_map': color_map})])
+        recolored = apply_program(inp, [("recolor", {"mapping": color_map})])
         if np.array_equal(recolored, out):
-            programs.append([('recolor', {'color_map': color_map})])
+            programs.append([("recolor", {"mapping": color_map})])
     
     # Color swapping
     unique_colors = np.unique(inp)
@@ -324,9 +324,9 @@ def detect_multi_step_operations(inp: Array, out: Array) -> List[List[Tuple[str,
         intermediate = apply_program(inp, [op])
         color_map = infer_color_mapping(intermediate, out)
         if color_map:
-            final = apply_program(intermediate, [('recolor', {'color_map': color_map})])
+            final = apply_program(intermediate, [("recolor", {"mapping": color_map})])
             if np.array_equal(final, out):
-                programs.append([op, ('recolor', {'color_map': color_map})])
+                programs.append([op, ("recolor", {"mapping": color_map})])
     
     return programs
 

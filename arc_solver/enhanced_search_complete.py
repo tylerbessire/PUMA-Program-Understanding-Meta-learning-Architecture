@@ -368,7 +368,7 @@ class ComprehensiveEnhancedSearch:
                 for old_color in colors_in_input:
                     for new_color in range(1, 10):
                         if new_color != old_color:
-                            param_combinations.append({'color_map': {old_color: new_color}})
+                            param_combinations.append({"mapping": {old_color: new_color}})
         
         elif op_name == 'crop':
             for top in range(min(H, 3)):
