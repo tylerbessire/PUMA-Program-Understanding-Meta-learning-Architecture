@@ -8,6 +8,7 @@ access is disabled and runtime is tightly constrained.
 
 from __future__ import annotations
 
+import gc
 import json
 import os
 import random
@@ -72,7 +73,7 @@ def solve_with_budget(task: Dict[str, Any], solver: ARCSolver) -> Tuple[List[Dic
         dictionaries of the form ``{"output": grid}`` and ``metadata``
         contains diagnostic information such as elapsed time and timeout flag.
     """
-
+    # [S:ALG v1] fallback=best_so_far memlimit=soft pass
     _set_mem_limit()
     signal.signal(signal.SIGALRM, _alarm)
     signal.alarm(int(HARD_TIMEOUT_SEC))
@@ -80,11 +81,24 @@ def solve_with_budget(task: Dict[str, Any], solver: ARCSolver) -> Tuple[List[Dic
     try:
         attempt1, attempt2 = solver.solve_task_two_attempts(task)
         elapsed = time.time() - start
-        return [{"output": attempt1}, {"output": attempt2}], {"elapsed": elapsed, "timeout": False}
+        return [
+            {"output": attempt1},
+            {"output": attempt2},
+        ], {"elapsed": elapsed, "timeout": False, "memerror": False}
     except Timeout:
         best = solver.best_so_far(task)
         elapsed = time.time() - start
-        return [{"output": best}, {"output": best}], {"elapsed": elapsed, "timeout": True}
+        return [
+            {"output": best},
+            {"output": best},
+        ], {"elapsed": elapsed, "timeout": True, "memerror": False}
+    except MemoryError:
+        best = solver.best_so_far(task)
+        elapsed = time.time() - start
+        return [
+            {"output": best},
+            {"output": best},
+        ], {"elapsed": elapsed, "timeout": False, "memerror": True}
     finally:
         signal.alarm(0)
 
@@ -95,19 +109,23 @@ def main() -> None:
     solver = ARCSolver(use_enhancements=True)
     solutions: Dict[str, Dict[str, List[List[int]]]] = {}
 
+    mem_error_count = 0
     for task_id, task in data.items():
         attempts, meta = solve_with_budget(task, solver)
         solutions[task_id] = {
             "attempt_1": attempts[0]["output"],
             "attempt_2": attempts[1]["output"],
         }
+        if meta.get("memerror"):
+            mem_error_count += 1
         print(
-            f"[task {task_id}] t={meta['elapsed']:.2f}s timeout={meta['timeout']}",
+            f"[task {task_id}] t={meta['elapsed']:.2f}s timeout={meta['timeout']} memerror={meta['memerror']}",
             file=sys.stderr,
         )
+        gc.collect()
 
     path = save_submission(solutions, "submission.json")
-    print(f"Saved {path} with {len(solutions)} tasks.")
+    print(f"Saved {path} with {len(solutions)} tasks. memory_errors={mem_error_count}")
 
 
 if __name__ == "__main__":
