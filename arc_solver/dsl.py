@@ -129,6 +129,7 @@ def _canonical_params(name: str, params: Dict[str, Any]) -> Dict[str, Any]:
     return params
 
 
+
 def _norm_params(params: Dict[str, Any]) -> Tuple[Tuple[str, Any], ...]:
     """Normalise parameters to a hashable tuple."""
     items: List[Tuple[str, Any]] = []
