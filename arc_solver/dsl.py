@@ -114,9 +114,20 @@ OPS: Dict[str, Op] = {
 _sem_cache: Dict[Tuple[bytes, str, Tuple[Tuple[str, Any], ...]], Array] = {}
 
 
+def _norm_params(params: Dict[str, Any]) -> Tuple[Tuple[str, Any], ...]:
+    """Normalise parameters to a hashable tuple."""
+    items: List[Tuple[str, Any]] = []
+    for k, v in sorted(params.items()):
+        if isinstance(v, dict):
+            items.append((k, tuple(sorted(v.items()))))
+        else:
+            items.append((k, v))
+    return tuple(items)
+
+
 def apply_op(a: Array, name: str, params: Dict[str, Any]) -> Array:
     """Apply a primitive operation with semantic caching."""
-    key = (a.tobytes(), name, tuple(sorted(params.items())))
+    key = (a.tobytes(), name, _norm_params(params))
     cached = _sem_cache.get(key)
     if cached is not None:
         return cached

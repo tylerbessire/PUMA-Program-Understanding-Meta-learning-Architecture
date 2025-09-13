@@ -98,10 +98,15 @@ def resize(grid: Array, new_height: int, new_width: int, method: str = 'nearest'
 
 # ================== COLOR OPERATIONS ==================
 
-def recolor(grid: Array, color_map: Dict[int, int]) -> Array:
-    """Recolor grid according to color mapping."""
+def recolor(
+    grid: Array,
+    color_map: Dict[int, int] | None = None,
+    mapping: Dict[int, int] | None = None,
+) -> Array:
+    """Recolor grid according to a color mapping."""
+    mapping = mapping if mapping is not None else (color_map or {})
     result = grid.copy()
-    for old_color, new_color in color_map.items():
+    for old_color, new_color in mapping.items():
         result[grid == old_color] = new_color
     return result
 
@@ -692,7 +697,7 @@ def get_operation_signatures() -> Dict[str, List[str]]:
         'crop': ['top', 'bottom', 'left', 'right'],
         'pad': ['top', 'bottom', 'left', 'right', 'fill_value'],
         'resize': ['new_height', 'new_width', 'method'],
-        'recolor': ['color_map'],
+        'recolor': ['mapping'],
         'recolor_by_position': ['position_map'],
         'swap_colors': ['color1', 'color2'],
         'dominant_color_recolor': ['target_color'],

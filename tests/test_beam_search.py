@@ -29,7 +29,7 @@ def test_beam_search_rotation_property(grid, k):
 
 def test_beam_search_no_solution():
     a = to_array([[0]])
-    b = to_array([[1]])
+    b = to_array([[1, 1]])
     progs, _ = beam_search([(a, b)], beam_width=3, depth=1)
     assert progs == []
 

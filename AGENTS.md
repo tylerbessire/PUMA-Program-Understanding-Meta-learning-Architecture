@@ -479,6 +479,13 @@ class MetaCognition:
     Notes: Resource limits and diversity enforced
 ```
 
+```
+[X] Step 4.3 UPDATE - Recolor parameter mismatch fixed preventing training failures
+    Date: 2025-09-12
+    Test Result: pytest tests/test_recolor_fix.py passed
+    Notes: Standardised 'mapping' parameter across heuristics; episodic loader normalises keys
+```
+
 ---
 
 ## Step 4.4: Final Validation
