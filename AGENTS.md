@@ -495,6 +495,11 @@ class MetaCognition:
     Notes: Episode loader and DSL cast dy/dx/fill and mapping entries to int
 
 
+[X] Step 4.3 UPDATE4 - Submission script handles memory errors with fallback
+    Date: 2025-09-13
+    Test Result: pytest tests/test_solve_with_budget_memory.py -q
+    Notes: solve_with_budget catches MemoryError, reports memerror count, runs gc per task
+
 
 ```
 
