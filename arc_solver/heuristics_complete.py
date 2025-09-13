@@ -104,7 +104,7 @@ def detect_basic_transformations(inp: Array, out: Array) -> List[List[Tuple[str,
                     
                 translated = translate_safe(inp, dx, dy)
                 if np.array_equal(translated, out):
-                    programs.append([('translate', {'dx': dx, 'dy': dy, 'fill_value': 0})])
+                    programs.append([('translate', {'dy': dy, 'dx': dx, 'fill': 0})])
     
     return programs
 
@@ -497,8 +497,8 @@ def infer_color_mapping(inp: Array, out: Array) -> Optional[Dict[int, int]]:
     
     for i in range(inp.shape[0]):
         for j in range(inp.shape[1]):
-            inp_color = inp[i, j]
-            out_color = out[i, j]
+            inp_color = int(inp[i, j])
+            out_color = int(out[i, j])
             
             if inp_color in color_map:
                 if color_map[inp_color] != out_color:

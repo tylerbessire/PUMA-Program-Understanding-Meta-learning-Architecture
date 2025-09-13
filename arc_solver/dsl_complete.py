@@ -39,15 +39,20 @@ def transpose(grid: Array) -> Array:
     return grid.T
 
 
-def translate(grid: Array, dx: int = 0, dy: int = 0, fill_value: int = 0) -> Array:
-    """Translate grid by (dx, dy) with wraparound or filling."""
+def translate(grid: Array, dy: int = 0, dx: int = 0, fill: int = 0, *, fill_value: int | None = None) -> Array:
+    """Translate grid by (dy, dx) with wraparound or filling.
+
+    ``fill_value`` is accepted for backward compatibility.
+    """
+    if fill_value is not None and fill == 0:
+        fill = fill_value
     H, W = grid.shape
-    result = np.full_like(grid, fill_value)
+    result = np.full_like(grid, fill)
     
     # Source bounds
     src_y_start = max(0, -dy)
     src_y_end = min(H, H - dy)
-    src_x_start = max(0, -dx) 
+    src_x_start = max(0, -dx)
     src_x_end = min(W, W - dx)
     
     # Destination bounds
@@ -693,7 +698,7 @@ def get_operation_signatures() -> Dict[str, List[str]]:
         'rotate': ['k'],
         'flip': ['axis'],
         'transpose': [],
-        'translate': ['dx', 'dy', 'fill_value'],
+        'translate': ['dy', 'dx', 'fill'],
         'crop': ['top', 'bottom', 'left', 'right'],
         'pad': ['top', 'bottom', 'left', 'right', 'fill_value'],
         'resize': ['new_height', 'new_width', 'method'],

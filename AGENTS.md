@@ -484,6 +484,13 @@ class MetaCognition:
     Date: 2025-09-12
     Test Result: pytest tests/test_recolor_fix.py passed
     Notes: Standardised 'mapping' parameter across heuristics; episodic loader normalises keys
+
+[X] Step 4.3 UPDATE2 - Translate parameter mismatch fixed preventing training warnings
+    Date: 2025-09-13
+    Test Result: pytest tests/test_translate_fix.py passed; python tools/train_guidance_on_arc.py --epochs 1
+    Notes: Canonicalised 'fill' parameter for translate; legacy 'fill_value' still accepted
+
+
 ```
 
 ---
