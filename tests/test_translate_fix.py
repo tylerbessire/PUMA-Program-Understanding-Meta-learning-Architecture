@@ -1,14 +1,17 @@
 import json
+
 from pathlib import Path
 import sys
 
 import numpy as np
 from hypothesis import given, strategies as st
 
+
 sys.path.append(str(Path(__file__).resolve().parents[1]))
 from arc_solver.dsl import apply_program
 from arc_solver.heuristics_complete import detect_basic_transformations
 from arc_solver.neural.episodic import Episode
+
 
 
 def test_translate_fill_value_alias_and_detection():
@@ -40,3 +43,4 @@ def test_episode_translate_roundtrip(dy: int, dx: int, fill: int) -> None:
     assert op == 'translate'
     assert all(isinstance(params[k], int) for k in ('dy', 'dx', 'fill'))
     assert np.array_equal(apply_program(inp, [(op, params)]), out)
+

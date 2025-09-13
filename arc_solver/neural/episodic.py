@@ -100,6 +100,7 @@ class Episode:
                     if "fill_value" in clean and "fill" not in clean:
                         clean["fill"] = clean.pop("fill_value")
                     params = clean
+
                 prog_ops.append((op, params))
             programs.append(prog_ops)
 
