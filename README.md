@@ -85,6 +85,18 @@ solver = ARCSolver(use_enhancements=True)
 result = solver.solve_task(task)
 ```
 
+### 4. Public Evaluation Runner
+
+```bash
+scripts/eval_public.sh
+```
+
+Or via Makefile:
+
+```bash
+make eval_public
+```
+
 ## How It Works
 
 ### Enhanced Pipeline
