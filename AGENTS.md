@@ -500,6 +500,16 @@ class MetaCognition:
     Test Result: pytest tests/test_solve_with_budget_memory.py -q
     Notes: solve_with_budget catches MemoryError, reports memerror count, runs gc per task
 
+[X] Step 4.3 UPDATE5 - Public eval runner and Makefile convenience added
+    Date: 2025-09-13
+    Test Result: pytest tests/test_eval_public_script.py -q
+    Notes: Chunked evaluation with memory guards
+
+[X] Step 4.3 UPDATE6 - Public eval runner handoff documented
+    Date: 2025-09-14
+    Test Result: pytest tests/test_eval_public_script.py -q
+    Notes: Added HANDOFF.md with runbook
+
 
 ```
 
