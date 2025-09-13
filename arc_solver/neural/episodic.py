@@ -88,12 +88,19 @@ class Episode:
             (np.array(inp, dtype=int), np.array(out, dtype=int))
             for inp, out in data.get("train_pairs", [])
         ]
+        programs: List[Program] = []
+        for program in data.get("programs", []):
+            prog_ops: Program = []
+            for op, params in program:
+                if op == "recolor":
+                    mapping = params.get("mapping") or params.get("color_map") or {}
+                    params = {"mapping": {int(k): int(v) for k, v in mapping.items()}}
+                prog_ops.append((op, params))
+            programs.append(prog_ops)
+
         episode = cls(
             task_signature=data["task_signature"],
-            programs=[
-                [(op, params) for op, params in program]
-                for program in data.get("programs", [])
-            ],
+            programs=programs,
             task_id=data.get("task_id", ""),
             train_pairs=train_pairs,
             success_count=data.get("success_count", 1),

@@ -104,7 +104,7 @@ def detect_basic_transformations(inp: Array, out: Array) -> List[List[Tuple[str,
                     
                 translated = translate_safe(inp, dx, dy)
                 if np.array_equal(translated, out):
-                    programs.append([('translate', {'dx': dx, 'dy': dy, 'fill_value': 0})])
+                    programs.append([('translate', {'dy': dy, 'dx': dx, 'fill': 0})])
     
     return programs
 
@@ -202,9 +202,9 @@ def detect_color_patterns(inp: Array, out: Array) -> List[List[Tuple[str, Dict[s
     # Direct color mapping
     color_map = infer_color_mapping(inp, out)
     if color_map and len(color_map) > 0:
-        recolored = apply_program(inp, [('recolor', {'color_map': color_map})])
+        recolored = apply_program(inp, [("recolor", {"mapping": color_map})])
         if np.array_equal(recolored, out):
-            programs.append([('recolor', {'color_map': color_map})])
+            programs.append([("recolor", {"mapping": color_map})])
     
     # Color swapping
     unique_colors = np.unique(inp)
@@ -324,9 +324,9 @@ def detect_multi_step_operations(inp: Array, out: Array) -> List[List[Tuple[str,
         intermediate = apply_program(inp, [op])
         color_map = infer_color_mapping(intermediate, out)
         if color_map:
-            final = apply_program(intermediate, [('recolor', {'color_map': color_map})])
+            final = apply_program(intermediate, [("recolor", {"mapping": color_map})])
             if np.array_equal(final, out):
-                programs.append([op, ('recolor', {'color_map': color_map})])
+                programs.append([op, ("recolor", {"mapping": color_map})])
     
     return programs
 
@@ -497,8 +497,8 @@ def infer_color_mapping(inp: Array, out: Array) -> Optional[Dict[int, int]]:
     
     for i in range(inp.shape[0]):
         for j in range(inp.shape[1]):
-            inp_color = inp[i, j]
-            out_color = out[i, j]
+            inp_color = int(inp[i, j])
+            out_color = int(out[i, j])
             
             if inp_color in color_map:
                 if color_map[inp_color] != out_color:
