@@ -39,15 +39,20 @@ def transpose(grid: Array) -> Array:
     return grid.T
 
 
-def translate(grid: Array, dx: int = 0, dy: int = 0, fill_value: int = 0) -> Array:
-    """Translate grid by (dx, dy) with wraparound or filling."""
+def translate(grid: Array, dy: int = 0, dx: int = 0, fill: int = 0, *, fill_value: int | None = None) -> Array:
+    """Translate grid by (dy, dx) with wraparound or filling.
+
+    ``fill_value`` is accepted for backward compatibility.
+    """
+    if fill_value is not None and fill == 0:
+        fill = fill_value
     H, W = grid.shape
-    result = np.full_like(grid, fill_value)
+    result = np.full_like(grid, fill)
     
     # Source bounds
     src_y_start = max(0, -dy)
     src_y_end = min(H, H - dy)
-    src_x_start = max(0, -dx) 
+    src_x_start = max(0, -dx)
     src_x_end = min(W, W - dx)
     
     # Destination bounds
@@ -98,10 +103,15 @@ def resize(grid: Array, new_height: int, new_width: int, method: str = 'nearest'
 
 # ================== COLOR OPERATIONS ==================
 
-def recolor(grid: Array, color_map: Dict[int, int]) -> Array:
-    """Recolor grid according to color mapping."""
+def recolor(
+    grid: Array,
+    color_map: Dict[int, int] | None = None,
+    mapping: Dict[int, int] | None = None,
+) -> Array:
+    """Recolor grid according to a color mapping."""
+    mapping = mapping if mapping is not None else (color_map or {})
     result = grid.copy()
-    for old_color, new_color in color_map.items():
+    for old_color, new_color in mapping.items():
         result[grid == old_color] = new_color
     return result
 
@@ -688,11 +698,11 @@ def get_operation_signatures() -> Dict[str, List[str]]:
         'rotate': ['k'],
         'flip': ['axis'],
         'transpose': [],
-        'translate': ['dx', 'dy', 'fill_value'],
+        'translate': ['dy', 'dx', 'fill'],
         'crop': ['top', 'bottom', 'left', 'right'],
         'pad': ['top', 'bottom', 'left', 'right', 'fill_value'],
         'resize': ['new_height', 'new_width', 'method'],
-        'recolor': ['color_map'],
+        'recolor': ['mapping'],
         'recolor_by_position': ['position_map'],
         'swap_colors': ['color1', 'color2'],
         'dominant_color_recolor': ['target_color'],

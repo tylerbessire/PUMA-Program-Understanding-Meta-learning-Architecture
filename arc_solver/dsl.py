@@ -60,7 +60,7 @@ def op_transpose(a: Array) -> Array:
     return transpose_grid(a)
 
 
-def op_translate(a: Array, dy: int, dx: int, fill: Optional[int] = None) -> Array:
+def op_translate(a: Array, dy: int, dx: int, fill: Optional[int] = None, *, fill_value: Optional[int] = None) -> Array:
     """Translate the grid by ``(dy, dx)`` filling uncovered cells.
 
     Parameters
@@ -69,11 +69,13 @@ def op_translate(a: Array, dy: int, dx: int, fill: Optional[int] = None) -> Arra
         Input grid.
     dy, dx:
         Translation offsets. Positive values move content down/right.
-    fill:
-        Optional fill value for uncovered cells. If ``None`` the background
-        colour of ``a`` is used.
+    fill, fill_value:
+        Optional fill value for uncovered cells. ``fill_value`` is an alias for
+        backward compatibility. When both are ``None`` the background colour of
+        ``a`` is used.
     """
-    fill_val = 0 if fill is None else fill
+    chosen = fill if fill is not None else fill_value
+    fill_val = 0 if chosen is None else chosen
     return translate_grid(a, dy, dx, fill=fill_val)
 
 
@@ -114,9 +116,37 @@ OPS: Dict[str, Op] = {
 _sem_cache: Dict[Tuple[bytes, str, Tuple[Tuple[str, Any], ...]], Array] = {}
 
 
+def _canonical_params(name: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    """Return a copy of ``params`` with legacy aliases normalised and typed."""
+    new_params = dict(params)
+    if name == "recolor":
+        mapping = new_params.get("mapping") or new_params.pop("color_map", {})
+        if mapping:
+            new_params["mapping"] = {int(k): int(v) for k, v in mapping.items()}
+    elif name == "translate":
+        if "fill" not in new_params and "fill_value" in new_params:
+            new_params["fill"] = new_params.pop("fill_value")
+        for key in ("dy", "dx", "fill"):
+            if key in new_params and new_params[key] is not None:
+                new_params[key] = int(new_params[key])
+    return new_params
+
+
+def _norm_params(params: Dict[str, Any]) -> Tuple[Tuple[str, Any], ...]:
+    """Normalise parameters to a hashable tuple."""
+    items: List[Tuple[str, Any]] = []
+    for k, v in sorted(params.items()):
+        if isinstance(v, dict):
+            items.append((k, tuple(sorted(v.items()))))
+        else:
+            items.append((k, v))
+    return tuple(items)
+
+
 def apply_op(a: Array, name: str, params: Dict[str, Any]) -> Array:
     """Apply a primitive operation with semantic caching."""
-    key = (a.tobytes(), name, tuple(sorted(params.items())))
+    params = _canonical_params(name, params)
+    key = (a.tobytes(), name, _norm_params(params))
     cached = _sem_cache.get(key)
     if cached is not None:
         return cached
