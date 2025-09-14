@@ -2,6 +2,16 @@
 
 This repository contains an advanced solver for the **ARC Prize 2025** competition (ARC‑AGI‑2), implementing the complete blueprint from neuroscience-inspired research. It combines symbolic reasoning with neural guidance, episodic retrieval, program sketches, and test-time training to achieve superior performance on abstract reasoning tasks.
 
+## Behavioral Approach with Relational Frame Theory
+
+<p align="center">
+  <img src="docs/images/rft_behavioral_approach.svg" alt="Behavioral RFT approach" width="400"/>
+</p>
+
+We are exploring a behavioral perspective grounded in **Relational Frame Theory (RFT)** to tackle ARC. RFT models language and cognition as networks of learned relational frames, giving us a principled way to compose and generalize transformations across tasks.
+
+For more details, see [profile/README.md](profile/README.md).
+
 ## Key Features
 
 ### 🧠 Neuroscience-Inspired Architecture
