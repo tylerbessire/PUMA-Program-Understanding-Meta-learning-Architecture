@@ -1,6 +1,6 @@
 """Tests for canonicalisation utilities.
 
-[S:TEST v1] unit=4 property=2 pass
+[S:TEST v2] unit=6 property=3 pass
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ import pytest
 from hypothesis import given, strategies as st
 import hypothesis.extra.numpy as hnp
 
-from arc_solver.canonical import D4, canonicalize_colors, canonicalize_D4
+from arc_solver.canonical import D4, canonicalize_colors, canonicalize_D4, canonicalize_pair
 
 Array = np.ndarray
 
@@ -59,3 +59,26 @@ def test_canonicalize_D4_invariance(grid: Array) -> None:
         transformed = transform(grid)
         assert np.array_equal(canonicalize_D4(transformed), canonical)
     assert np.array_equal(canonicalize_D4(canonical), canonical)
+
+
+def test_canonicalize_pair_type_checks() -> None:
+    """canonicalize_pair rejects non-arrays and non-integer dtypes."""
+    with pytest.raises(TypeError):
+        canonicalize_pair([1], np.array([[1]]))
+    with pytest.raises(TypeError):
+        canonicalize_pair(np.array([[1.0]]), np.array([[1]]))
+
+
+@given(colour_arrays, colour_arrays)
+def test_canonicalize_pair_invariance(a: Array, b: Array) -> None:
+    """Canonical pair invariant under joint D4 transforms and idempotent."""
+    can_a, can_b = canonicalize_pair(a, b)
+    for transform in D4:
+        ta = transform(a)
+        tb = transform(b)
+        cta, ctb = canonicalize_pair(ta, tb)
+        assert np.array_equal(cta, can_a)
+        assert np.array_equal(ctb, can_b)
+    ca2, cb2 = canonicalize_pair(can_a, can_b)
+    assert np.array_equal(ca2, can_a)
+    assert np.array_equal(cb2, can_b)

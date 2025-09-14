@@ -72,10 +72,18 @@ Record completion as:
 
 ### Completed
 ```
-[X] M1: D4 canonicalisation validated
+[X] M0: Repo health verified
     Date: 2025-09-14
-    Test Result: pytest tests/test_canonical.py -q
-    Notes: Property-based invariance checks for D4 symmetries and colour relabeling
+    Test Result: pytest tests/test_recolor_fix.py tests/test_translate_fix.py tests/test_canonical.py -q
+    Notes: make deps installed SciPy dependency; arc_submit.py generated submission.json
+[X] M1: Canonicalised training dataset built
+    Date: 2025-09-14
+    Test Result: pytest tests/test_canonical.py tests/test_prep_build_dataset.py -q
+    Notes: prep_build_dataset.py saved train_X.npy/train_Y.npy; D4 invariance verified
+[X] M2: Baseline guidance integrated
+    Date: 2025-09-14
+    Test Result: pytest tests/test_guidance_metrics.py tests/test_integrate_stack.py tests/test_guidance.py tests/test_guidance_training.py tests/test_guidance_from_tasks.py -q
+    Notes: NeuralGuidance hit micro-F1>=0.55@top-3; integrate_stack cut node expansions by >30%
 [X] Docs: Behavioral RFT profile added
     Date: 2025-09-14
     Test Result: pytest -q
