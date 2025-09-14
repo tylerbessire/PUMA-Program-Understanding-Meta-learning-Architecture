@@ -1,4 +1,4 @@
-# Enhanced ARC-AGI-2 Solver
+# PUMA: Program Understanding & Meta-learning Architecture
 
 This repository contains an advanced solver for the **ARC Prize 2025** competition (ARC‑AGI‑2), implementing the complete blueprint from neuroscience-inspired research. It combines symbolic reasoning with neural guidance, episodic retrieval, program sketches, and test-time training to achieve superior performance on abstract reasoning tasks.
 
@@ -8,22 +8,36 @@ This repository contains an advanced solver for the **ARC Prize 2025** competiti
   <img src="docs/images/rft_behavioral_approach.svg" alt="Behavioral RFT approach" width="400"/>
 </p>
 
-We are exploring a behavioral perspective grounded in **Relational Frame Theory (RFT)** to tackle ARC. RFT models language and cognition as networks of learned relational frames, giving us a principled way to compose and generalize transformations across tasks.
+We are implementing a behavioral perspective grounded in **Relational Frame Theory (RFT)** to tackle ARC through explicit relational reasoning. RFT models cognition as networks of learned relational frames, providing a principled foundation for understanding spatial and contextual relationships between objects.
 
-For more details, see [profile/README.md](profile/README.md).
+### RFT Implementation Strategy
+
+Our RFT approach focuses on learning explicit relational contexts between objects:
+
+- **Relational Fact Extraction**: Parse visual scenes to identify objects and their spatial relationships (e.g., “blue square is always at top position”)
+- **Contextual Rule Learning**: Extract invariant relationships across training examples (e.g., “if blue square at top, then red square at position (blue_y + 1, blue_x)”)
+- **Compositional Reasoning**: Combine learned relational frames to generate predictions for novel configurations
+- **Behavioral Generalization**: Apply relational rules systematically rather than relying on pattern matching
+
+This approach complements the neural components by providing explicit, interpretable relational knowledge that can be composed and reasoned about symbolically.
+
+For more details, see <profile/README.md>.
 
 ## Key Features
 
-### 🧠 Neuroscience-Inspired Architecture
+### Neuroscience-Inspired Architecture
+
 - **Neural guidance**: Predicts relevant DSL operations using task features
-- **Episodic retrieval**: Maintains database of solved tasks for analogical reasoning  
+- **Episodic retrieval**: Maintains database of solved tasks for analogical reasoning
 - **Program sketches**: Mines common operation sequences as macro-operators
 - **Test-time training**: Adapts scoring functions to each specific task
 - **Multi-demand network analog**: Prioritizes candidate programs using learned heuristics
 
-### 🔧 Enhanced Capabilities
+### Enhanced Capabilities
+
 - **Object-centric parsing** with connected component analysis
 - **Compact DSL** with composable primitives (rotate, flip, translate, recolor, etc.)
+- **Relational reasoning** through explicit fact extraction and rule learning
 - **Two-attempt diversity** as required by ARC Prize 2025 rules
 - **Fallback resilience** with graceful degradation to baseline methods
 - **Performance monitoring** with detailed statistics and benchmarking
@@ -62,7 +76,7 @@ arc_solver_project/
 
 ## Quick Start
 
-### 1. Basic Usage (Kaggle-ready)
+### Basic Usage (Kaggle-ready)
 
 ```bash
 # Generate submission file (uses enhanced solver by default)
@@ -72,7 +86,7 @@ python arc_submit.py
 ARC_USE_BASELINE=1 python arc_submit.py
 ```
 
-### 2. Training Neural Components
+### Training Neural Components
 
 ```bash
 # Train neural guidance (requires training data)
@@ -82,7 +96,7 @@ python tools/train_guidance.py
 python tools/benchmark.py
 ```
 
-### 3. Python API
+### Python API
 
 ```python
 from arc_solver.solver import solve_task_enhanced, ARCSolver
@@ -95,7 +109,7 @@ solver = ARCSolver(use_enhancements=True)
 result = solver.solve_task(task)
 ```
 
-### 4. Public Evaluation Runner
+### Public Evaluation Runner
 
 ```bash
 scripts/eval_public.sh
@@ -112,15 +126,18 @@ make eval_public
 ### Enhanced Pipeline
 
 1. **Feature Extraction**: Extract task-level features (colors, objects, transformations)
-2. **Neural Guidance**: Predict which DSL operations are likely relevant
-3. **Episodic Retrieval**: Query database for similar previously solved tasks
-4. **Sketch-Based Search**: Use mined program templates with parameter filling
-5. **Test-Time Adaptation**: Fine-tune scoring function using task demonstrations
-6. **Program Selection**: Rank and select top 2 diverse candidate programs
+1. **Relational Context Analysis**: Identify spatial and contextual relationships between objects using RFT principles
+1. **Neural Guidance**: Predict which DSL operations are likely relevant
+1. **Episodic Retrieval**: Query database for similar previously solved tasks
+1. **Sketch-Based Search**: Use mined program templates with parameter filling
+1. **Rule-Based Reasoning**: Apply learned relational facts to generate candidate solutions
+1. **Test-Time Adaptation**: Fine-tune scoring function using task demonstrations
+1. **Program Selection**: Rank and select top 2 diverse candidate programs
 
 ### Fallback Strategy
 
 If enhanced components fail, the solver gracefully falls back to:
+
 - Heuristic single-step transformations
 - Brute-force enumeration of 2-step programs
 - Identity transformation as last resort
@@ -130,10 +147,12 @@ If enhanced components fail, the solver gracefully falls back to:
 The solver supports extensive configuration through environment variables and config files:
 
 ### Environment Variables
+
 - `ARC_USE_BASELINE=1`: Force baseline solver only
 - `ARC_DISABLE_ENHANCEMENTS=1`: Disable enhanced features
 
 ### Configuration File
+
 ```json
 {
   "use_neural_guidance": true,
@@ -148,24 +167,28 @@ The solver supports extensive configuration through environment variables and co
 ## Neural Components
 
 ### Neural Guidance
+
 - **Purpose**: Predict which DSL operations are relevant for a given task
 - **Architecture**: Simple MLP with task-level features
 - **Training**: Uses extracted features from training demonstrations
 - **Output**: Operation relevance scores to guide search
 
 ### Episodic Retrieval
+
 - **Purpose**: Reuse solutions from similar previously solved tasks
 - **Method**: Task signature matching with feature-based similarity
 - **Storage**: JSON-based database of solved programs with metadata
 - **Retrieval**: Cosine similarity on numerical features + boolean feature matching
 
 ### Program Sketches
+
 - **Purpose**: Capture common operation sequences as reusable templates
 - **Mining**: Extract frequent 1-step and 2-step operation patterns
 - **Usage**: Instantiate sketches with different parameter combinations
 - **Adaptation**: Learn from successful programs during solving
 
 ### Test-Time Training
+
 - **Purpose**: Adapt scoring function to each specific task
 - **Method**: Fine-tune lightweight scorer on task demonstrations
 - **Features**: Program length, operation types, success rate, complexity
@@ -174,6 +197,7 @@ The solver supports extensive configuration through environment variables and co
 ## Performance and Evaluation
 
 ### Benchmarking
+
 ```python
 from benchmark import Benchmark, SolverConfig
 
@@ -184,7 +208,9 @@ print(f"Success rate: {results['performance_stats']['success_rate']:.3f}")
 ```
 
 ### Monitoring
+
 The solver tracks detailed statistics:
+
 - Success rates for enhanced vs baseline methods
 - Component usage (episodic hits, neural guidance, TTT adaptation)
 - Timing breakdown per component
@@ -193,12 +219,14 @@ The solver tracks detailed statistics:
 ## Implementation Notes
 
 ### Kaggle Compatibility
+
 - **Offline execution**: No internet access required
 - **Dependency-light**: Uses only NumPy for core operations
 - **Compute budget**: Optimized for ~$0.42 per task limit
 - **Output format**: Exactly 2 attempts per test input as required
 
 ### Code Quality
+
 - **Type hints**: Full typing support for better maintainability
 - **Documentation**: Comprehensive docstrings and comments
 - **Error handling**: Robust fallback mechanisms
@@ -207,18 +235,21 @@ The solver tracks detailed statistics:
 ## Extending the Solver
 
 ### Adding New DSL Operations
+
 1. Define operation function in `dsl.py`
-2. Add parameter generation in `sketches.py`
-3. Update feature extraction in `features.py`
-4. Retrain neural guidance if needed
+1. Add parameter generation in `sketches.py`
+1. Update feature extraction in `features.py`
+1. Retrain neural guidance if needed
 
 ### Improving Neural Components
+
 1. **Better features**: Add domain-specific feature extractors
-2. **Advanced models**: Replace MLP with transformer/GNN
-3. **Meta-learning**: Implement few-shot adaptation algorithms
-4. **Hybrid methods**: Combine symbolic and neural reasoning
+1. **Advanced models**: Replace MLP with transformer/GNN
+1. **Meta-learning**: Implement few-shot adaptation algorithms
+1. **Hybrid methods**: Combine symbolic and neural reasoning
 
 ### Advanced Techniques
+
 - **Probabilistic programming**: Sample programs from learned distributions
 - **Curriculum learning**: Train on tasks of increasing difficulty
 - **Multi-agent reasoning**: Ensemble of specialized solvers
@@ -226,10 +257,10 @@ The solver tracks detailed statistics:
 
 ## Research Foundation
 
-This implementation is based on the research blueprint "ARC Prize 2025 & Human Fluid Intelligence" which draws from cognitive neuroscience findings about:
+This implementation is based on the research blueprint “ARC Prize 2025 & Human Fluid Intelligence” which draws from cognitive neuroscience findings about:
 
 - **Multiple-demand (MD) network**: Neural guidance mimics executive control
-- **Basal ganglia gating**: Operation selection and working memory control  
+- **Basal ganglia gating**: Operation selection and working memory control
 - **Hippocampal-mPFC loop**: Episodic retrieval and schema integration
 - **Test-time adaptation**: Rapid task-specific learning from few examples
 
@@ -238,18 +269,21 @@ The solver architecture directly maps these biological systems to computational 
 ## Competition Strategy
 
 ### Short-term (Immediate)
-- ✅ Strong symbolic baseline with neural enhancements
-- ✅ Episodic retrieval for common patterns
-- ✅ Test-time adaptation for task specialization
-- ✅ Kaggle-ready submission format
+
+- Strong symbolic baseline with neural enhancements
+- Episodic retrieval for common patterns
+- Test-time adaptation for task specialization
+- Kaggle-ready submission format
 
 ### Medium-term (During Contest)
+
 - Train neural guidance on public training data
-- Mine program sketches from successful solutions  
+- Mine program sketches from successful solutions
 - Analyze semi-private feedback for failure modes
 - Expand DSL based on discovered patterns
 
 ### Long-term (Advanced Research)
+
 - Probabilistic program synthesis
 - Hybrid symbolic-neural architecture
 - Broader cognitive priors and meta-learning
@@ -265,12 +299,13 @@ If you use this solver or build upon its ideas, please cite the research bluepri
 
 ## Contributing
 
-Contributions are welcome! Focus areas:
+Contributions are welcome. Focus areas include:
+
 - Neural architecture improvements
 - New DSL operations based on failure analysis
 - Advanced meta-learning techniques
 - Performance optimizations for Kaggle constraints
 
----
+-----
 
-**Ready to win ARC Prize 2025!** 🏆
+**Ready to compete in ARC Prize 2025**
