@@ -76,6 +76,10 @@ Record completion as:
     Date: 2025-09-14
     Test Result: pytest tests/test_canonical.py -q
     Notes: Property-based invariance checks for D4 symmetries and colour relabeling
+[X] Docs: Behavioral RFT profile added
+    Date: 2025-09-14
+    Test Result: pytest -q
+    Notes: Added repository profile with RFT focus and public image
 ```
 
 ---
