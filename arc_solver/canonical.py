@@ -97,3 +97,53 @@ def canonicalize_D4(grid: Array) -> Array:
         # This should not occur because D4 contains identity, but guard anyway.
         return grid.copy()
     return best
+
+
+def canonicalize_pair(input_grid: Array, output_grid: Array) -> Tuple[Array, Array]:
+    """Canonicalise a pair of grids under shared D4 symmetries and colours.
+
+    The same D4 transform and colour relabelling are applied to both ``input_grid``
+    and ``output_grid`` so that puzzle examples remain aligned.
+
+    [S:ALG v2] pair-D4 canonicalisation pass
+
+    Parameters
+    ----------
+    input_grid, output_grid:
+        Arrays representing an ARC training pair.
+
+    Returns
+    -------
+    Tuple[np.ndarray, np.ndarray]
+        Canonicalised input and output grids.
+
+    Raises
+    ------
+    TypeError
+        If either grid is not a ``numpy.ndarray`` of integer dtype.
+    """
+
+    if not isinstance(input_grid, np.ndarray) or not isinstance(output_grid, np.ndarray):
+        raise TypeError("grids must be numpy arrays")
+    if not np.issubdtype(input_grid.dtype, np.integer) or not np.issubdtype(output_grid.dtype, np.integer):
+        raise TypeError("grid dtype must be integer")
+
+    best_in: Array | None = None
+    best_out: Array | None = None
+    best_key: Tuple[Tuple[int, int], bytes, Tuple[int, int], bytes] | None = None
+    for transform in D4:
+        inp_t = transform(input_grid)
+        out_t = transform(output_grid)
+        vals, counts = np.unique(np.concatenate([inp_t.ravel(), out_t.ravel()]), return_counts=True)
+        order = [int(v) for v, _ in sorted(zip(vals, counts), key=lambda t: (-t[1], t[0]))]
+        mapping = {c: i for i, c in enumerate(order)}
+        vect_map = np.vectorize(mapping.get)
+        inp_c = vect_map(inp_t).astype(np.int16)
+        out_c = vect_map(out_t).astype(np.int16)
+        key = (inp_c.shape, inp_c.tobytes(), out_c.shape, out_c.tobytes())
+        if best_key is None or key < best_key:
+            best_in, best_out, best_key = inp_c, out_c, key
+    if best_in is None or best_out is None:
+        # This should not occur because D4 contains identity, but guard anyway.
+        return input_grid.copy(), output_grid.copy()
+    return best_in, best_out

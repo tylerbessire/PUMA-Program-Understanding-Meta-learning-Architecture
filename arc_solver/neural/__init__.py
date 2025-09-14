@@ -3,6 +3,7 @@
 from .guidance import SimpleClassifier, HeuristicGuidance, NeuralGuidance
 from .episodic import Episode, EpisodeDatabase, EpisodicRetrieval, AnalogicalReasoner
 from .sketches import ProgramSketch, SketchMiner, generate_parameter_grid
+from .metrics import top_k_micro_f1
 
 __all__ = [
     "SimpleClassifier",
@@ -15,4 +16,5 @@ __all__ = [
     "ProgramSketch",
     "SketchMiner",
     "generate_parameter_grid",
+    "top_k_micro_f1",
 ]
