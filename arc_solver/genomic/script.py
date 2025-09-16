@@ -39,6 +39,93 @@ class GridTransformation:
         return f"{self.op_type}({self.params})"
 
 
+def detect_global_transformations(input_grid: Array, output_grid: Array) -> List[Dict[str, Any]]:
+    """Detect high-level transformations between grids before sequence analysis."""
+    transformations = []
+    
+    # Size transformation detection
+    h1, w1 = input_grid.shape
+    h2, w2 = output_grid.shape
+    
+    if (h1, w1) != (h2, w2):
+        # Significant size change - check for common patterns
+        size_ratio = (h2 * w2) / (h1 * w1)
+        
+        if size_ratio < 0.3:  # Major compression
+            # Check for pattern extraction
+            if h2 < 10 and w2 < 10:
+                transformations.append({
+                    'type': 'compress_to_pattern',
+                    'method': 'extract_core',
+                    'confidence': 0.8
+                })
+            
+            # Check for tiling pattern
+            if h1 % h2 == 0 and w1 % w2 == 0:
+                tile_h, tile_w = h1 // h2, w1 // w2
+                if tile_h > 1 and tile_w > 1:
+                    transformations.append({
+                        'type': 'extract_tile',
+                        'tile_size': (tile_h, tile_w),
+                        'confidence': 0.9
+                    })
+        
+        elif size_ratio > 3.0:  # Major expansion
+            # Check if output is tiled version of input
+            if h2 % h1 == 0 and w2 % w1 == 0:
+                transformations.append({
+                    'type': 'tile_expansion',
+                    'factor': (h2 // h1, w2 // w1),
+                    'confidence': 0.9
+                })
+    
+    else:
+        # Same size - check for geometric transformations
+        if np.array_equal(input_grid, np.fliplr(output_grid)):
+            transformations.append({
+                'type': 'horizontal_flip',
+                'confidence': 1.0
+            })
+        elif np.array_equal(input_grid, np.flipud(output_grid)):
+            transformations.append({
+                'type': 'vertical_flip',
+                'confidence': 1.0
+            })
+        elif np.array_equal(input_grid, np.rot90(output_grid, 1)):
+            transformations.append({
+                'type': 'rotate_90',
+                'confidence': 1.0
+            })
+        elif np.array_equal(input_grid, np.rot90(output_grid, 2)):
+            transformations.append({
+                'type': 'rotate_180',
+                'confidence': 1.0
+            })
+        elif np.array_equal(input_grid, np.rot90(output_grid, 3)):
+            transformations.append({
+                'type': 'rotate_270',
+                'confidence': 1.0
+            })
+    
+    # Color transformation detection
+    from collections import Counter
+    input_colors = Counter(input_grid.flatten())
+    output_colors = Counter(output_grid.flatten())
+    
+    if sorted(input_colors.values()) == sorted(output_colors.values()):
+        transformations.append({
+            'type': 'color_permutation',
+            'confidence': 0.9
+        })
+    elif len(input_colors) != len(output_colors):
+        transformations.append({
+            'type': 'color_change',
+            'confidence': 0.7
+        })
+    
+    return transformations
+
+
 def infer_script(input_grid: Array, output_grid: Array, 
                 alignment_method: str = "needleman_wunsch") -> MutationScript:
     """
@@ -52,6 +139,23 @@ def infer_script(input_grid: Array, output_grid: Array,
     Returns:
         Extracted mutation script
     """
+    # First try to detect high-level transformations
+    global_transforms = detect_global_transformations(input_grid, output_grid)
+    
+    # If we found a high-confidence global transformation, use it
+    for transform in global_transforms:
+        if transform['confidence'] >= 0.95:
+            return MutationScript(
+                mutations=[transform],
+                confidence=transform['confidence'],
+                metadata={
+                    'method': 'global_detection',
+                    'input_shape': input_grid.shape,
+                    'output_shape': output_grid.shape
+                }
+            )
+    
+    # Otherwise, proceed with sequence analysis
     from .hilbert import grid_to_hilbert_sequence, hilbert_order
     from .tokenize import tokenize_sequence, run_length_encode
     from .align import needleman_wunsch, smith_waterman
@@ -79,24 +183,32 @@ def infer_script(input_grid: Array, output_grid: Array,
     # Extract mutations from alignment
     mutations = _extract_mutations_from_alignment(alignment, input_grid, output_grid)
     
+    # Merge with global transformations
+    all_mutations = global_transforms + mutations
+    
     # Analyze patterns
     patterns = detect_patterns_in_edits(alignment.get_edit_script())
     
-    # Compute confidence based on alignment quality
+    # Compute confidence based on alignment quality and global transforms
     edit_script = alignment.get_edit_script()
     total_ops = len(alignment.edits)
     error_ops = len([e for e in edit_script if e.edit_type != EditType.MATCH])
-    confidence = 1.0 - (error_ops / max(1, total_ops))
+    alignment_confidence = 1.0 - (error_ops / max(1, total_ops))
+    
+    # Boost confidence if we have high-confidence global transforms
+    global_confidence = max([t['confidence'] for t in global_transforms], default=0.0)
+    combined_confidence = max(alignment_confidence, global_confidence * 0.8)
     
     metadata = {
         'alignment_score': alignment.score,
         'input_shape': input_grid.shape,
         'output_shape': output_grid.shape,
         'patterns': patterns,
-        'total_edits': len(edit_script)
+        'total_edits': len(edit_script),
+        'global_transforms': global_transforms
     }
     
-    return MutationScript(mutations, confidence, metadata)
+    return MutationScript(all_mutations, combined_confidence, metadata)
 
 
 def _extract_mutations_from_alignment(alignment: Alignment, input_grid: Array, 
@@ -243,14 +355,81 @@ def apply_recipe(recipe: MutationScript, input_grid: Array) -> Array:
 def _apply_single_mutation(grid: Array, mutation: Dict[str, Any]) -> Optional[Array]:
     """Apply a single mutation to a grid."""
     try:
-        if mutation['type'] == 'RECOLOR':
+        mutation_type = mutation.get('type', mutation.get('kind', 'unknown'))
+        
+        if mutation_type == 'RECOLOR':
             old_color = mutation['old_color']
             new_color = mutation['new_color']
             result = grid.copy()
             result[grid == old_color] = new_color
             return result
         
-        elif mutation['type'] == 'EXPAND':
+        elif mutation_type == 'horizontal_flip':
+            return np.fliplr(grid)
+        
+        elif mutation_type == 'vertical_flip':
+            return np.flipud(grid)
+        
+        elif mutation_type == 'rotate_90':
+            return np.rot90(grid, 1)
+        
+        elif mutation_type == 'rotate_180':
+            return np.rot90(grid, 2)
+        
+        elif mutation_type == 'rotate_270':
+            return np.rot90(grid, 3)
+        
+        elif mutation_type == 'extract_tile':
+            # Extract a repeating tile from the grid
+            tile_h, tile_w = mutation.get('tile_size', (1, 1))
+            h, w = grid.shape
+            if h >= tile_h and w >= tile_w:
+                return grid[:tile_h, :tile_w]
+            return grid
+        
+        elif mutation_type == 'tile_expansion':
+            # Expand grid by tiling
+            factor_h, factor_w = mutation.get('factor', (2, 2))
+            h, w = grid.shape
+            result = np.zeros((h * factor_h, w * factor_w), dtype=grid.dtype)
+            for i in range(factor_h):
+                for j in range(factor_w):
+                    result[i*h:(i+1)*h, j*w:(j+1)*w] = grid
+            return result
+        
+        elif mutation_type == 'compress_to_pattern':
+            # Extract core pattern from large grid
+            method = mutation.get('method', 'extract_core')
+            h, w = grid.shape
+            
+            if method == 'extract_core':
+                # Extract central region
+                if h > 10 or w > 10:
+                    center_h, center_w = max(h // 4, 3), max(w // 4, 3)
+                    top = h // 2 - center_h // 2
+                    left = w // 2 - center_w // 2
+                    return grid[top:top + center_h, left:left + center_w]
+                else:
+                    return grid
+            else:
+                return grid
+        
+        elif mutation_type == 'color_permutation':
+            # Apply intelligent color permutation
+            from collections import Counter
+            colors = list(set(grid.flatten()))
+            if len(colors) == 2:
+                # Simple binary swap
+                result = grid.copy()
+                result[grid == colors[0]] = colors[1] + 10  # Temp value
+                result[grid == colors[1]] = colors[0]
+                result[result == colors[1] + 10] = colors[1]
+                return result
+            else:
+                # For now, just return original
+                return grid
+        
+        elif mutation_type == 'EXPAND':
             # Simple expansion - duplicate the grid
             amount = mutation.get('amount', 1)
             if amount == 1:
@@ -265,7 +444,7 @@ def _apply_single_mutation(grid: Array, mutation: Dict[str, Any]) -> Optional[Ar
             else:
                 return grid  # More complex expansion not implemented
         
-        elif mutation['type'] == 'CONTRACT':
+        elif mutation_type == 'CONTRACT':
             # Simple contraction - take top-left quadrant
             h, w = grid.shape
             if h >= 2 and w >= 2:
@@ -274,7 +453,7 @@ def _apply_single_mutation(grid: Array, mutation: Dict[str, Any]) -> Optional[Ar
                 return grid
         
         else:
-            # Unknown mutation type
+            # Unknown mutation type - return original grid
             return grid
     
     except Exception:

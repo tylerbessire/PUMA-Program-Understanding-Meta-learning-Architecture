@@ -37,6 +37,15 @@ COST = {
     "palette_permute": 1,
     "resize": 2,
     "flood_fill": 2,
+    "extract_pattern": 3,
+    "compress_grid": 4,
+    "expand_pattern": 3,
+    "connect_objects": 2,
+    "separate_objects": 2,
+    "sort_objects": 2,
+    "filter_objects": 2,
+    "overlay": 2,
+    "mask": 2,
 }
 
 
@@ -262,8 +271,8 @@ def execute_operation(grid: Array, op: Op) -> Optional[Array]:
             permutation, = op.params
             return apply_palette_permute(grid, permutation)
         else:
-            # Unknown operation
-            return None
+            # Try advanced operations
+            return apply_advanced_operation(grid, op)
     except Exception:
         # Operation failed
         return None
@@ -346,4 +355,219 @@ def propose_global_ops(grid: Array, objects: List[Dict[str, Any]]) -> List[Op]:
         perm = {colors[0]: colors[1], colors[1]: colors[0]}
         proposals.append(Op("palette_permute", (perm,)))
     
+    # Advanced pattern operations
+    h, w = grid.shape
+    
+    # Compression operations for large grids
+    if h > 10 or w > 10:
+        proposals.append(Op("compress_grid", ("extract_core",)))
+        proposals.append(Op("compress_grid", ("sample_pattern",)))
+        proposals.append(Op("extract_pattern", ("repeating",)))
+    
+    # Object-based operations
+    if len(objects) > 1:
+        proposals.append(Op("sort_objects", ("by_size",)))
+        proposals.append(Op("sort_objects", ("by_position",)))
+        proposals.append(Op("filter_objects", ("largest",)))
+        proposals.append(Op("filter_objects", ("most_common_color",)))
+    
     return proposals
+
+
+def apply_compress_grid(grid: Array, method: str) -> Array:
+    """Compress large grids using various methods."""
+    h, w = grid.shape
+    
+    if method == "extract_core":
+        # Extract central region
+        center_h, center_w = h // 4, w // 4
+        top = h // 2 - center_h // 2
+        left = w // 2 - center_w // 2
+        return grid[top:top + center_h, left:left + center_w].copy()
+    
+    elif method == "sample_pattern":
+        # Sample a representative pattern
+        step_h, step_w = max(1, h // 10), max(1, w // 10)
+        return grid[::step_h, ::step_w].copy()
+    
+    elif method == "extract_corners":
+        # Extract 4 corners and combine
+        corner_size = min(h // 4, w // 4, 5)
+        if corner_size < 1:
+            return grid
+        
+        # Top-left, top-right, bottom-left, bottom-right
+        tl = grid[:corner_size, :corner_size]
+        tr = grid[:corner_size, -corner_size:]
+        bl = grid[-corner_size:, :corner_size]
+        br = grid[-corner_size:, -corner_size:]
+        
+        # Combine into 2x2 grid of corners
+        top_row = np.concatenate([tl, tr], axis=1)
+        bottom_row = np.concatenate([bl, br], axis=1)
+        return np.concatenate([top_row, bottom_row], axis=0)
+    
+    return grid
+
+
+def apply_extract_pattern(grid: Array, pattern_type: str) -> Array:
+    """Extract patterns from grid."""
+    h, w = grid.shape
+    
+    if pattern_type == "repeating":
+        # Find the smallest repeating unit
+        for block_h in range(1, h // 2 + 1):
+            for block_w in range(1, w // 2 + 1):
+                if h % block_h == 0 and w % block_w == 0:
+                    # Check if this block tiles the entire grid
+                    block = grid[:block_h, :block_w]
+                    tiles_correctly = True
+                    
+                    for y in range(0, h, block_h):
+                        for x in range(0, w, block_w):
+                            if not np.array_equal(grid[y:y+block_h, x:x+block_w], block):
+                                tiles_correctly = False
+                                break
+                        if not tiles_correctly:
+                            break
+                    
+                    if tiles_correctly:
+                        return block
+        
+        # No perfect tiling found, return a representative sample
+        sample_h, sample_w = min(h, 5), min(w, 5)
+        return grid[:sample_h, :sample_w].copy()
+    
+    elif pattern_type == "border":
+        # Extract border pattern
+        if h < 3 or w < 3:
+            return grid
+        border_size = 1
+        result = np.zeros((2*border_size + 1, 2*border_size + 1), dtype=grid.dtype)
+        result[:border_size, :] = grid[:border_size, :2*border_size + 1]  # Top
+        result[-border_size:, :] = grid[-border_size:, :2*border_size + 1]  # Bottom
+        result[:, :border_size] = grid[:2*border_size + 1, :border_size]  # Left
+        result[:, -border_size:] = grid[:2*border_size + 1, -border_size:]  # Right
+        return result
+    
+    return grid
+
+
+def apply_sort_objects(grid: Array, objects: List[Dict[str, Any]], sort_by: str) -> Array:
+    """Sort objects according to various criteria."""
+    if not objects:
+        return grid
+    
+    result = np.zeros_like(grid)
+    
+    if sort_by == "by_size":
+        sorted_objects = sorted(objects, key=lambda obj: obj['area'], reverse=True)
+    elif sort_by == "by_position":
+        sorted_objects = sorted(objects, key=lambda obj: (obj['centroid'][0], obj['centroid'][1]))
+    else:
+        sorted_objects = objects
+    
+    # Place objects in sorted order
+    for i, obj in enumerate(sorted_objects):
+        # Assign new color based on sort order
+        new_color = (i % 9) + 1  # Colors 1-9
+        for y, x in obj['pixels']:
+            result[y, x] = new_color
+    
+    return result
+
+
+def apply_filter_objects(grid: Array, objects: List[Dict[str, Any]], filter_type: str) -> Array:
+    """Filter objects according to various criteria."""
+    if not objects:
+        return grid
+    
+    result = np.zeros_like(grid)
+    
+    if filter_type == "largest":
+        # Keep only the largest object
+        largest_obj = max(objects, key=lambda obj: obj['area'])
+        filtered_objects = [largest_obj]
+    
+    elif filter_type == "most_common_color":
+        # Keep objects with the most common color
+        from collections import Counter
+        color_counts = Counter(obj['color'] for obj in objects)
+        most_common_color = color_counts.most_common(1)[0][0]
+        filtered_objects = [obj for obj in objects if obj['color'] == most_common_color]
+    
+    elif filter_type == "symmetric":
+        # Keep only symmetric objects
+        filtered_objects = [obj for obj in objects if obj['symmetries']['vertical'] or obj['symmetries']['horizontal']]
+    
+    else:
+        filtered_objects = objects
+    
+    # Place filtered objects
+    for obj in filtered_objects:
+        for y, x in obj['pixels']:
+            result[y, x] = obj['color']
+    
+    return result
+
+
+def apply_overlay(grid: Array, objects: List[Dict[str, Any]], overlay_type: str) -> Array:
+    """Apply overlay operations between objects."""
+    if len(objects) < 2:
+        return grid
+    
+    result = grid.copy()
+    
+    if overlay_type == "combine_largest_two":
+        # Combine the two largest objects
+        largest_two = sorted(objects, key=lambda obj: obj['area'], reverse=True)[:2]
+        
+        # Clear both objects first
+        for obj in largest_two:
+            for y, x in obj['pixels']:
+                result[y, x] = 0
+        
+        # Combine their pixels
+        combined_pixels = set()
+        for obj in largest_two:
+            combined_pixels.update(obj['pixels'])
+        
+        # Place combined object with new color
+        new_color = 9  # Use color 9 for combined objects
+        for y, x in combined_pixels:
+            result[y, x] = new_color
+    
+    return result
+
+
+def apply_advanced_operation(grid: Array, op: Op, objects: List[Dict[str, Any]] = None) -> Optional[Array]:
+    """Apply advanced operations that require object analysis."""
+    if objects is None:
+        objects = connected_components(grid)
+    
+    try:
+        if op.kind == "compress_grid":
+            method, = op.params
+            return apply_compress_grid(grid, method)
+        
+        elif op.kind == "extract_pattern":
+            pattern_type, = op.params
+            return apply_extract_pattern(grid, pattern_type)
+        
+        elif op.kind == "sort_objects":
+            sort_by, = op.params
+            return apply_sort_objects(grid, objects, sort_by)
+        
+        elif op.kind == "filter_objects":
+            filter_type, = op.params
+            return apply_filter_objects(grid, objects, filter_type)
+        
+        elif op.kind == "overlay":
+            overlay_type, = op.params
+            return apply_overlay(grid, objects, overlay_type)
+        
+        else:
+            return None
+            
+    except Exception:
+        return None

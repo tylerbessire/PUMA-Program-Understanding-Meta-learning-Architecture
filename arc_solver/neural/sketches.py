@@ -230,5 +230,39 @@ def generate_parameter_grid(operation: str, constraints: Dict[str, Any] = None) 
                 if src != dst:
                     mappings.append({"mapping": {src: dst}})
         return mappings
+    elif operation == "tile":
+        return [{"factor_h": h, "factor_w": w} for h in range(1, 4) for w in range(1, 4)]
+    elif operation == "find_color_region":
+        return [{"color": c} for c in constraints.get("color", range(10))]
+    elif operation == "extract_marked_region":
+        return [
+            {"marker_color": c} for c in constraints.get("marker_color", range(10))
+        ]
+    elif operation == "smart_crop_auto":
+        return [{}]
+    elif operation == "extract_symmetric_region":
+        return [{}]
+    elif operation == "extract_pattern_region":
+        return [
+            {"marker_color": c} for c in constraints.get("marker_color", range(10))
+        ]
+    elif operation == "extract_content_region":
+        return [{}]
+    elif operation == "extract_bounded_region":
+        return [
+            {"boundary_color": c} for c in constraints.get("boundary_color", [0, 1, 7, 8, 9])
+        ]
+    elif operation == "extract_largest_rect":
+        return [
+            {"ignore_color": c} for c in constraints.get("ignore_color", [None, 0, 1, 7, 8, 9])
+        ]
+    elif operation == "extract_central_pattern":
+        return [{}]
+    elif operation == "extract_pattern_blocks":
+        return [
+            {"block_size": size} for size in constraints.get("block_size", [3, 4, 5, 6, 7, 8, 9, 10])
+        ]
+    elif operation == "extract_distinct_regions":
+        return [{}]
     else:
-        return [{}]  # Default empty params for unknown operations
+        return []  # Return empty list for unknown operations

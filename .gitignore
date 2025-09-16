@@ -1,0 +1,64 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Hypothesis testing
+.hypothesis/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# MacOS
+.DS_Store
+
+# Temporary files
+*.tmp
+*.temp
+
+# Logs
+*.log
+evaluation_logs/
+
+# Test results
+test_*.json
+*_results.json
+benchmark_results.json
+quick_eval_results.json
+adapt_test_time_results.json
+
+# Memory files (large)
+fast_comprehensive_memory.json
+models/episodic_memory_test.json
+
+# Kaggle data
+arc-agi_test_challenges.json
+
+# Submissions
+submission.json
+submission_fixed.json
+submission/
+
+# Debug scripts (keep only essential ones)
+debug_*.py
+analyze_*.py
+test_*.py
+quick_*.py
+single_*.py
+score_*.py
+show_*.py
+eval_*.py
+build_*.py
+fix_*.py
+emergency_*.py
+
+# Facts data
+facts.jsonl
+facts_coverage.json
+
+# Site customization
+sitecustomize.py

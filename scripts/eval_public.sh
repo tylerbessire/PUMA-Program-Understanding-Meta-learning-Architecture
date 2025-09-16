@@ -4,7 +4,7 @@ set -euo pipefail
 
 ROOT="${ROOT:-$(pwd)}"
 PY="${PY:-python3}"
-BATCH="${BATCH:-50}"          # tasks per chunk (tune if memory is tight)
+BATCH="${BATCH:-5}"          # tasks per chunk (tune if memory is tight)
 OUT="${OUT:-submission/full_submission.json}"
 LOGDIR="$ROOT/runlogs"
 mkdir -p "$LOGDIR" "$(dirname "$OUT")"
@@ -67,19 +67,36 @@ start = time.time()
 for ci, chunk in enumerate(chunks, 1):
     t0 = time.time()
     ok = 0
-    for tid in chunk:
+    for i, tid in enumerate(chunk):
         task = E[tid]
+        task_start = time.time()
         try:
-            pred = solve_task(task)          # returns list-of-test-grids (or a single grid)
+            print(f"  Task {tid} ({i+1}/{len(chunk)}): solving...", end="", flush=True)
+            result = solve_task(task)          # returns dict with attempt_1 and attempt_2
+            
+            # Extract attempt_1 for submission (standard format expects a single attempt)
+            if isinstance(result, dict) and "attempt_1" in result:
+                pred = result["attempt_1"]
+            else:
+                pred = result  # fallback for unexpected format
+                
             if pred and isinstance(pred[0], (list, tuple)) and pred and isinstance(pred[0][0], (list, tuple)):
                 # single 2D grid -> wrap
                 if all(isinstance(r,(list,tuple)) and r and isinstance(r[0],(int,float)) for r in pred):
                     pred = [pred]
             all_preds.append({"task_id": tid, "outputs": pred})
+            task_time = time.time() - task_start
+            print(f" SOLVED in {task_time:.1f}s", flush=True)
             ok += 1
         except Exception as e:
+            task_time = time.time() - task_start
+            print(f" FAILED in {task_time:.1f}s: {type(e).__name__}", flush=True)
             # record empty prediction on error to keep submission shape stable
             all_preds.append({"task_id": tid, "outputs": []})
+        
+        # Force garbage collection after each task to manage memory
+        import gc
+        gc.collect()
     dt = time.time()-t0
     print(f"[chunk {ci}/{len(chunks)}] solved {ok}/{len(chunk)} in {dt:.1f}s", flush=True)
 

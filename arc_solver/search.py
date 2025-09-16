@@ -51,6 +51,17 @@ def enumerate_programs(depth: int = 2) -> List[List[Tuple[str, Dict[str, int]]]]
             for j in range(10)
             if i != j
         ],
+        "find_color_region": [
+            {"color": c} for c in range(10)
+        ],
+        "extract_marked_region": [
+            {"marker_color": c} for c in [8, 9, 7, 6]
+        ],
+        "smart_crop_auto": [{}],
+        "extract_symmetric_region": [{}],
+        "extract_pattern_region": [
+            {"marker_color": c} for c in [8, 9, 7, 6]
+        ],
         "identity": [{}],
     }
     base_ops = [
@@ -61,6 +72,11 @@ def enumerate_programs(depth: int = 2) -> List[List[Tuple[str, Dict[str, int]]]]
         "crop",
         "pad",
         "recolor",
+        "find_color_region",
+        "extract_marked_region", 
+        "smart_crop_auto",
+        "extract_symmetric_region",
+        "extract_pattern_region",
         "identity",
     ]
     # Generate all length-1 programs
@@ -76,7 +92,7 @@ def enumerate_programs(depth: int = 2) -> List[List[Tuple[str, Dict[str, int]]]]
     return programs
 
 
-def synthesize(train_pairs: List[Tuple[Array, Array]], max_programs: int = 256) -> List[List[Tuple[str, Dict[str, int]]]]:
+def synthesize(train_pairs: List[Tuple[Array, Array]], max_programs: int = 256, expected_shape: Optional[Tuple[int, int]] = None) -> List[List[Tuple[str, Dict[str, int]]]]:
     """Synthesize a small set of candidate programs that fit the training pairs.
 
     First attempts to find single-operation programs via heuristics. If none
@@ -90,7 +106,7 @@ def synthesize(train_pairs: List[Tuple[Array, Array]], max_programs: int = 256) 
         cand_progs = enumerate_programs(depth=2)
         scored = []
         for program in cand_progs:
-            s = score_candidate(program, train_pairs)
+            s = score_candidate(program, train_pairs, expected_shape=expected_shape)
             if s > 0.99:  # require exact matches
                 scored.append((s, program))
         # sort by fit score (descending) and take top max_programs
@@ -118,7 +134,15 @@ def predict_two(
         output grids corresponding to ``test_inputs``.
     """
     if not progs:
-        picks = [[("identity", {})], [("identity", {})]]
+        # Instead of just identity, try some smart fallbacks
+        fallback_programs = [
+            [("extract_pattern_region", {"marker_color": 8})],
+            [("smart_crop_auto", {})],
+            [("extract_marked_region", {"marker_color": 8})],
+            [("find_color_region", {"color": 8})],
+            [("identity", {})]
+        ]
+        picks = fallback_programs[:2]
     elif prefer_diverse and len(progs) > 1:
         picks = [progs[0], progs[1]]
     else:
@@ -131,12 +155,32 @@ def predict_two(
             try:
                 outs.append(apply_program(ti, program))
             except Exception:
-                outs.append(ti)
+                # Better fallback strategy - try smart cropping before identity
+                try:
+                    outs.append(apply_program(ti, [("extract_pattern_region", {"marker_color": 8})]))
+                except Exception:
+                    try:
+                        outs.append(apply_program(ti, [("smart_crop_auto", {})]))
+                    except Exception:
+                        try:
+                            outs.append(apply_program(ti, [("extract_marked_region", {"marker_color": 8})]))
+                        except Exception:
+                            outs.append(ti)  # Final fallback to identity
         attempts.append(outs)
 
     # Ensure second attempt differs from the first using safe array comparison
     if len(attempts) == 2 and all(eq(a, b) for a, b in zip(attempts[0], attempts[1])):
-        attempts[1] = [np.copy(ti) for ti in test_inputs]
+        # Try a different fallback for second attempt
+        outs: List[Array] = []
+        for ti in test_inputs:
+            try:
+                outs.append(apply_program(ti, [("extract_marked_region", {"marker_color": 8})]))
+            except Exception:
+                try:
+                    outs.append(apply_program(ti, [("find_color_region", {"color": 8})]))
+                except Exception:
+                    outs.append(np.copy(ti))
+        attempts[1] = outs
 
     # [S:ALG v1] attempt-dedup=eq-fallback pass
     return attempts

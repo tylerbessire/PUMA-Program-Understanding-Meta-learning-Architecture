@@ -26,6 +26,7 @@ __all__ = [
     "consistent_program_single_step",
     "guess_output_shape",
     "score_candidate",
+    "score_candidate_partial",
     "diversify_programs",
 ]
 
@@ -129,16 +130,54 @@ def guess_output_shape(pairs: List[Tuple[Array, Array]]) -> Optional[Tuple[int, 
     return None
 
 
-def score_candidate(program: List[Tuple[str, Dict[str, int]]], train_pairs: List[Tuple[Array, Array]]) -> float:
+def score_candidate(program: List[Tuple[str, Dict[str, int]]], train_pairs: List[Tuple[Array, Array]], expected_shape: Optional[Tuple[int, int]] = None) -> float:
     """Compute the proportion of train pairs exactly matched by the candidate program."""
+    
+    # Special handling for human reasoning candidates (using metadata flag)
+    if (len(program) == 1 and program[0][1].get('_source') == 'human_reasoner'):
+        # For human reasoning, use the verification score that was already computed
+        # during hypothesis generation - don't re-run the expensive analysis
+        verification_score = program[0][1].get('verification_score', 0.0)
+        hypothesis_name = program[0][0]
+        print(f"DEBUG: Scoring human reasoning '{hypothesis_name}': {verification_score:.3f}")
+        return verification_score
+    
+    # Standard scoring for regular programs
     good = 0
     for a, b in train_pairs:
         try:
             out = apply_program(a, program)
+            if expected_shape and out.shape != expected_shape:
+                return 0.0 # Prune programs that produce the wrong shape
             good += int(eq(out, b))
         except Exception as exc:
             logger.warning("Program execution failed on training pair: %s", exc)
     return good / len(train_pairs)
+
+
+def score_candidate_partial(program: List[Tuple[str, Dict[str, int]]], train_pairs: List[Tuple[Array, Array]]) -> float:
+    """Compute a partial score for a candidate program."""
+    scores = []
+    for a, b in train_pairs:
+        try:
+            out = apply_program(a, program)
+            
+            # Pixel-wise accuracy
+            if out.shape == b.shape:
+                pixel_accuracy = np.sum(out == b) / b.size
+            else:
+                pixel_accuracy = 0
+
+            # Shape similarity
+            shape_similarity = min(out.size, b.size) / max(out.size, b.size)
+
+            # Combined score
+            score = 0.7 * pixel_accuracy + 0.3 * shape_similarity
+            scores.append(score)
+        except Exception as exc:
+            logger.warning("Program execution failed on training pair: %s", exc)
+            scores.append(0.0)
+    return np.mean(scores)
 
 
 def diversify_programs(programs: List[List[Tuple[str, Dict[str, int]]]]) -> List[List[Tuple[str, Dict[str, int]]]]:

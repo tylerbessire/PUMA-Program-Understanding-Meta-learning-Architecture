@@ -416,6 +416,7 @@ class EpisodicRetrieval:
 
     def __init__(self, db_path: str = "episodes.json") -> None:
         self.database = EpisodeDatabase(db_path)
+        self.database.load()  # Load existing database if it exists
         self.cache: Dict[str, List[Program]] = {}
 
     def query_for_programs(

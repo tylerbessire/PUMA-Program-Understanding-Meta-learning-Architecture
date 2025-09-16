@@ -165,6 +165,55 @@ def beam_search_agentic(train_pairs: List[Tuple[Array, Array]],
     return (best_program, best_score)
 
 
+def analyze_transformation_patterns(train_pairs: List[Tuple[Array, Array]]) -> Dict[str, Any]:
+    """Analyze patterns across training pairs to guide search."""
+    patterns = {
+        'size_changes': [],
+        'color_mappings': set(),
+        'common_transformations': [],
+        'complexity_level': 'simple'
+    }
+    
+    for input_grid, output_grid in train_pairs:
+        # Size analysis
+        input_shape = input_grid.shape
+        output_shape = output_grid.shape
+        patterns['size_changes'].append((input_shape, output_shape))
+        
+        # Color mapping analysis
+        input_colors = set(input_grid.flatten())
+        output_colors = set(output_grid.flatten())
+        
+        # Simple mapping detection
+        if len(input_colors) == len(output_colors):
+            # Potential one-to-one color mapping
+            from collections import Counter
+            input_hist = Counter(input_grid.flatten())
+            output_hist = Counter(output_grid.flatten())
+            
+            # If histograms match, it's likely a permutation
+            if sorted(input_hist.values()) == sorted(output_hist.values()):
+                patterns['color_mappings'].add('permutation')
+        
+        # Detect common transformations
+        if input_shape == output_shape:
+            if np.array_equal(input_grid, np.fliplr(output_grid)):
+                patterns['common_transformations'].append('horizontal_flip')
+            elif np.array_equal(input_grid, np.flipud(output_grid)):
+                patterns['common_transformations'].append('vertical_flip')
+            elif np.array_equal(input_grid, np.rot90(output_grid)):
+                patterns['common_transformations'].append('rotate_90')
+        
+        # Complexity assessment
+        size_ratio = (output_shape[0] * output_shape[1]) / (input_shape[0] * input_shape[1])
+        if size_ratio < 0.5 or size_ratio > 2.0:
+            patterns['complexity_level'] = 'complex'
+        elif len(input_colors) != len(output_colors):
+            patterns['complexity_level'] = 'medium'
+    
+    return patterns
+
+
 def generate_successors(state: SearchState, train_pairs: List[Tuple[Array, Array]],
                        blackboard: AgentBlackboard) -> List[SearchState]:
     """Generate successor states by adding one more operation."""
@@ -172,6 +221,9 @@ def generate_successors(state: SearchState, train_pairs: List[Tuple[Array, Array
     
     if not train_pairs:
         return successors
+    
+    # Analyze transformation patterns to guide search
+    patterns = analyze_transformation_patterns(train_pairs)
     
     # Analyze first training example to propose operations
     input_grid, expected_grid = train_pairs[0]
@@ -186,17 +238,44 @@ def generate_successors(state: SearchState, train_pairs: List[Tuple[Array, Array
             'obj_idx': obj_idx,
             'grid': input_grid,
             'all_objects': objects,
-            'common_colors': list(range(10))  # Standard ARC colors
+            'common_colors': list(range(10)),  # Standard ARC colors
+            'patterns': patterns
         }
         proposals = propose_ops_for_object(obj, context)
         all_proposals.extend(proposals)
     
-    # Global operations
+    # Global operations with pattern-aware prioritization
     global_proposals = propose_global_ops(input_grid, objects)
+    
+    # Prioritize based on detected patterns
+    if 'horizontal_flip' in patterns['common_transformations']:
+        flip_ops = [Op("reflect", ("h",))]
+        global_proposals = flip_ops + global_proposals
+    
+    if 'vertical_flip' in patterns['common_transformations']:
+        flip_ops = [Op("reflect", ("v",))]
+        global_proposals = flip_ops + global_proposals
+    
+    if 'permutation' in patterns['color_mappings']:
+        # Add more palette permutation attempts
+        colors = list(set(input_grid.flatten()))
+        if len(colors) <= 4:  # Only for small palettes
+            for i in range(len(colors)):
+                for j in range(i+1, len(colors)):
+                    perm = {colors[i]: colors[j], colors[j]: colors[i]}
+                    global_proposals.insert(0, Op("palette_permute", (perm,)))
+    
     all_proposals.extend(global_proposals)
     
-    # Limit total proposals to prevent explosion
-    all_proposals = all_proposals[:100]
+    # Adaptive proposal limiting based on complexity
+    if patterns['complexity_level'] == 'complex':
+        limit = 150  # More proposals for complex cases
+    elif patterns['complexity_level'] == 'medium':
+        limit = 100
+    else:
+        limit = 50  # Fewer for simple cases
+    
+    all_proposals = all_proposals[:limit]
     
     for op in all_proposals:
         new_program = state.program + [op]
@@ -211,6 +290,14 @@ def generate_successors(state: SearchState, train_pairs: List[Tuple[Array, Array
         
         # Score the new program
         score, successes = blackboard.score_program(new_program, train_pairs)
+        
+        # Boost score for operations that match detected patterns
+        if op.kind == "reflect" and op.params[0] == "h" and 'horizontal_flip' in patterns['common_transformations']:
+            score += 10  # Pattern match bonus
+        elif op.kind == "reflect" and op.params[0] == "v" and 'vertical_flip' in patterns['common_transformations']:
+            score += 10
+        elif op.kind == "palette_permute" and 'permutation' in patterns['color_mappings']:
+            score += 5
         
         # Compute MDL cost
         ops_dict = [{'kind': op.kind, 'params': op.params} for op in new_program]

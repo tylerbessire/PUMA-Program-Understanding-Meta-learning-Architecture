@@ -3,7 +3,7 @@ import logging
 from typing import List, Tuple, Dict, Any
 from .grid import Array
 from .dsl import OPS
-from .heuristics import score_candidate
+from .heuristics import score_candidate_partial
 from .neural.sketches import generate_parameter_grid
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ def beam_search(
                     candidate = program + [(op_name, params)]
                     try:
                         # Get base score for correctness evaluation
-                        base_score = score_candidate(candidate, train_pairs)
+                        base_score = score_candidate_partial(candidate, train_pairs)
                     except Exception:
                         continue  # constraint violation
                     

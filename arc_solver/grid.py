@@ -34,9 +34,18 @@ __all__ = [
 ]
 
 
-def to_array(grid: List[List[int]]) -> Array:
+def to_array(grid: Any) -> Array:
     """Convert a nested Python list into a numpy array of dtype int16."""
-    return np.array(grid, dtype=np.int16)
+    a = np.asarray(grid, dtype=np.uint8)
+
+    if a.ndim == 1:
+        a = a[None, :] 
+
+    if a.ndim == 3 and a.shape[-1] == 1:
+        a = a[..., 0]
+
+    assert a.ndim == 2, f"ARC grid must be 2-D, got {a.ndim}D shape={a.shape}"
+    return a.astype(np.int16)
 
 
 def to_list(arr: Array) -> List[List[int]]:

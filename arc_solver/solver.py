@@ -76,6 +76,16 @@ class ARCSolver:
             identity = [to_list(arr) for arr in test_inputs]
             return {"attempt_1": identity, "attempt_2": identity}
 
+        # DYNAMIC SHAPE DETECTION: For inconsistent output tasks, don't assume first training shape
+        output_shapes = [out.shape for _, out in train_pairs]
+        if len(set(output_shapes)) == 1:
+            # Consistent outputs - use the common shape
+            expected_shape = train_pairs[0][1].shape
+        else:
+            # Inconsistent outputs - let enhanced search detect from test input
+            expected_shape = None
+            self.logger.info(f"Inconsistent output shapes detected: {output_shapes}, enabling dynamic detection")
+
         # Generate and store hypotheses about the transformation.
         self._last_hypotheses = self.hypothesis_engine.generate_hypotheses(train_pairs)
         best_hypothesis: Optional[Hypothesis] = (
@@ -103,7 +113,7 @@ class ARCSolver:
         attempt1: List[List[List[int]]] = []
         attempt2: List[List[List[int]]] = []
         for test_input in test_inputs:
-            predictions = self._get_predictions(train_pairs, test_input)
+            predictions = self._get_predictions(train_pairs, test_input, expected_shape)
             if predictions and predictions[0]:
                 first = to_list(predictions[0][0])
                 second_arr = predictions[1][0] if len(predictions) > 1 else predictions[0][0]
@@ -119,25 +129,32 @@ class ARCSolver:
         return {"attempt_1": attempt1, "attempt_2": attempt2}
 
     def _get_predictions(
-        self, train_pairs: List[Tuple[Array, Array]], test_input: Array
+        self, train_pairs: List[Tuple[Array, Array]], test_input: Array, expected_shape: Optional[Tuple[int, int]]
     ) -> List[List[Array]]:
         """Get prediction attempts for a single test input."""
         enhanced: List[List[Array]] = []
         if self.use_enhancements:
             try:
                 self.logger.info("Using enhanced search for prediction")
-                progs = synthesize_with_enhancements(train_pairs)
-                enhanced = predict_two_enhanced(progs, [test_input])
+                progs = synthesize_with_enhancements(train_pairs, expected_shape=expected_shape, test_input=test_input)
+                
+                # Import human reasoner for enhanced prediction
+                from .human_reasoning import HumanGradeReasoner
+                human_reasoner = HumanGradeReasoner()
+                
+                enhanced = predict_two_enhanced(progs, [test_input], 
+                                              human_reasoner=human_reasoner,
+                                              train_pairs=train_pairs)
             except Exception as e:
                 self.logger.exception("Enhanced prediction error: %s", e)
 
         # Baseline predictions for ensemble
-        progs_base = synth_baseline(train_pairs)
+        progs_base = synth_baseline(train_pairs, expected_shape=expected_shape)
         baseline = predict_two_baseline(progs_base, [test_input])
 
         # Validate enhanced prediction
         if enhanced and self._validate_solution(enhanced, [test_input]):
-            self.logger.info("Enhanced prediction valid")
+            self.logger.info(f"Enhanced prediction valid - shape: {enhanced[0][0].shape}")
             return [enhanced[0], baseline[0]]
 
         self.stats['fallback_used'] += 1
@@ -182,8 +199,16 @@ class ARCSolver:
         test_inputs = [to_array(p["input"]) for p in task["test"]]
 
         try:
-            programs = synthesize_with_enhancements(train_pairs, force_alt=True)
-            attempts = predict_two_enhanced(programs, test_inputs, prefer_diverse=True)
+            # Use dynamic shape detection for consistency with prediction pipeline
+            programs = synthesize_with_enhancements(train_pairs, force_alt=True, test_input=test_inputs[0] if test_inputs else None, expected_shape=None)
+            
+            # Import human reasoner for enhanced prediction
+            from .human_reasoning import HumanGradeReasoner
+            human_reasoner = HumanGradeReasoner()
+            
+            attempts = predict_two_enhanced(programs, test_inputs, prefer_diverse=True,
+                                          human_reasoner=human_reasoner,
+                                          train_pairs=train_pairs)
             return [to_list(x) for x in attempts[0]]
         except Exception:
             try:
@@ -244,21 +269,17 @@ _global_solver = None
 
 def solve_task(task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
     """Solve a single ARC task (backwards compatible interface)."""
-    global _global_solver
+    # Create a new solver instance for each task to prevent memory accumulation
+    use_baseline = os.environ.get('ARC_USE_BASELINE', '').lower() in (
+        '1', 'true', 'yes'
+    )
+    enhancements_disabled = os.environ.get('ARC_DISABLE_ENHANCEMENTS', '').lower() in (
+        '1', 'true', 'yes'
+    )
+    use_enhancements = not use_baseline and not enhancements_disabled
+    solver = ARCSolver(use_enhancements=use_enhancements)
     
-    if _global_solver is None:
-        # Determine whether to enable enhancements. Baseline can be forced via
-        # ``ARC_USE_BASELINE`` or by explicitly disabling enhancements.
-        use_baseline = os.environ.get('ARC_USE_BASELINE', '').lower() in (
-            '1', 'true', 'yes'
-        )
-        enhancements_disabled = os.environ.get('ARC_DISABLE_ENHANCEMENTS', '').lower() in (
-            '1', 'true', 'yes'
-        )
-        use_enhancements = not use_baseline and not enhancements_disabled
-        _global_solver = ARCSolver(use_enhancements=use_enhancements)
-    
-    return _global_solver.solve_task(task)
+    return solver.solve_task(task)
 
 
 def get_solver_stats() -> Dict[str, float]:

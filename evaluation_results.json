@@ -5,314 +5,314 @@
     "task_solved": 0,
     "total_tasks": 50,
     "solve_times": [
-      8.949198722839355,
-      1235.564908027649,
-      6.433271169662476,
-      937.1517581939697,
-      1047.790097951889,
-      5.041221857070923,
-      9.609745979309082,
-      8.424811840057373,
-      2028.5909600257874,
-      10.605244874954224,
-      11.321046590805054,
-      194.2193958759308,
-      11.82600712776184,
-      11.863852977752686,
-      3624.5727219581604,
-      25.42367696762085,
-      796.9743051528931,
-      6.0637171268463135,
-      7.514026165008545,
-      4.457986116409302,
-      8.118711233139038,
-      16.874796152114868,
-      131.37727093696594,
-      18.053327083587646,
-      23.18437695503235,
-      984.3085687160492,
-      206.14992499351501,
-      24.885817050933838,
-      82.77231001853943,
-      21.7243869304657,
-      31.622931241989136,
-      2041.1173131465912,
-      1155.3825697898865,
-      19.89988136291504,
-      1179.572751045227,
-      396.61271595954895,
-      22.132301092147827,
-      1952.3036737442017,
-      394.01110100746155,
-      27.121278047561646,
-      64.70177102088928,
-      40.56433391571045,
-      2299.809624195099,
-      805.9449269771576,
-      28.79127073287964,
-      941.8010880947113,
-      35.17825984954834,
-      19.708332061767578,
-      40.376548051834106,
-      28.186562061309814
+      8.5971999168396,
+      18.500077962875366,
+      6.273467779159546,
+      19.906251907348633,
+      13.357302188873291,
+      14.74097728729248,
+      141.31482005119324,
+      17.135370016098022,
+      14.87931227684021,
+      18.691599130630493,
+      22.205687761306763,
+      28.909559965133667,
+      39.30456900596619,
+      28.670109033584595,
+      39.82460117340088,
+      34.693378925323486,
+      20.797546863555908,
+      23.795194149017334,
+      26.526120901107788,
+      25.520393133163452,
+      30.538245677947998,
+      24.815346002578735,
+      48.9206748008728,
+      27.617499113082886,
+      33.92784094810486,
+      28.574925184249878,
+      60.36566925048828,
+      40.685208797454834,
+      46.41130495071411,
+      35.32733917236328,
+      54.33473491668701,
+      40.18308186531067,
+      60.961649894714355,
+      41.34317326545715,
+      65.27214312553406,
+      49.120851039886475,
+      40.63775420188904,
+      79.59084272384644,
+      81.1436710357666,
+      37.82159996032715,
+      33.31393885612488,
+      42.08578896522522,
+      29.683279991149902,
+      27.572965145111084,
+      32.07659912109375,
+      41.88391399383545,
+      43.42339873313904,
+      24.490232944488525,
+      48.55746603012085,
+      31.08276677131653
     ],
     "task_results": {
       "0934a4d8": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 8.949198722839355
+        "solve_time": 8.5971999168396
       },
       "135a2760": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 1235.564908027649
+        "solve_time": 18.500077962875366
       },
       "136b0064": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.433271169662476
+        "solve_time": 6.273467779159546
       },
       "13e47133": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 937.1517581939697
+        "solve_time": 19.906251907348633
       },
       "142ca369": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 1047.790097951889
+        "solve_time": 13.357302188873291
       },
       "16b78196": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 5.041221857070923
+        "solve_time": 14.74097728729248
       },
       "16de56c4": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 9.609745979309082
+        "solve_time": 141.31482005119324
       },
       "1818057f": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 8.424811840057373
+        "solve_time": 17.135370016098022
       },
       "195c6913": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2028.5909600257874
+        "solve_time": 14.87931227684021
       },
       "1ae2feb7": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 10.605244874954224
+        "solve_time": 18.691599130630493
       },
       "20270e3b": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 11.321046590805054
+        "solve_time": 22.205687761306763
       },
       "20a9e565": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 194.2193958759308
+        "solve_time": 28.909559965133667
       },
       "21897d95": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 11.82600712776184
+        "solve_time": 39.30456900596619
       },
       "221dfab4": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 11.863852977752686
+        "solve_time": 28.670109033584595
       },
       "247ef758": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3624.5727219581604
+        "solve_time": 39.82460117340088
       },
       "269e22fb": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 25.42367696762085
+        "solve_time": 34.693378925323486
       },
       "271d71e2": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 796.9743051528931
+        "solve_time": 20.797546863555908
       },
       "28a6681f": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.0637171268463135
+        "solve_time": 23.795194149017334
       },
       "291dc1e1": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 7.514026165008545
+        "solve_time": 26.526120901107788
       },
       "2b83f449": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 4.457986116409302
+        "solve_time": 25.520393133163452
       },
       "2ba387bc": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 8.118711233139038
+        "solve_time": 30.538245677947998
       },
       "2c181942": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 16.874796152114868
+        "solve_time": 24.815346002578735
       },
       "2d0172a1": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 131.37727093696594
+        "solve_time": 48.9206748008728
       },
       "31f7f899": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 18.053327083587646
+        "solve_time": 27.617499113082886
       },
       "332f06d7": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 23.18437695503235
+        "solve_time": 33.92784094810486
       },
       "35ab12c3": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 984.3085687160492
+        "solve_time": 28.574925184249878
       },
       "36a08778": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 206.14992499351501
+        "solve_time": 60.36566925048828
       },
       "38007db0": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 24.885817050933838
+        "solve_time": 40.685208797454834
       },
       "3a25b0d8": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 82.77231001853943
+        "solve_time": 46.41130495071411
       },
       "3dc255db": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 21.7243869304657
+        "solve_time": 35.32733917236328
       },
       "3e6067c3": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 31.622931241989136
+        "solve_time": 54.33473491668701
       },
       "409aa875": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2041.1173131465912
+        "solve_time": 40.18308186531067
       },
       "446ef5d2": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 1155.3825697898865
+        "solve_time": 60.961649894714355
       },
       "45a5af55": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 19.89988136291504
+        "solve_time": 41.34317326545715
       },
       "4a21e3da": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 1179.572751045227
+        "solve_time": 65.27214312553406
       },
       "4c3d4a41": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 396.61271595954895
+        "solve_time": 49.120851039886475
       },
       "4c416de3": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 22.132301092147827
+        "solve_time": 40.63775420188904
       },
       "4c7dc4dd": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 1952.3036737442017
+        "solve_time": 79.59084272384644
       },
       "4e34c42c": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 394.01110100746155
+        "solve_time": 81.1436710357666
       },
       "53fb4810": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 27.121278047561646
+        "solve_time": 37.82159996032715
       },
       "5545f144": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 64.70177102088928
+        "solve_time": 33.31393885612488
       },
       "581f7754": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 40.56433391571045
+        "solve_time": 42.08578896522522
       },
       "58490d8a": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2299.809624195099
+        "solve_time": 29.683279991149902
       },
       "58f5dbd5": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 805.9449269771576
+        "solve_time": 27.572965145111084
       },
       "5961cc34": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 28.79127073287964
+        "solve_time": 32.07659912109375
       },
       "5dbc8537": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 941.8010880947113
+        "solve_time": 41.88391399383545
       },
       "62593bfd": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 35.17825984954834
+        "solve_time": 43.42339873313904
       },
       "64efde09": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 19.708332061767578
+        "solve_time": 24.490232944488525
       },
       "65b59efc": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 40.376548051834106
+        "solve_time": 48.55746603012085
       },
       "67e490f4": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 28.186562061309814
+        "solve_time": 31.08276677131653
       }
     },
     "attempt1_accuracy": 0.0,
     "attempt2_accuracy": 0.0,
     "task_success_rate": 0.0,
-    "avg_solve_time": 460.69373356342317,
-    "total_solve_time": 23034.686678171158
+    "avg_solve_time": 36.90814891815185,
+    "total_solve_time": 1845.4074459075928
   },
   "baseline": {
     "attempt1_correct": 0,
@@ -320,313 +320,313 @@
     "task_solved": 0,
     "total_tasks": 50,
     "solve_times": [
-      104.70491099357605,
-      2.6827640533447266,
-      3.6186070442199707,
-      942.1766331195831,
-      5.445439100265503,
-      2.3087708950042725,
-      6.343085765838623,
-      3.280134916305542,
-      985.153434753418,
-      6.634734869003296,
-      6.555551052093506,
-      5.411672830581665,
-      6.1465232372283936,
-      3.4722931385040283,
-      5.7299909591674805,
-      6.595628023147583,
-      4.5685319900512695,
-      2.5771660804748535,
-      3.405492067337036,
-      1.857922077178955,
-      399.0549099445343,
-      6.22327184677124,
-      10.430349111557007,
-      1026.1365478038788,
-      7.472689151763916,
-      169.38847994804382,
-      8.964599132537842,
-      3.001011848449707,
-      6.615128040313721,
-      59.96724200248718,
-      4.387693166732788,
-      7.905894041061401,
-      2.8921799659729004,
-      7.268712282180786,
-      4.265460968017578,
-      2.968714952468872,
-      8.448298931121826,
-      3.184534788131714,
-      3.3639369010925293,
-      8.088167905807495,
-      8.645469903945923,
-      4.334535121917725,
-      9.594188690185547,
-      9.61173677444458,
-      160.30450987815857,
-      3.1092350482940674,
-      3.1070170402526855,
-      9.274490118026733,
-      4.086824178695679,
-      10.796298027038574
+      158.19776725769043,
+      2.3965067863464355,
+      3.019308090209961,
+      105.41730666160583,
+      9.925353050231934,
+      31.660337209701538,
+      9.774930953979492,
+      7.025723218917847,
+      7.141875743865967,
+      9.595641851425171,
+      8.864320039749146,
+      9.55136513710022,
+      10.376729726791382,
+      5.742321968078613,
+      7.9983601570129395,
+      8.79034972190857,
+      6.84076714515686,
+      8.262834787368774,
+      10.862816095352173,
+      9.138469219207764,
+      10.814683198928833,
+      9.881893157958984,
+      8.967883110046387,
+      10.175554990768433,
+      11.267841100692749,
+      11.267385244369507,
+      13.090916156768799,
+      5.570858955383301,
+      4.598068952560425,
+      12.547707080841064,
+      8.039934873580933,
+      15.19841718673706,
+      5.269176244735718,
+      11.568753957748413,
+      7.941996097564697,
+      4.915435075759888,
+      27.00746202468872,
+      5.6743669509887695,
+      4.582280158996582,
+      10.369038105010986,
+      10.641122817993164,
+      4.708308935165405,
+      10.135839939117432,
+      10.918582677841187,
+      11.90358591079712,
+      3.3479361534118652,
+      4.138216018676758,
+      11.755298852920532,
+      5.359720945358276,
+      11.883872985839844
     ],
     "task_results": {
       "0934a4d8": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 104.70491099357605
+        "solve_time": 158.19776725769043
       },
       "135a2760": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2.6827640533447266
+        "solve_time": 2.3965067863464355
       },
       "136b0064": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.6186070442199707
+        "solve_time": 3.019308090209961
       },
       "13e47133": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 942.1766331195831
+        "solve_time": 105.41730666160583
       },
       "142ca369": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 5.445439100265503
+        "solve_time": 9.925353050231934
       },
       "16b78196": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2.3087708950042725
+        "solve_time": 31.660337209701538
       },
       "16de56c4": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.343085765838623
+        "solve_time": 9.774930953979492
       },
       "1818057f": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.280134916305542
+        "solve_time": 7.025723218917847
       },
       "195c6913": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 985.153434753418
+        "solve_time": 7.141875743865967
       },
       "1ae2feb7": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.634734869003296
+        "solve_time": 9.595641851425171
       },
       "20270e3b": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.555551052093506
+        "solve_time": 8.864320039749146
       },
       "20a9e565": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 5.411672830581665
+        "solve_time": 9.55136513710022
       },
       "21897d95": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.1465232372283936
+        "solve_time": 10.376729726791382
       },
       "221dfab4": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.4722931385040283
+        "solve_time": 5.742321968078613
       },
       "247ef758": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 5.7299909591674805
+        "solve_time": 7.9983601570129395
       },
       "269e22fb": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.595628023147583
+        "solve_time": 8.79034972190857
       },
       "271d71e2": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 4.5685319900512695
+        "solve_time": 6.84076714515686
       },
       "28a6681f": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2.5771660804748535
+        "solve_time": 8.262834787368774
       },
       "291dc1e1": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.405492067337036
+        "solve_time": 10.862816095352173
       },
       "2b83f449": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 1.857922077178955
+        "solve_time": 9.138469219207764
       },
       "2ba387bc": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 399.0549099445343
+        "solve_time": 10.814683198928833
       },
       "2c181942": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.22327184677124
+        "solve_time": 9.881893157958984
       },
       "2d0172a1": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 10.430349111557007
+        "solve_time": 8.967883110046387
       },
       "31f7f899": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 1026.1365478038788
+        "solve_time": 10.175554990768433
       },
       "332f06d7": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 7.472689151763916
+        "solve_time": 11.267841100692749
       },
       "35ab12c3": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 169.38847994804382
+        "solve_time": 11.267385244369507
       },
       "36a08778": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 8.964599132537842
+        "solve_time": 13.090916156768799
       },
       "38007db0": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.001011848449707
+        "solve_time": 5.570858955383301
       },
       "3a25b0d8": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 6.615128040313721
+        "solve_time": 4.598068952560425
       },
       "3dc255db": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 59.96724200248718
+        "solve_time": 12.547707080841064
       },
       "3e6067c3": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 4.387693166732788
+        "solve_time": 8.039934873580933
       },
       "409aa875": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 7.905894041061401
+        "solve_time": 15.19841718673706
       },
       "446ef5d2": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2.8921799659729004
+        "solve_time": 5.269176244735718
       },
       "45a5af55": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 7.268712282180786
+        "solve_time": 11.568753957748413
       },
       "4a21e3da": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 4.265460968017578
+        "solve_time": 7.941996097564697
       },
       "4c3d4a41": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 2.968714952468872
+        "solve_time": 4.915435075759888
       },
       "4c416de3": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 8.448298931121826
+        "solve_time": 27.00746202468872
       },
       "4c7dc4dd": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.184534788131714
+        "solve_time": 5.6743669509887695
       },
       "4e34c42c": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.3639369010925293
+        "solve_time": 4.582280158996582
       },
       "53fb4810": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 8.088167905807495
+        "solve_time": 10.369038105010986
       },
       "5545f144": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 8.645469903945923
+        "solve_time": 10.641122817993164
       },
       "581f7754": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 4.334535121917725
+        "solve_time": 4.708308935165405
       },
       "58490d8a": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 9.594188690185547
+        "solve_time": 10.135839939117432
       },
       "58f5dbd5": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 9.61173677444458
+        "solve_time": 10.918582677841187
       },
       "5961cc34": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 160.30450987815857
+        "solve_time": 11.90358591079712
       },
       "5dbc8537": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.1092350482940674
+        "solve_time": 3.3479361534118652
       },
       "62593bfd": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 3.1070170402526855
+        "solve_time": 4.138216018676758
       },
       "64efde09": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 9.274490118026733
+        "solve_time": 11.755298852920532
       },
       "65b59efc": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 4.086824178695679
+        "solve_time": 5.359720945358276
       },
       "67e490f4": {
         "attempt1_correct": false,
         "attempt2_correct": false,
-        "solve_time": 10.796298027038574
+        "solve_time": 11.883872985839844
       }
     },
     "attempt1_accuracy": 0.0,
     "attempt2_accuracy": 0.0,
     "task_success_rate": 0.0,
-    "avg_solve_time": 81.63122828960418,
-    "total_solve_time": 4081.5614144802094
+    "avg_solve_time": 14.282504453659058,
+    "total_solve_time": 714.1252226829529
   }
 }

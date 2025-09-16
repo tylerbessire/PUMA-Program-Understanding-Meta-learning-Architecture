@@ -59,15 +59,33 @@ def solve_task_and_store(task: Dict[str, Any], episodic_memory: EpisodicRetrieva
     if not train_pairs:
         return False
     
-    # Try to find successful programs using heuristics
-    candidate_programs = consistent_program_single_step(train_pairs)
-    
-    # Filter for programs that actually work
+    # Try enhanced solver first, then fallback to heuristics
     successful_programs = []
-    for program in candidate_programs:
-        score = score_candidate(program, train_pairs)
-        if score > 0.99:  # Require perfect fit
-            successful_programs.append(program)
+    
+    try:
+        # Use enhanced solver for more comprehensive solutions
+        from arc_solver.enhanced_search import synthesize_with_enhancements
+        enhanced_programs = synthesize_with_enhancements(train_pairs)
+        
+        # Validate enhanced programs
+        for program in enhanced_programs:
+            score = score_candidate(program, train_pairs)
+            if score > 0.99:  # Require perfect fit
+                successful_programs.append(program)
+                
+    except Exception:
+        # Fallback to heuristics if enhanced solver fails
+        pass
+    
+    # If enhanced solver didn't find anything, try heuristics
+    if not successful_programs:
+        candidate_programs = consistent_program_single_step(train_pairs)
+        
+        # Filter for programs that actually work
+        for program in candidate_programs:
+            score = score_candidate(program, train_pairs)
+            if score > 0.99:  # Require perfect fit
+                successful_programs.append(program)
     
     # Store successful programs in episodic memory
     if successful_programs:
@@ -89,7 +107,7 @@ def build_episodic_memory(tasks: List[Dict[str, Any]],
     total_count = len(tasks)
     
     for i, task in enumerate(tasks):
-        if i % 50 == 0:
+        if i % 10 == 0:
             print(f"Processing task {i+1}/{total_count}...")
         
         try:

@@ -196,8 +196,82 @@ def estimate_grid_complexity(grid) -> float:
     
     spatial_complexity = spatial_changes / (2 * h * w - h - w) if h * w > 1 else 0
     
+    # Pattern complexity (using multiscale patterns if available)
+    pattern_complexity = 0.0
+    try:
+        from .patterns import detect_multiscale_patterns
+        patterns = detect_multiscale_patterns(grid)
+        
+        # Add complexity based on detected patterns
+        if patterns['repetition_patterns'].get('tiling'):
+            pattern_complexity -= 1.0  # Regular patterns reduce complexity
+        
+        if patterns['symmetry_patterns']['horizontal_symmetry'] or patterns['symmetry_patterns']['vertical_symmetry']:
+            pattern_complexity -= 0.5  # Symmetry reduces complexity
+        
+        if patterns['pixel_level']['checkerboard']:
+            pattern_complexity -= 0.5  # Regular patterns reduce complexity
+        
+        num_objects = patterns['object_level'].get('num_objects', 0)
+        if num_objects > 0:
+            pattern_complexity += np.log2(num_objects) * 0.1  # More objects = more complexity
+            
+    except ImportError:
+        # Fallback if patterns module not available
+        pass
+    
     # Combine measures
-    return (entropy + spatial_complexity + np.log2(num_colors)) / 3.0
+    base_complexity = (entropy + spatial_complexity + np.log2(num_colors)) / 3.0
+    return max(0.1, base_complexity + pattern_complexity)
+
+
+def pattern_aware_mdl_score(operations: List[Operation], input_grid, output_grid, 
+                           accuracy: float = 1.0) -> float:
+    """
+    Compute MDL score that takes into account the complexity of input and output patterns.
+    
+    Args:
+        operations: List of operations in the program
+        input_grid: Input grid
+        output_grid: Output grid  
+        accuracy: Accuracy of the program on training data
+    
+    Returns:
+        Pattern-aware MDL score
+    """
+    if accuracy <= 0:
+        return float('inf')
+    
+    # Standard program length
+    program_cost = program_length(operations)
+    
+    # Input complexity
+    input_complexity = estimate_grid_complexity(input_grid)
+    
+    # Output complexity  
+    output_complexity = estimate_grid_complexity(output_grid)
+    
+    # Complexity ratio - if output is much simpler than input, 
+    # it suggests a good compression/pattern extraction
+    complexity_ratio = output_complexity / max(0.1, input_complexity)
+    
+    if complexity_ratio < 0.5:
+        # Output is much simpler - reward this compression
+        compression_bonus = -np.log2(complexity_ratio)
+    elif complexity_ratio > 2.0:
+        # Output is much more complex - penalize
+        complexity_penalty = np.log2(complexity_ratio)
+        program_cost += complexity_penalty
+    else:
+        compression_bonus = 0
+    
+    # Accuracy cost
+    accuracy_cost = -np.log(accuracy) if accuracy < 1.0 else 0.0
+    
+    # Final score
+    final_cost = accuracy_cost * 10.0 + program_cost - compression_bonus
+    
+    return max(0.1, final_cost)
 
 
 # Make numpy available for mdl_score

@@ -1,4 +1,5443 @@
 {
-  "next_id": 1,
-  "episodes": {}
+  "next_id": 15,
+  "episodes": {
+    "1": {
+      "task_signature": "pairs:6|shape:0|colors:3-1|objs:11-1|ops:X",
+      "programs": [
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "2": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 2
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "2": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 3
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "2": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 1
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "2": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "2": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 3
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "2": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "2": 8
+              }
+            }
+          ]
+        ]
+      ],
+      "task_id": "239be575",
+      "train_pairs": [
+        [
+          [
+            [
+              8,
+              8,
+              0,
+              0,
+              2,
+              2,
+              0
+            ],
+            [
+              0,
+              8,
+              8,
+              0,
+              2,
+              2,
+              8
+            ],
+            [
+              0,
+              0,
+              0,
+              8,
+              0,
+              8,
+              0
+            ],
+            [
+              8,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              2,
+              0,
+              8,
+              0,
+              8
+            ],
+            [
+              0,
+              2,
+              2,
+              8,
+              8,
+              0,
+              8
+            ]
+          ],
+          [
+            [
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              8,
+              0,
+              0,
+              0,
+              0,
+              8,
+              0
+            ],
+            [
+              0,
+              0,
+              2,
+              2,
+              0,
+              8,
+              0
+            ],
+            [
+              8,
+              0,
+              2,
+              2,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              8,
+              0,
+              0,
+              8,
+              0
+            ],
+            [
+              0,
+              0,
+              8,
+              2,
+              2,
+              0,
+              8
+            ],
+            [
+              8,
+              0,
+              0,
+              2,
+              2,
+              8,
+              0
+            ]
+          ],
+          [
+            [
+              8
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              8,
+              0,
+              0,
+              2,
+              2,
+              8
+            ],
+            [
+              8,
+              0,
+              8,
+              2,
+              2,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              8,
+              0
+            ],
+            [
+              2,
+              2,
+              8,
+              0,
+              8,
+              0
+            ],
+            [
+              2,
+              2,
+              0,
+              0,
+              0,
+              8
+            ],
+            [
+              0,
+              8,
+              8,
+              0,
+              8,
+              0
+            ]
+          ],
+          [
+            [
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              8,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              2,
+              0,
+              8,
+              8,
+              8,
+              0
+            ],
+            [
+              2,
+              2,
+              8,
+              8,
+              0,
+              2,
+              2
+            ],
+            [
+              0,
+              0,
+              8,
+              0,
+              0,
+              2,
+              2
+            ],
+            [
+              0,
+              8,
+              0,
+              0,
+              8,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              8
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              8,
+              2,
+              2,
+              8,
+              8,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              2,
+              0,
+              0,
+              0,
+              8
+            ],
+            [
+              0,
+              8,
+              8,
+              0,
+              0,
+              8,
+              0
+            ],
+            [
+              0,
+              0,
+              8,
+              0,
+              0,
+              0,
+              8
+            ],
+            [
+              8,
+              0,
+              8,
+              8,
+              8,
+              2,
+              2
+            ],
+            [
+              8,
+              0,
+              0,
+              0,
+              0,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              8
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              0,
+              8,
+              0,
+              8
+            ],
+            [
+              2,
+              2,
+              8,
+              0,
+              0
+            ],
+            [
+              2,
+              2,
+              0,
+              0,
+              8
+            ],
+            [
+              0,
+              0,
+              0,
+              2,
+              2
+            ],
+            [
+              8,
+              8,
+              0,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              0
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 6,
+        "input_height_mean": 5.666666666666667,
+        "input_width_mean": 6.5,
+        "output_height_mean": 1.0,
+        "output_width_mean": 1.0,
+        "shape_preserved": false,
+        "size_ratio_mean": 0.027962962962962964,
+        "input_colors_mean": 3.0,
+        "output_colors_mean": 1.0,
+        "background_color_consistent": true,
+        "has_color_mapping": false,
+        "color_mapping_size": 0,
+        "input_objects_mean": 11.833333333333334,
+        "output_objects_mean": 1.0,
+        "object_count_preserved": false,
+        "likely_rotation": 0.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.0,
+        "likely_recolor": 0.0,
+        "likely_crop": 1.0,
+        "likely_pad": 0.0
+      }
+    },
+    "2": {
+      "task_signature": "pairs:4|shape:1|colors:2-2|objs:2-2|ops:U",
+      "programs": [
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "translate",
+            {
+              "dy": 1,
+              "dx": 0
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "translate",
+            {
+              "dy": 1,
+              "dx": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "translate",
+            {
+              "dy": -1,
+              "dx": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "translate",
+            {
+              "dy": -1,
+              "dx": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "translate",
+            {
+              "dy": 1,
+              "dx": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "translate",
+            {
+              "dy": 1,
+              "dx": 0
+            }
+          ]
+        ]
+      ],
+      "task_id": "25ff71a9",
+      "train_pairs": [
+        [
+          [
+            [
+              0,
+              2,
+              2
+            ],
+            [
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              2
+            ],
+            [
+              0,
+              0,
+              2
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0
+            ],
+            [
+              1,
+              1,
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 4,
+        "input_height_mean": 3.0,
+        "input_width_mean": 3.0,
+        "output_height_mean": 3.0,
+        "output_width_mean": 3.0,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 2.0,
+        "output_colors_mean": 2.0,
+        "background_color_consistent": true,
+        "has_color_mapping": false,
+        "color_mapping_size": 0,
+        "input_objects_mean": 2.5,
+        "output_objects_mean": 2.25,
+        "object_count_preserved": false,
+        "likely_rotation": 0.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.125,
+        "likely_recolor": 0.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "3": {
+      "task_signature": "pairs:4|shape:1|colors:2-2|objs:5-5|ops:R",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ]
+      ],
+      "task_id": "3c9b0459",
+      "train_pairs": [
+        [
+          [
+            [
+              8,
+              8,
+              8
+            ],
+            [
+              5,
+              5,
+              8
+            ],
+            [
+              8,
+              5,
+              5
+            ]
+          ],
+          [
+            [
+              5,
+              5,
+              8
+            ],
+            [
+              8,
+              5,
+              5
+            ],
+            [
+              8,
+              8,
+              8
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              9,
+              2,
+              4
+            ],
+            [
+              2,
+              4,
+              4
+            ],
+            [
+              2,
+              9,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              9,
+              2
+            ],
+            [
+              4,
+              4,
+              2
+            ],
+            [
+              4,
+              2,
+              9
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              3,
+              2,
+              9
+            ],
+            [
+              9,
+              9,
+              9
+            ],
+            [
+              2,
+              3,
+              3
+            ]
+          ],
+          [
+            [
+              3,
+              3,
+              2
+            ],
+            [
+              9,
+              9,
+              9
+            ],
+            [
+              9,
+              2,
+              3
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              2,
+              2,
+              1
+            ],
+            [
+              2,
+              1,
+              2
+            ],
+            [
+              2,
+              8,
+              1
+            ]
+          ],
+          [
+            [
+              1,
+              8,
+              2
+            ],
+            [
+              2,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 4,
+        "input_height_mean": 3.0,
+        "input_width_mean": 3.0,
+        "output_height_mean": 3.0,
+        "output_width_mean": 3.0,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 2.75,
+        "output_colors_mean": 2.75,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 2.75,
+        "input_objects_mean": 5.0,
+        "output_objects_mean": 5.0,
+        "object_count_preserved": true,
+        "likely_rotation": 1.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 0.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "4": {
+      "task_signature": "pairs:2|shape:1|colors:4-4|objs:4-4|ops:R",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ]
+      ],
+      "task_id": "6150a2bd",
+      "train_pairs": [
+        [
+          [
+            [
+              5,
+              5,
+              2
+            ],
+            [
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              1
+            ],
+            [
+              2,
+              5,
+              5
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              3,
+              3,
+              8
+            ],
+            [
+              3,
+              7,
+              0
+            ],
+            [
+              5,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              0,
+              0,
+              5
+            ],
+            [
+              0,
+              7,
+              3
+            ],
+            [
+              8,
+              3,
+              3
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 2,
+        "input_height_mean": 3.0,
+        "input_width_mean": 3.0,
+        "output_height_mean": 3.0,
+        "output_width_mean": 3.0,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 4.5,
+        "output_colors_mean": 4.5,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 4.5,
+        "input_objects_mean": 4.5,
+        "output_objects_mean": 4.5,
+        "object_count_preserved": true,
+        "likely_rotation": 1.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 0.5,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "5": {
+      "task_signature": "pairs:3|shape:1|colors:4-4|objs:17-17|ops:F",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "transpose",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "transpose",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ]
+      ],
+      "task_id": "67a3c6ac",
+      "train_pairs": [
+        [
+          [
+            [
+              7,
+              7,
+              7,
+              6,
+              6,
+              6,
+              2
+            ],
+            [
+              6,
+              7,
+              1,
+              1,
+              7,
+              7,
+              1
+            ],
+            [
+              7,
+              7,
+              2,
+              1,
+              2,
+              6,
+              6
+            ],
+            [
+              2,
+              2,
+              7,
+              7,
+              7,
+              2,
+              2
+            ],
+            [
+              7,
+              2,
+              7,
+              1,
+              2,
+              7,
+              2
+            ],
+            [
+              6,
+              6,
+              6,
+              2,
+              2,
+              1,
+              1
+            ],
+            [
+              6,
+              2,
+              6,
+              6,
+              6,
+              6,
+              6
+            ]
+          ],
+          [
+            [
+              2,
+              6,
+              6,
+              6,
+              7,
+              7,
+              7
+            ],
+            [
+              1,
+              7,
+              7,
+              1,
+              1,
+              7,
+              6
+            ],
+            [
+              6,
+              6,
+              2,
+              1,
+              2,
+              7,
+              7
+            ],
+            [
+              2,
+              2,
+              7,
+              7,
+              7,
+              2,
+              2
+            ],
+            [
+              2,
+              7,
+              2,
+              1,
+              7,
+              2,
+              7
+            ],
+            [
+              1,
+              1,
+              2,
+              2,
+              6,
+              6,
+              6
+            ],
+            [
+              6,
+              6,
+              6,
+              6,
+              6,
+              2,
+              6
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              6,
+              6,
+              6,
+              2
+            ],
+            [
+              6,
+              1,
+              6,
+              2
+            ],
+            [
+              7,
+              2,
+              7,
+              2
+            ],
+            [
+              1,
+              7,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              6,
+              6,
+              6
+            ],
+            [
+              2,
+              6,
+              1,
+              6
+            ],
+            [
+              2,
+              7,
+              2,
+              7
+            ],
+            [
+              2,
+              2,
+              7,
+              1
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              1,
+              2,
+              7,
+              1,
+              1,
+              1
+            ],
+            [
+              2,
+              1,
+              7,
+              7,
+              2,
+              6
+            ],
+            [
+              2,
+              1,
+              2,
+              6,
+              2,
+              1
+            ],
+            [
+              1,
+              2,
+              1,
+              7,
+              6,
+              2
+            ],
+            [
+              2,
+              7,
+              1,
+              2,
+              7,
+              1
+            ],
+            [
+              2,
+              1,
+              6,
+              2,
+              7,
+              7
+            ]
+          ],
+          [
+            [
+              1,
+              1,
+              1,
+              7,
+              2,
+              1
+            ],
+            [
+              6,
+              2,
+              7,
+              7,
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              6,
+              2,
+              1,
+              2
+            ],
+            [
+              2,
+              6,
+              7,
+              1,
+              2,
+              1
+            ],
+            [
+              1,
+              7,
+              2,
+              1,
+              7,
+              2
+            ],
+            [
+              7,
+              7,
+              2,
+              6,
+              1,
+              2
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 3,
+        "input_height_mean": 5.666666666666667,
+        "input_width_mean": 5.666666666666667,
+        "output_height_mean": 5.666666666666667,
+        "output_width_mean": 5.666666666666667,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 4.0,
+        "output_colors_mean": 4.0,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 4.0,
+        "input_objects_mean": 17.333333333333332,
+        "output_objects_mean": 17.333333333333332,
+        "object_count_preserved": true,
+        "likely_rotation": 0.0,
+        "likely_reflection": 1.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 0.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "6": {
+      "task_signature": "pairs:3|shape:1|colors:6-6|objs:24-24|ops:F",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "transpose",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "transpose",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ]
+      ],
+      "task_id": "68b16354",
+      "train_pairs": [
+        [
+          [
+            [
+              7,
+              3,
+              3,
+              1,
+              2
+            ],
+            [
+              1,
+              8,
+              2,
+              4,
+              1
+            ],
+            [
+              2,
+              7,
+              8,
+              7,
+              2
+            ],
+            [
+              7,
+              7,
+              4,
+              1,
+              8
+            ],
+            [
+              8,
+              1,
+              7,
+              7,
+              1
+            ]
+          ],
+          [
+            [
+              8,
+              1,
+              7,
+              7,
+              1
+            ],
+            [
+              7,
+              7,
+              4,
+              1,
+              8
+            ],
+            [
+              2,
+              7,
+              8,
+              7,
+              2
+            ],
+            [
+              1,
+              8,
+              2,
+              4,
+              1
+            ],
+            [
+              7,
+              3,
+              3,
+              1,
+              2
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              8,
+              1,
+              2,
+              1,
+              4
+            ],
+            [
+              4,
+              4,
+              2,
+              4,
+              8
+            ],
+            [
+              3,
+              7,
+              2,
+              4,
+              8
+            ],
+            [
+              2,
+              7,
+              7,
+              8,
+              7
+            ],
+            [
+              8,
+              7,
+              7,
+              4,
+              8
+            ]
+          ],
+          [
+            [
+              8,
+              7,
+              7,
+              4,
+              8
+            ],
+            [
+              2,
+              7,
+              7,
+              8,
+              7
+            ],
+            [
+              3,
+              7,
+              2,
+              4,
+              8
+            ],
+            [
+              4,
+              4,
+              2,
+              4,
+              8
+            ],
+            [
+              8,
+              1,
+              2,
+              1,
+              4
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              2,
+              7,
+              4,
+              3,
+              4,
+              8,
+              3
+            ],
+            [
+              2,
+              3,
+              7,
+              1,
+              2,
+              3,
+              3
+            ],
+            [
+              8,
+              7,
+              4,
+              3,
+              2,
+              2,
+              4
+            ],
+            [
+              1,
+              1,
+              2,
+              1,
+              4,
+              4,
+              7
+            ],
+            [
+              2,
+              4,
+              3,
+              1,
+              1,
+              4,
+              1
+            ],
+            [
+              4,
+              8,
+              7,
+              4,
+              4,
+              8,
+              2
+            ],
+            [
+              7,
+              3,
+              8,
+              4,
+              3,
+              2,
+              8
+            ]
+          ],
+          [
+            [
+              7,
+              3,
+              8,
+              4,
+              3,
+              2,
+              8
+            ],
+            [
+              4,
+              8,
+              7,
+              4,
+              4,
+              8,
+              2
+            ],
+            [
+              2,
+              4,
+              3,
+              1,
+              1,
+              4,
+              1
+            ],
+            [
+              1,
+              1,
+              2,
+              1,
+              4,
+              4,
+              7
+            ],
+            [
+              8,
+              7,
+              4,
+              3,
+              2,
+              2,
+              4
+            ],
+            [
+              2,
+              3,
+              7,
+              1,
+              2,
+              3,
+              3
+            ],
+            [
+              2,
+              7,
+              4,
+              3,
+              4,
+              8,
+              3
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 3,
+        "input_height_mean": 5.666666666666667,
+        "input_width_mean": 5.666666666666667,
+        "output_height_mean": 5.666666666666667,
+        "output_width_mean": 5.666666666666667,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 6.0,
+        "output_colors_mean": 6.0,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 6.0,
+        "input_objects_mean": 24.666666666666668,
+        "output_objects_mean": 24.666666666666668,
+        "object_count_preserved": true,
+        "likely_rotation": 0.0,
+        "likely_reflection": 1.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 0.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "7": {
+      "task_signature": "pairs:4|shape:1|colors:3-3|objs:5-5|ops:F",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "transpose",
+            {}
+          ]
+        ]
+      ],
+      "task_id": "74dd1130",
+      "train_pairs": [
+        [
+          [
+            [
+              9,
+              9,
+              5
+            ],
+            [
+              5,
+              5,
+              8
+            ],
+            [
+              5,
+              8,
+              9
+            ]
+          ],
+          [
+            [
+              9,
+              5,
+              5
+            ],
+            [
+              9,
+              5,
+              8
+            ],
+            [
+              5,
+              8,
+              9
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              2,
+              2,
+              5
+            ],
+            [
+              6,
+              2,
+              2
+            ],
+            [
+              5,
+              5,
+              5
+            ]
+          ],
+          [
+            [
+              2,
+              6,
+              5
+            ],
+            [
+              2,
+              2,
+              5
+            ],
+            [
+              5,
+              2,
+              5
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              2,
+              6,
+              6
+            ],
+            [
+              2,
+              1,
+              1
+            ],
+            [
+              2,
+              6,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              2,
+              2
+            ],
+            [
+              6,
+              1,
+              6
+            ],
+            [
+              6,
+              1,
+              2
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              2,
+              2,
+              1
+            ],
+            [
+              1,
+              5,
+              1
+            ],
+            [
+              5,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              1,
+              5
+            ],
+            [
+              2,
+              5,
+              2
+            ],
+            [
+              1,
+              1,
+              2
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 4,
+        "input_height_mean": 3.0,
+        "input_width_mean": 3.0,
+        "output_height_mean": 3.0,
+        "output_width_mean": 3.0,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 3.0,
+        "output_colors_mean": 3.0,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 3.0,
+        "input_objects_mean": 5.25,
+        "output_objects_mean": 5.25,
+        "object_count_preserved": true,
+        "likely_rotation": 0.0,
+        "likely_reflection": 1.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 0.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "8": {
+      "task_signature": "pairs:3|shape:1|colors:4-4|objs:9-9|ops:F",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "transpose",
+            {}
+          ]
+        ]
+      ],
+      "task_id": "9dfd6313",
+      "train_pairs": [
+        [
+          [
+            [
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              6,
+              0,
+              5,
+              0
+            ],
+            [
+              6,
+              0,
+              4,
+              5
+            ]
+          ],
+          [
+            [
+              5,
+              0,
+              6,
+              6
+            ],
+            [
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              5,
+              4
+            ],
+            [
+              0,
+              0,
+              0,
+              5
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              5,
+              0,
+              0
+            ],
+            [
+              3,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              5
+            ]
+          ],
+          [
+            [
+              5,
+              3,
+              0
+            ],
+            [
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              5
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              5,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              5,
+              0,
+              0,
+              0
+            ],
+            [
+              8,
+              8,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              5,
+              0
+            ],
+            [
+              0,
+              2,
+              0,
+              1,
+              5
+            ]
+          ],
+          [
+            [
+              5,
+              0,
+              8,
+              0,
+              0
+            ],
+            [
+              0,
+              5,
+              8,
+              2,
+              2
+            ],
+            [
+              0,
+              0,
+              5,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              5,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              5
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 3,
+        "input_height_mean": 4.0,
+        "input_width_mean": 4.0,
+        "output_height_mean": 4.0,
+        "output_width_mean": 4.0,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 4.0,
+        "output_colors_mean": 4.0,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 4.0,
+        "input_objects_mean": 9.0,
+        "output_objects_mean": 9.0,
+        "object_count_preserved": true,
+        "likely_rotation": 0.0,
+        "likely_reflection": 1.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 0.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "9": {
+      "task_signature": "pairs:3|shape:1|colors:2-2|objs:7-7|ops:C",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "6": 2
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "6": 2
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "6": 2
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "recolor",
+            {
+              "mapping": {
+                "7": 7,
+                "6": 2
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "recolor",
+            {
+              "mapping": {
+                "6": 2
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "6": 2
+              }
+            }
+          ]
+        ]
+      ],
+      "task_id": "b1948b0a",
+      "train_pairs": [
+        [
+          [
+            [
+              7,
+              7,
+              7,
+              6
+            ],
+            [
+              6,
+              6,
+              7,
+              6
+            ],
+            [
+              7,
+              7,
+              6,
+              7
+            ],
+            [
+              7,
+              6,
+              7,
+              7
+            ],
+            [
+              7,
+              6,
+              7,
+              6
+            ],
+            [
+              6,
+              6,
+              6,
+              7
+            ]
+          ],
+          [
+            [
+              7,
+              7,
+              7,
+              2
+            ],
+            [
+              2,
+              2,
+              7,
+              2
+            ],
+            [
+              7,
+              7,
+              2,
+              7
+            ],
+            [
+              7,
+              2,
+              7,
+              7
+            ],
+            [
+              7,
+              2,
+              7,
+              2
+            ],
+            [
+              2,
+              2,
+              2,
+              7
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              6,
+              6,
+              7,
+              6
+            ],
+            [
+              6,
+              6,
+              7,
+              7
+            ],
+            [
+              7,
+              7,
+              6,
+              7
+            ]
+          ],
+          [
+            [
+              2,
+              2,
+              7,
+              2
+            ],
+            [
+              2,
+              2,
+              7,
+              7
+            ],
+            [
+              7,
+              7,
+              2,
+              7
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              7,
+              7,
+              6,
+              6,
+              6,
+              6
+            ],
+            [
+              6,
+              7,
+              6,
+              7,
+              7,
+              7
+            ],
+            [
+              7,
+              6,
+              7,
+              7,
+              6,
+              7
+            ]
+          ],
+          [
+            [
+              7,
+              7,
+              2,
+              2,
+              2,
+              2
+            ],
+            [
+              2,
+              7,
+              2,
+              7,
+              7,
+              7
+            ],
+            [
+              7,
+              2,
+              7,
+              7,
+              2,
+              7
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 3,
+        "input_height_mean": 4.0,
+        "input_width_mean": 4.666666666666667,
+        "output_height_mean": 4.0,
+        "output_width_mean": 4.666666666666667,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 2.0,
+        "output_colors_mean": 2.0,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 2.0,
+        "input_objects_mean": 7.0,
+        "output_objects_mean": 7.0,
+        "object_count_preserved": true,
+        "likely_rotation": 0.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 1.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "10": {
+      "task_signature": "pairs:3|shape:0|colors:3-2|objs:5-2|ops:X",
+      "programs": [
+        [
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "transpose",
+            {}
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ]
+        ],
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ]
+      ],
+      "task_id": "be03b35f",
+      "train_pairs": [
+        [
+          [
+            [
+              1,
+              0,
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              0,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              1,
+              0,
+              2,
+              2
+            ],
+            [
+              0,
+              1,
+              0,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              1,
+              1,
+              0,
+              1,
+              1
+            ],
+            [
+              1,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              0,
+              2,
+              2
+            ],
+            [
+              1,
+              1,
+              0,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              1,
+              1,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              2,
+              2
+            ],
+            [
+              1,
+              1,
+              0,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              0
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 3,
+        "input_height_mean": 5.0,
+        "input_width_mean": 5.0,
+        "output_height_mean": 2.0,
+        "output_width_mean": 2.0,
+        "shape_preserved": false,
+        "size_ratio_mean": 0.16,
+        "input_colors_mean": 3.0,
+        "output_colors_mean": 2.0,
+        "background_color_consistent": true,
+        "has_color_mapping": false,
+        "color_mapping_size": 0,
+        "input_objects_mean": 5.333333333333333,
+        "output_objects_mean": 2.0,
+        "object_count_preserved": false,
+        "likely_rotation": 0.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.0,
+        "likely_recolor": 0.0,
+        "likely_crop": 1.0,
+        "likely_pad": 0.0
+      }
+    },
+    "11": {
+      "task_signature": "pairs:3|shape:1|colors:3-3|objs:7-7|ops:C",
+      "programs": [
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "7": 5
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "7": 5
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "7": 5
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "recolor",
+            {
+              "mapping": {
+                "7": 5,
+                "1": 1,
+                "8": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "recolor",
+            {
+              "mapping": {
+                "7": 5
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "identity",
+            {}
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "7": 5
+              }
+            }
+          ]
+        ]
+      ],
+      "task_id": "c8f0f002",
+      "train_pairs": [
+        [
+          [
+            [
+              7,
+              7,
+              7,
+              1
+            ],
+            [
+              1,
+              8,
+              1,
+              7
+            ],
+            [
+              7,
+              1,
+              1,
+              7
+            ]
+          ],
+          [
+            [
+              5,
+              5,
+              5,
+              1
+            ],
+            [
+              1,
+              8,
+              1,
+              5
+            ],
+            [
+              5,
+              1,
+              1,
+              5
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              1,
+              8,
+              8,
+              7,
+              7,
+              8
+            ],
+            [
+              1,
+              1,
+              7,
+              7,
+              1,
+              8
+            ],
+            [
+              7,
+              1,
+              1,
+              7,
+              7,
+              8
+            ]
+          ],
+          [
+            [
+              1,
+              8,
+              8,
+              5,
+              5,
+              8
+            ],
+            [
+              1,
+              1,
+              5,
+              5,
+              1,
+              8
+            ],
+            [
+              5,
+              1,
+              1,
+              5,
+              5,
+              8
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              1,
+              8,
+              1,
+              7,
+              1
+            ],
+            [
+              7,
+              8,
+              8,
+              1,
+              1
+            ],
+            [
+              7,
+              1,
+              8,
+              8,
+              7
+            ]
+          ],
+          [
+            [
+              1,
+              8,
+              1,
+              5,
+              1
+            ],
+            [
+              5,
+              8,
+              8,
+              1,
+              1
+            ],
+            [
+              5,
+              1,
+              8,
+              8,
+              5
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 3,
+        "input_height_mean": 3.0,
+        "input_width_mean": 5.0,
+        "output_height_mean": 3.0,
+        "output_width_mean": 5.0,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 3.0,
+        "output_colors_mean": 3.0,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 3.0,
+        "input_objects_mean": 7.0,
+        "output_objects_mean": 7.0,
+        "object_count_preserved": true,
+        "likely_rotation": 0.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.5,
+        "likely_recolor": 1.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    },
+    "12": {
+      "task_signature": "pairs:3|shape:0|colors:3-3|objs:33-3|ops:X",
+      "programs": [
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ]
+        ]
+      ],
+      "task_id": "d10ecb37",
+      "train_pairs": [
+        [
+          [
+            [
+              2,
+              4,
+              2,
+              2,
+              5,
+              2,
+              4,
+              5
+            ],
+            [
+              2,
+              5,
+              5,
+              4,
+              4,
+              2,
+              2,
+              2
+            ],
+            [
+              4,
+              5,
+              5,
+              2,
+              2,
+              2,
+              2,
+              4
+            ],
+            [
+              2,
+              2,
+              4,
+              2,
+              5,
+              4,
+              2,
+              5
+            ],
+            [
+              2,
+              4,
+              2,
+              2,
+              5,
+              2,
+              4,
+              5
+            ],
+            [
+              2,
+              5,
+              5,
+              4,
+              4,
+              2,
+              2,
+              2
+            ],
+            [
+              4,
+              5,
+              5,
+              2,
+              2,
+              2,
+              2,
+              4
+            ],
+            [
+              2,
+              2,
+              4,
+              2,
+              5,
+              4,
+              2,
+              5
+            ]
+          ],
+          [
+            [
+              2,
+              4
+            ],
+            [
+              2,
+              5
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              4,
+              3,
+              6,
+              4,
+              0,
+              6
+            ],
+            [
+              6,
+              0,
+              0,
+              3,
+              3,
+              4
+            ],
+            [
+              6,
+              4,
+              4,
+              3,
+              3,
+              0
+            ],
+            [
+              0,
+              3,
+              6,
+              0,
+              4,
+              6
+            ],
+            [
+              0,
+              6,
+              3,
+              0,
+              4,
+              3
+            ],
+            [
+              3,
+              4,
+              4,
+              6,
+              6,
+              0
+            ]
+          ],
+          [
+            [
+              4,
+              3
+            ],
+            [
+              6,
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              3,
+              2,
+              1,
+              3,
+              4,
+              1
+            ],
+            [
+              1,
+              4,
+              4,
+              2,
+              2,
+              3
+            ],
+            [
+              1,
+              3,
+              3,
+              2,
+              2,
+              4
+            ],
+            [
+              4,
+              2,
+              1,
+              4,
+              3,
+              1
+            ],
+            [
+              4,
+              1,
+              2,
+              4,
+              3,
+              2
+            ],
+            [
+              2,
+              3,
+              3,
+              1,
+              1,
+              4
+            ],
+            [
+              2,
+              4,
+              4,
+              1,
+              1,
+              3
+            ],
+            [
+              3,
+              1,
+              2,
+              3,
+              4,
+              2
+            ],
+            [
+              3,
+              2,
+              1,
+              3,
+              4,
+              1
+            ],
+            [
+              1,
+              4,
+              4,
+              2,
+              2,
+              3
+            ],
+            [
+              1,
+              3,
+              3,
+              2,
+              2,
+              4
+            ],
+            [
+              4,
+              2,
+              1,
+              4,
+              3,
+              1
+            ]
+          ],
+          [
+            [
+              3,
+              2
+            ],
+            [
+              1,
+              4
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 3,
+        "input_height_mean": 8.666666666666666,
+        "input_width_mean": 6.666666666666667,
+        "output_height_mean": 2.0,
+        "output_width_mean": 2.0,
+        "shape_preserved": false,
+        "size_ratio_mean": 0.07638888888888888,
+        "input_colors_mean": 3.6666666666666665,
+        "output_colors_mean": 3.6666666666666665,
+        "background_color_consistent": true,
+        "has_color_mapping": false,
+        "color_mapping_size": 0,
+        "input_objects_mean": 33.666666666666664,
+        "output_objects_mean": 3.6666666666666665,
+        "object_count_preserved": false,
+        "likely_rotation": 0.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.0,
+        "likely_recolor": 0.0,
+        "likely_crop": 1.0,
+        "likely_pad": 0.0
+      }
+    },
+    "13": {
+      "task_signature": "pairs:4|shape:0|colors:3-1|objs:17-1|ops:X",
+      "programs": [
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "0": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 2
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "0": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 3
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "0": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 1
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "0": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 2
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "0": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 2,
+              "width": 3
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "0": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 0,
+              "left": 0,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "0": 8
+              }
+            }
+          ]
+        ],
+        [
+          [
+            "crop",
+            {
+              "top": 2,
+              "left": 2,
+              "height": 1,
+              "width": 1
+            }
+          ],
+          [
+            "recolor",
+            {
+              "mapping": {
+                "3": 8
+              }
+            }
+          ]
+        ]
+      ],
+      "task_id": "d9fac9be",
+      "train_pairs": [
+        [
+          [
+            [
+              1,
+              2,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2,
+              0,
+              1,
+              2,
+              0,
+              2,
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              1,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              2,
+              2,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              2,
+              1,
+              2,
+              0,
+              0,
+              0,
+              2,
+              0
+            ],
+            [
+              0,
+              2,
+              2,
+              2,
+              0,
+              0,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              1
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              8,
+              0,
+              8,
+              0,
+              0,
+              0,
+              0,
+              0,
+              8
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              8,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              8,
+              0,
+              0,
+              3,
+              3,
+              3,
+              0
+            ],
+            [
+              8,
+              0,
+              0,
+              3,
+              0,
+              3,
+              8,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              3,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              8,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3,
+              0,
+              0,
+              8,
+              0,
+              0,
+              0,
+              8,
+              0
+            ]
+          ],
+          [
+            [
+              8
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              0,
+              8,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              8
+            ],
+            [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              8,
+              0,
+              3,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              3,
+              8,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              8
+            ],
+            [
+              0,
+              0,
+              0,
+              3,
+              8,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              8,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              3,
+              8,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              3,
+              3,
+              3,
+              0,
+              0,
+              8,
+              0,
+              3,
+              0
+            ],
+            [
+              0,
+              0,
+              3,
+              3,
+              8,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              3,
+              3,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              8
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              2,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              4,
+              4,
+              4,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              4,
+              2,
+              4,
+              0,
+              0,
+              2,
+              0,
+              0
+            ],
+            [
+              0,
+              4,
+              4,
+              4,
+              0,
+              0,
+              0,
+              2,
+              0
+            ],
+            [
+              2,
+              0,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ]
+          ],
+          [
+            [
+              2
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 4,
+        "input_height_mean": 8.5,
+        "input_width_mean": 9.75,
+        "output_height_mean": 1.0,
+        "output_width_mean": 1.0,
+        "shape_preserved": false,
+        "size_ratio_mean": 0.013943001443001445,
+        "input_colors_mean": 3.0,
+        "output_colors_mean": 1.0,
+        "background_color_consistent": true,
+        "has_color_mapping": false,
+        "color_mapping_size": 0,
+        "input_objects_mean": 17.75,
+        "output_objects_mean": 1.0,
+        "object_count_preserved": false,
+        "likely_rotation": 0.0,
+        "likely_reflection": 0.0,
+        "likely_translation": 0.0,
+        "likely_recolor": 0.0,
+        "likely_crop": 1.0,
+        "likely_pad": 0.0
+      }
+    },
+    "14": {
+      "task_signature": "pairs:4|shape:1|colors:2-2|objs:2-2|ops:R",
+      "programs": [
+        [
+          [
+            "flip",
+            {
+              "axis": 1
+            }
+          ],
+          [
+            "transpose",
+            {}
+          ]
+        ],
+        [
+          [
+            "transpose",
+            {}
+          ],
+          [
+            "flip",
+            {
+              "axis": 0
+            }
+          ]
+        ],
+        [
+          [
+            "identity",
+            {}
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 0
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 3
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ]
+        ],
+        [
+          [
+            "rotate",
+            {
+              "k": 2
+            }
+          ],
+          [
+            "rotate",
+            {
+              "k": 1
+            }
+          ]
+        ]
+      ],
+      "task_id": "ed36ccf7",
+      "train_pairs": [
+        [
+          [
+            [
+              0,
+              0,
+              9
+            ],
+            [
+              0,
+              0,
+              9
+            ],
+            [
+              9,
+              9,
+              9
+            ]
+          ],
+          [
+            [
+              9,
+              9,
+              9
+            ],
+            [
+              0,
+              0,
+              9
+            ],
+            [
+              0,
+              0,
+              9
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              6,
+              6,
+              6
+            ],
+            [
+              0,
+              0,
+              0
+            ],
+            [
+              6,
+              6,
+              0
+            ]
+          ],
+          [
+            [
+              6,
+              0,
+              0
+            ],
+            [
+              6,
+              0,
+              6
+            ],
+            [
+              6,
+              0,
+              6
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              2,
+              0,
+              2
+            ],
+            [
+              0,
+              0,
+              2
+            ],
+            [
+              0,
+              2,
+              2
+            ]
+          ],
+          [
+            [
+              2,
+              2,
+              2
+            ],
+            [
+              0,
+              0,
+              2
+            ],
+            [
+              2,
+              0,
+              0
+            ]
+          ]
+        ],
+        [
+          [
+            [
+              9,
+              0,
+              0
+            ],
+            [
+              9,
+              9,
+              9
+            ],
+            [
+              9,
+              9,
+              9
+            ]
+          ],
+          [
+            [
+              0,
+              9,
+              9
+            ],
+            [
+              0,
+              9,
+              9
+            ],
+            [
+              9,
+              9,
+              9
+            ]
+          ]
+        ]
+      ],
+      "success_count": 1,
+      "metadata": {},
+      "features": {
+        "num_train_pairs": 4,
+        "input_height_mean": 3.0,
+        "input_width_mean": 3.0,
+        "output_height_mean": 3.0,
+        "output_width_mean": 3.0,
+        "shape_preserved": true,
+        "size_ratio_mean": 1.0,
+        "input_colors_mean": 2.0,
+        "output_colors_mean": 2.0,
+        "background_color_consistent": true,
+        "has_color_mapping": true,
+        "color_mapping_size": 2.0,
+        "input_objects_mean": 2.5,
+        "output_objects_mean": 2.5,
+        "object_count_preserved": true,
+        "likely_rotation": 1.0,
+        "likely_reflection": 0.25,
+        "likely_translation": 0.5,
+        "likely_recolor": 0.0,
+        "likely_crop": 0.0,
+        "likely_pad": 0.0
+      }
+    }
+  }
 }

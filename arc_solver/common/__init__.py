@@ -11,3 +11,4 @@ from .objects import *
 from .invariants import *
 from .mdl import *
 from .eval_utils import *
+from .patterns import *

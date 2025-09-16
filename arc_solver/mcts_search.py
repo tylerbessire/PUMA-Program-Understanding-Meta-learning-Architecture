@@ -5,7 +5,7 @@ import random
 from typing import List, Tuple, Dict, Any, Optional
 from .grid import Array
 from .dsl import OPS
-from .heuristics import score_candidate
+from .heuristics import score_candidate, score_candidate_partial
 from .neural.sketches import generate_parameter_grid
 
 logger = logging.getLogger(__name__)
@@ -56,7 +56,7 @@ def mcts_search(
             node = child
         # Simulation
         try:
-            reward = score_candidate(node.program, train_pairs)
+            reward = score_candidate_partial(node.program, train_pairs)
         except Exception:
             reward = 0.0
         # Backpropagation

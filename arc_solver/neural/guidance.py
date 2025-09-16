@@ -125,7 +125,11 @@ class HeuristicGuidance:
     """
     
     def __init__(self):
-        self.operations = ['rotate', 'flip', 'transpose', 'translate', 'recolor', 'crop', 'pad']
+        self.operations = [
+            'rotate', 'flip', 'transpose', 'translate', 'recolor', 'crop', 'pad',
+            'extract_content_region', 'extract_bounded_region', 'extract_largest_rect',
+            'extract_central_pattern', 'smart_crop_auto'
+        ]
     
     def predict_operations(self, features: Dict[str, Any], threshold: float = 0.3) -> List[str]:
         """Predict operations using heuristic rules."""
@@ -151,7 +155,17 @@ class HeuristicGuidance:
         
         # Crop: likely if output smaller than input
         if features.get('likely_crop', 0) > threshold:
-            relevant_ops.append('crop')
+            relevant_ops.extend(['crop', 'extract_content_region', 'extract_largest_rect'])
+            
+            # If size reduction is significant, prioritize extraction operations
+            input_size = features.get('input_height_mean', 0) * features.get('input_width_mean', 0)
+            output_size = features.get('output_height_mean', 0) * features.get('output_width_mean', 0)
+            
+            if input_size > 0 and output_size / input_size < 0.3:  # Significant size reduction
+                relevant_ops.extend([
+                    'extract_content_region', 'extract_bounded_region', 
+                    'extract_central_pattern', 'smart_crop_auto'
+                ])
         
         # Pad: likely if output larger than input
         if features.get('likely_pad', 0) > threshold:
