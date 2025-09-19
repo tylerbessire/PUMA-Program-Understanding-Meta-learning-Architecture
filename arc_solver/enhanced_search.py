@@ -707,41 +707,73 @@ class EnhancedSearch:
         for i, hypothesis in enumerate(hypotheses[:5]):  # Top 5 hypotheses
             if hypothesis.verification_score > 0.5:  # Only well-verified hypotheses
                 # Create a custom program that applies this hypothesis with metadata
-                program = [(hypothesis.name, {
+                metadata = {
                     'hypothesis_id': i,
                     'confidence': hypothesis.confidence,
                     'verification_score': hypothesis.verification_score,
                     '_source': 'human_reasoner',  # Metadata flag
                     '_hypothesis_obj': hypothesis  # Store the actual hypothesis
-                })]
+                }
+                if getattr(hypothesis, 'metadata', None):
+                    for key, value in hypothesis.metadata.items():
+                        metadata[f'_{key}'] = value
+
+                program = [(hypothesis.name, metadata)]
                 candidates.append(program)
                 print(f"DEBUG: Added human reasoning program: {hypothesis.name} (score: {hypothesis.verification_score:.3f})")
         
         # CRITICAL FIX: For extraction tasks with dynamic target shape, create a targeted hypothesis
         if expected_shape and hypotheses:
-            # Find the best adjacent_replacement hypothesis (any shape) and adapt it
-            best_adjacent_hypothesis = None
-            best_score = 0
-            
-            for hypothesis in hypotheses:
-                if 'adjacent_replacement_8' in hypothesis.name and hypothesis.verification_score > best_score:
-                    best_adjacent_hypothesis = hypothesis
-                    best_score = hypothesis.verification_score
-            
-            if best_adjacent_hypothesis:
-                # Create a targeted program that uses the best adjacent replacement logic
-                # but forces the expected shape
-                targeted_program = [(f"targeted_extraction_{expected_shape[0]}x{expected_shape[1]}", {
-                    'hypothesis_id': 999,  # Special ID
-                    'confidence': best_adjacent_hypothesis.confidence,
-                    'verification_score': min(1.0, best_adjacent_hypothesis.verification_score * 4.0),  # Strong boost
+            # Prefer RFT-guided transformation hypotheses if available
+            targeted_candidates = [h for h in hypotheses if getattr(h, 'metadata', None) and h.metadata.get('type') == 'transformation_extraction']
+
+            if targeted_candidates:
+                targeted_candidates.sort(key=lambda h: h.verification_score * h.confidence, reverse=True)
+                best_targeted = targeted_candidates[0]
+                meta = {
+                    'hypothesis_id': 999,
+                    'confidence': best_targeted.confidence,
+                    'verification_score': min(1.0, best_targeted.verification_score * 3.0),
                     '_source': 'human_reasoner',
-                    '_hypothesis_obj': best_adjacent_hypothesis,
+                    '_hypothesis_obj': best_targeted,
                     '_target_shape_boost': True,
-                    '_target_shape': expected_shape  # Store the target shape
-                })]
+                    '_target_shape': best_targeted.metadata.get('target_shape', expected_shape),
+                }
+                for key, value in best_targeted.metadata.items():
+                    meta[f'_{key}'] = value
+
+                targeted_program = [(f"targeted_transformation_{meta['_target_shape'][0]}x{meta['_target_shape'][1]}", meta)]
                 candidates.append(targeted_program)
-                print(f"DEBUG: Added TARGETED extraction for {expected_shape} (adapted from {best_adjacent_hypothesis.name}, boosted score: {min(1.0, best_adjacent_hypothesis.verification_score * 4.0):.3f})")
+                print(
+                    "DEBUG: Added transformation-guided extraction for"
+                    f" {meta['_target_shape']} (verification boost: {meta['verification_score']:.3f})"
+                )
+
+            else:
+                # Legacy adjacent replacement fallback
+                best_adjacent_hypothesis = None
+                best_score = 0
+
+                for hypothesis in hypotheses:
+                    if 'adjacent_replacement_8' in hypothesis.name and hypothesis.verification_score > best_score:
+                        best_adjacent_hypothesis = hypothesis
+                        best_score = hypothesis.verification_score
+
+                if best_adjacent_hypothesis:
+                    targeted_program = [(f"targeted_extraction_{expected_shape[0]}x{expected_shape[1]}", {
+                        'hypothesis_id': 999,
+                        'confidence': best_adjacent_hypothesis.confidence,
+                        'verification_score': min(1.0, best_adjacent_hypothesis.verification_score * 4.0),
+                        '_source': 'human_reasoner',
+                        '_hypothesis_obj': best_adjacent_hypothesis,
+                        '_target_shape_boost': True,
+                        '_target_shape': expected_shape
+                    })]
+                    candidates.append(targeted_program)
+                    print(
+                        f"DEBUG: Added TARGETED extraction for {expected_shape}"
+                        f" (adapted from {best_adjacent_hypothesis.name}, boosted score: {min(1.0, best_adjacent_hypothesis.verification_score * 4.0):.3f})"
+                    )
         
         return candidates
     

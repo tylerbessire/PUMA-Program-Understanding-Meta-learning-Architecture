@@ -14,6 +14,7 @@ import hashlib
 
 from .grid import Array, to_array
 from .object_reasoning import ObjectReasoner, ObjectHypothesisGenerator, ObjectTransformation
+from .rft import RelationalFrameAnalyzer, RelationalFact
 
 
 @dataclass
@@ -24,6 +25,8 @@ class SpatialHypothesis:
     confidence: float
     construction_rule: callable
     verification_score: float = 0.0
+    metadata: Optional[Dict[str, Any]] = None
+    complexity: float = 1.0
 
 
 @dataclass  
@@ -44,6 +47,7 @@ class HumanGradeReasoner:
         self.discovered_patterns = {}
         self.object_reasoner = ObjectReasoner()
         self.object_hypothesis_generator = ObjectHypothesisGenerator()
+        self.relational_facts: Optional[Dict[str, List[RelationalFact]]] = None
         
     def analyze_task(self, train_pairs: List[Tuple[Array, Array]]) -> List[SpatialHypothesis]:
         """Analyze task like a human would - form hypotheses about spatial relationships."""
@@ -56,19 +60,29 @@ class HumanGradeReasoner:
         # Step 1: Object-level analysis (NEW - RFT reasoning)
         object_transformations = self._generate_object_hypotheses(train_pairs)
         print(f"Object transformations found: {len(object_transformations)}")
-        
+
         # Step 2: Identify key visual elements (like humans noticing 8-rectangles) 
         key_elements = self._identify_key_elements(train_pairs)
         print(f"Key elements identified: {len(key_elements)}")
-        
+
+        # Step 2.5: Capture relational facts for downstream coordination
+        analyzer = RelationalFrameAnalyzer()
+        self.relational_facts = analyzer.analyze(train_pairs)
+
         # Step 3: Form hypotheses about spatial relationships
+        self._generate_relational_hypotheses(train_pairs)
         self._generate_spatial_hypotheses(train_pairs, key_elements)
         
         # Step 4: Test hypotheses across all training examples
         self._verify_hypotheses(train_pairs)
         
-        # Step 4: Rank by confidence and verification score
-        self.hypotheses.sort(key=lambda h: h.verification_score * h.confidence, reverse=True)
+        # Step 4: Rank simple-to-complex, then by confidence*verification
+        self.hypotheses.sort(
+            key=lambda h: (
+                getattr(h, "complexity", 1.0),
+                -(h.verification_score * h.confidence),
+            )
+        )
         
         print(f"Generated {len(self.hypotheses)} hypotheses")
         for i, h in enumerate(self.hypotheses[:3]):
@@ -98,7 +112,8 @@ class HumanGradeReasoner:
                 description=description,
                 confidence=0.9,  # High confidence for object-level reasoning
                 construction_rule=object_transformation_rule,
-                verification_score=verification_score
+                verification_score=verification_score,
+                complexity=1.0,
             ))
             
             print(f"  Object hypothesis: {hypothesis_name} (verified: {verification_score:.3f})")
@@ -345,7 +360,8 @@ class HumanGradeReasoner:
                     name=f"symmetric_replacement_{fill_color}_{target_shape[0]}x{target_shape[1]}",
                     description=f"Replace {fill_color}-filled {target_shape} region with horizontally symmetric content",
                     confidence=0.8,
-                    construction_rule=symmetric_replacement
+                    construction_rule=symmetric_replacement,
+                    complexity=1.2,
                 ))
                 
                 # Hypothesis: Replace with content from mirrored position
@@ -356,7 +372,8 @@ class HumanGradeReasoner:
                     name=f"mirrored_replacement_{fill_color}_{target_shape[0]}x{target_shape[1]}",
                     description=f"Replace {fill_color}-filled {target_shape} region with mirrored content from opposite side",
                     confidence=0.7,
-                    construction_rule=mirrored_replacement
+                    construction_rule=mirrored_replacement,
+                    complexity=1.4,
                 ))
                 
                 # Hypothesis: Replace with content from adjacent region
@@ -367,8 +384,36 @@ class HumanGradeReasoner:
                     name=f"adjacent_replacement_{fill_color}_{target_shape[0]}x{target_shape[1]}",
                     description=f"Replace {fill_color}-filled {target_shape} region with content from adjacent area",
                     confidence=0.6,
-                    construction_rule=adjacent_replacement
+                    construction_rule=adjacent_replacement,
+                    complexity=1.6,
                 ))
+
+                # Hypothesis: Use RFT-derived transformation (if available)
+                fact = self._select_best_transformation_fact(target_shape)
+                if fact is not None:
+                    def targeted_extraction(inp: Array, *, _placeholder=placeholder, _fact=fact) -> Array:
+                        return self._extract_using_transformation(inp, _placeholder, _fact)
+
+                    translation = fact.metadata.get('translation', (0.0, 0.0))
+                    self.hypotheses.append(
+                        SpatialHypothesis(
+                            name=f"transformation_extraction_{fact.object[0]}_{target_shape[0]}x{target_shape[1]}",
+                            description="Apply RFT-guided translation extraction",
+                            confidence=0.85,
+                            construction_rule=targeted_extraction,
+                            metadata={
+                                'type': 'transformation_extraction',
+                                'target_shape': target_shape,
+                                'translation': translation,
+                                'match_score': fact.metadata.get('match_score', 0.0),
+                                'size_similarity': fact.metadata.get('size_similarity', 0.0),
+                                'distance': fact.metadata.get('distance', 0.0),
+                                'subject_signature': fact.subject,
+                                'object_signature': fact.object,
+                            },
+                            complexity=1.8,
+                        )
+                    )
     
     def _generate_symmetry_hypotheses(self, train_pairs: List[Tuple[Array, Array]], symmetries: List[Dict[str, Any]]):
         """Generate hypotheses based on symmetry patterns."""
@@ -387,7 +432,8 @@ class HumanGradeReasoner:
                     name="symmetric_extraction",
                     description="Extract output from symmetric region relationship",
                     confidence=symmetry['confidence'],
-                    construction_rule=symmetric_extraction
+                    construction_rule=symmetric_extraction,
+                    complexity=1.8,
                 ))
     
     def _generate_pattern_hypotheses(self, train_pairs: List[Tuple[Array, Array]], patterns: List[Dict[str, Any]]):
@@ -406,7 +452,8 @@ class HumanGradeReasoner:
                 name=f"pattern_construction_{pattern['transformation']}",
                 description=f"Construct output using {pattern['transformation']} relationship",
                 confidence=pattern['confidence'],
-                construction_rule=pattern_based_construction
+                construction_rule=pattern_based_construction,
+                complexity=2.0,
             ))
     
     def _generate_composition_hypotheses(self, train_pairs: List[Tuple[Array, Array]], elements: List[Dict[str, Any]]):
@@ -420,7 +467,8 @@ class HumanGradeReasoner:
             name="multi_region_composition",
             description="Compose output by intelligently combining multiple regions",
             confidence=0.5,  # Lower initial confidence, but can be very powerful
-            construction_rule=multi_region_composition
+            construction_rule=multi_region_composition,
+            complexity=2.5,
         ))
         
         # Hypothesis: Output follows a spatial formula (row/column relationships)  
@@ -431,7 +479,8 @@ class HumanGradeReasoner:
             name="spatial_formula",
             description="Construct output using spatial position formulas",
             confidence=0.4,
-            construction_rule=spatial_formula_construction
+            construction_rule=spatial_formula_construction,
+            complexity=3.0,
         ))
     
     def _extract_symmetric_content(self, inp: Array, placeholder: Dict[str, Any], symmetry_type: str) -> Array:
@@ -553,6 +602,193 @@ class HumanGradeReasoner:
                     best_region = region.copy()
         
         return best_region if best_region is not None else np.zeros(target_shape, dtype=inp.dtype)
+
+    def _select_best_transformation_fact(self, target_shape: Tuple[int, int]) -> Optional[RelationalFact]:
+        if not self.relational_facts:
+            return None
+
+        best_fact = None
+        best_score = -float('inf')
+
+        for fact in self.relational_facts.get('transformation', []):
+            _, obj_h, obj_w = fact.object
+            if (obj_h, obj_w) != target_shape:
+                continue
+
+            match_score = fact.metadata.get('match_score', 0.0)
+            size_similarity = fact.metadata.get('size_similarity', 0.0)
+            distance = fact.metadata.get('distance', 1.0)
+            score = match_score + size_similarity - distance
+
+            if score > best_score:
+                best_score = score
+                best_fact = fact
+
+        return best_fact
+
+    def _match_placeholder_in_input(
+        self,
+        inp: Array,
+        fill_color: int,
+        target_shape: Tuple[int, int],
+        tolerance: int = 1,
+    ) -> Optional[Dict[str, Any]]:
+        candidates = []
+        for current in self._find_placeholder_regions(inp):
+            if current['color'] != fill_color:
+                continue
+            dh = abs(current['shape'][0] - target_shape[0])
+            dw = abs(current['shape'][1] - target_shape[1])
+            if dh <= tolerance and dw <= tolerance:
+                candidates.append((dh + dw, current))
+
+        if not candidates:
+            return None
+
+        candidates.sort(key=lambda item: item[0])
+        return candidates[0][1]
+
+    def _extract_using_transformation(
+        self,
+        inp: Array,
+        placeholder: Dict[str, Any],
+        fact: RelationalFact,
+    ) -> Array:
+        target_shape = placeholder['shape']
+        fill_color = placeholder['fill_color']
+
+        matched_placeholder = self._match_placeholder_in_input(inp, fill_color, target_shape)
+        if matched_placeholder is None:
+            return self._find_best_extraction_region(inp, target_shape)
+
+        r1, c1, r2, c2 = matched_placeholder['bounds']
+        translation = fact.metadata.get('translation', (0.0, 0.0))
+        col_offset = int(round(float(translation[0])))
+        row_offset = int(round(float(translation[1])))
+
+        if row_offset == 0 and col_offset == 0:
+            return self._find_best_extraction_region(inp, target_shape)
+
+        source_r1 = r1 - row_offset
+        source_r2 = r2 - row_offset
+        source_c1 = c1 - col_offset
+        source_c2 = c2 - col_offset
+
+        h, w = inp.shape
+        if source_r1 < 0 or source_c1 < 0 or source_r2 > h or source_c2 > w:
+            return self._find_best_extraction_region(inp, target_shape)
+
+        candidate = inp[source_r1:source_r2, source_c1:source_c2]
+        if candidate.shape != target_shape:
+            return self._find_best_extraction_region(inp, target_shape)
+
+        # Reject candidate if it is predominantly placeholder color
+        if np.all(candidate == fill_color):
+            return self._find_best_extraction_region(inp, target_shape)
+
+        return candidate.copy()
+
+    def _generate_relational_hypotheses(self, train_pairs: List[Tuple[Array, Array]]):
+        if not self.relational_facts:
+            return
+
+        if not train_pairs:
+            return
+
+        target_shape = train_pairs[0][1].shape
+        considered: Set[Tuple[int, int]] = set()
+
+        relational_sources = []
+        relational_sources.extend(self.relational_facts.get('transformation', []))
+        relational_sources.extend(self.relational_facts.get('composite', []))
+        relational_sources.extend(self.relational_facts.get('inverse', []))
+
+        max_relational_hypotheses = 12
+
+        for fact in relational_sources:
+            if len(considered) >= max_relational_hypotheses:
+                break
+
+            translation = self._fact_translation_vector(fact)
+            if translation is None:
+                continue
+
+            if translation == (0, 0):
+                continue
+
+            if translation in considered:
+                continue
+
+            if abs(translation[0]) > target_shape[0] or abs(translation[1]) > target_shape[1]:
+                continue
+
+            match_score = fact.metadata.get('match_score', fact.confidence if fact.metadata else fact.confidence)
+            if match_score < 1.0:
+                continue
+
+            considered.add(translation)
+
+            def relational_translation(inp: Array, *, _vector=translation, _target_shape=target_shape) -> Array:
+                return self._translate_grid(inp, _vector, _target_shape)
+
+            self.hypotheses.append(
+                SpatialHypothesis(
+                    name=f"relation_translation_{translation[0]}_{translation[1]}",
+                    description="Translate grid using derived relational vector",
+                    confidence=min(0.75, fact.confidence + 0.2),
+                    construction_rule=relational_translation,
+                    verification_score=min(1.0, match_score),
+                    metadata={
+                        'type': 'relation_translation',
+                        'translation': translation,
+                        'source_relation': fact.relation,
+                    },
+                    complexity=1.9,
+                )
+            )
+
+    def _fact_translation_vector(self, fact: RelationalFact) -> Optional[Tuple[int, int]]:
+        translation = fact.metadata.get('translation') if fact.metadata else None
+        if translation and isinstance(translation, tuple) and len(translation) == 2:
+            col_offset, row_offset = translation
+            return int(round(float(row_offset))), int(round(float(col_offset)))
+
+        src_center = fact.metadata.get('src_center') if fact.metadata else None
+        tgt_center = fact.metadata.get('tgt_center') if fact.metadata else None
+        if src_center and tgt_center:
+            row_offset = int(round(float(tgt_center[0] - src_center[0])))
+            col_offset = int(round(float(tgt_center[1] - src_center[1])))
+            if row_offset != 0 or col_offset != 0:
+                return row_offset, col_offset
+
+        return None
+
+    def _translate_grid(self, grid: Array, vector: Tuple[int, int], target_shape: Tuple[int, int]) -> Array:
+        dr, dc = vector
+        src_h, src_w = grid.shape
+        tgt_h, tgt_w = target_shape
+        background = self._dominant_color(grid)
+        result = np.full(target_shape, background, dtype=grid.dtype)
+
+        for r in range(src_h):
+            for c in range(src_w):
+                value = grid[r, c]
+                if value == background:
+                    continue
+                nr = r + dr
+                nc = c + dc
+                if 0 <= nr < tgt_h and 0 <= nc < tgt_w:
+                    result[nr, nc] = value
+
+        return result
+
+    @staticmethod
+    def _dominant_color(grid: Array) -> int:
+        values, counts = np.unique(grid, return_counts=True)
+        if len(values) == 0:
+            return 0
+        idx = int(np.argmax(counts))
+        return int(values[idx])
     
     def _extract_mirrored_content(self, inp: Array, placeholder: Dict[str, Any]) -> Array:
         """Extract content from mirrored position with transformations."""

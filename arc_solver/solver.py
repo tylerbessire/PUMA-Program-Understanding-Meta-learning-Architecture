@@ -19,6 +19,7 @@ from .search import (
 )
 from .enhanced_search import synthesize_with_enhancements, predict_two_enhanced
 from .hypothesis import HypothesisEngine, Hypothesis
+from .continuous_learning import ContinuousSelfMemory
 
 
 class ARCSolver:
@@ -46,13 +47,15 @@ class ARCSolver:
             self.logger.addHandler(handler)
             self.logger.setLevel(logging.INFO)
         self._last_outputs: Optional[Tuple[List[List[List[int]]], List[List[List[int]]]]] = None
-        # Hypothesis engine powers the primary reasoning layer
-        self.hypothesis_engine = HypothesisEngine()
+        # Continuous memory and hypotheses
+        self.self_memory = ContinuousSelfMemory()
+        self.hypothesis_engine = HypothesisEngine(continuous_memory=self.self_memory)
         self._last_hypotheses: List[Hypothesis] = []
-    
+
     def solve_task(self, task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
         """Solve a single ARC task using enhanced or baseline methods."""
         self.stats['total_tasks'] += 1
+        task_id = str(task.get("task_id") or task.get("id") or f"anonymous_{self.stats['total_tasks']}")
 
         # Extract training pairs as numpy arrays, skipping malformed ones
         train_pairs: List[Tuple[Array, Array]] = []
@@ -75,6 +78,8 @@ class ARCSolver:
         if not train_pairs:
             identity = [to_list(arr) for arr in test_inputs]
             return {"attempt_1": identity, "attempt_2": identity}
+
+        training_stats = self._compute_training_stats(train_pairs)
 
         # DYNAMIC SHAPE DETECTION: For inconsistent output tasks, don't assume first training shape
         output_shapes = [out.shape for _, out in train_pairs]
@@ -107,26 +112,39 @@ class ARCSolver:
                     attempt2.append(to_list(transformed))
                 else:
                     # All test inputs transformed successfully
-                    return {"attempt_1": attempt1, "attempt_2": attempt2}
+                    result = {"attempt_1": attempt1, "attempt_2": attempt2}
+                    self._record_continuous_experience(task_id, train_pairs, best_hypothesis, True, result)
+                    self.stats['tasks_solved'] += 1
+                    return result
 
         # Collect predictions for each test input individually
         attempt1: List[List[List[int]]] = []
         attempt2: List[List[List[int]]] = []
         for test_input in test_inputs:
             predictions = self._get_predictions(train_pairs, test_input, expected_shape)
-            if predictions and predictions[0]:
-                first = to_list(predictions[0][0])
-                second_arr = predictions[1][0] if len(predictions) > 1 else predictions[0][0]
-                second = to_list(second_arr)
-                attempt1.append(first)
-                attempt2.append(second)
+            processed = self._postprocess_predictions(
+                train_pairs,
+                test_input,
+                predictions,
+                expected_shape,
+                training_stats,
+            )
+            if processed is not None:
+                first_arr, second_arr = processed
+                attempt1.append(to_list(first_arr))
+                attempt2.append(to_list(second_arr))
             else:
                 # Use identity grid as safe fallback
                 fallback = to_list(test_input)
                 attempt1.append(fallback)
                 attempt2.append(fallback)
 
-        return {"attempt_1": attempt1, "attempt_2": attempt2}
+        result = {"attempt_1": attempt1, "attempt_2": attempt2}
+        solved_training = bool(best_hypothesis and best_hypothesis.confidence >= 0.999)
+        self._record_continuous_experience(task_id, train_pairs, best_hypothesis, solved_training, result)
+        if solved_training:
+            self.stats['tasks_solved'] += 1
+        return result
 
     def _get_predictions(
         self, train_pairs: List[Tuple[Array, Array]], test_input: Array, expected_shape: Optional[Tuple[int, int]]
@@ -160,6 +178,444 @@ class ARCSolver:
         self.stats['fallback_used'] += 1
         self.logger.info("Using baseline prediction")
         return baseline
+
+    def _postprocess_predictions(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        test_input: Array,
+        predictions: List[List[Array]],
+        expected_shape: Optional[Tuple[int, int]],
+        training_stats: Dict[str, Any],
+    ) -> Optional[Tuple[Array, Array]]:
+        if not predictions:
+            return None
+
+        target_shape = self._determine_target_shape(train_pairs, test_input, expected_shape)
+
+        processed: List[Tuple[int, int, Array]] = []
+        for idx, attempt in enumerate(predictions):
+            if not attempt:
+                continue
+            raw_output = attempt[0]
+            adjusted, shape_ok = self._enforce_size_constraints(raw_output, target_shape, training_stats)
+            coherence = self._evaluate_coherence(
+                adjusted,
+                target_shape,
+                training_stats,
+                test_input,
+                shape_ok,
+            )
+            processed.append((coherence, idx, adjusted))
+
+        if not processed:
+            return None
+
+        processed.sort(key=lambda item: (-item[0], item[1]))
+        best = processed[0][2]
+        second = processed[1][2] if len(processed) > 1 else best
+        return best, second
+
+    def _compute_training_stats(
+        self, train_pairs: List[Tuple[Array, Array]]
+    ) -> Dict[str, Any]:
+        color_counts: Dict[int, int] = {}
+        color_hist = np.zeros(10, dtype=np.float64)
+        output_colors: set[int] = set()
+        input_colors: set[int] = set()
+        size_change = False
+        color_change = False
+        background_candidates: Dict[int, int] = {}
+        translation_vectors: List[np.ndarray] = []
+        vertical_stripe_votes = 0
+        horizontal_stripe_votes = 0
+
+        for inp, out in train_pairs:
+            if inp.shape != out.shape:
+                size_change = True
+
+            inp_colors = {int(v) for v in np.unique(inp)}
+            out_colors = {int(v) for v in np.unique(out)}
+            input_colors |= inp_colors
+            output_colors |= out_colors
+            if inp_colors != out_colors:
+                color_change = True
+
+            unique, counts = np.unique(out, return_counts=True)
+            for value, count in zip(unique, counts):
+                key = int(value)
+                color_counts[key] = color_counts.get(key, 0) + int(count)
+                color_hist[key] += int(count)
+
+            background = self._estimate_background_color(out)
+            background_candidates[background] = background_candidates.get(background, 0) + 1
+
+            translation = self._estimate_translation_vector(inp, out)
+            if translation is not None:
+                translation_vectors.append(translation)
+
+            stripe_axis = self._detect_stripe_axis(out)
+            if stripe_axis == 'vertical':
+                vertical_stripe_votes += 1
+            elif stripe_axis == 'horizontal':
+                horizontal_stripe_votes += 1
+
+        dominant_color = max(color_counts, key=color_counts.get) if color_counts else 0
+        color_hist = color_hist / color_hist.sum() if color_hist.sum() > 0 else None
+
+        background_color = dominant_color
+        if background_candidates:
+            background_color = max(background_candidates, key=background_candidates.get)
+
+        likely_translation = False
+        translation_vector: Optional[Tuple[int, int]] = None
+        if translation_vectors:
+            mean_vec = np.mean(translation_vectors, axis=0)
+            deviations = [np.linalg.norm(vec - mean_vec) for vec in translation_vectors]
+            if max(deviations, default=0.0) < 0.75:
+                likely_translation = bool(np.linalg.norm(mean_vec) > 0.1)
+                translation_vector = (
+                    int(round(float(mean_vec[0]))),
+                    int(round(float(mean_vec[1]))),
+                )
+
+        stripe_axis = None
+        majority_threshold = max(1, len(train_pairs) // 2)
+        if vertical_stripe_votes > horizontal_stripe_votes and vertical_stripe_votes >= majority_threshold:
+            stripe_axis = 'vertical'
+        elif horizontal_stripe_votes > vertical_stripe_votes and horizontal_stripe_votes >= majority_threshold:
+            stripe_axis = 'horizontal'
+
+        top_colors = [color for color, _ in sorted(color_counts.items(), key=lambda item: item[1], reverse=True)]
+
+        return {
+            "color_counts": color_counts,
+            "dominant_color": dominant_color,
+            "background_color": background_color,
+            "color_hist": color_hist,
+            "output_colors": output_colors,
+            "input_colors": input_colors,
+            "color_change": color_change,
+            "size_change": size_change,
+            "likely_translation": likely_translation,
+            "translation_vector": translation_vector,
+            "top_colors": top_colors,
+            "stripe_axis": stripe_axis,
+        }
+
+    @staticmethod
+    def _estimate_background_color(grid: Array) -> int:
+        values, counts = np.unique(grid, return_counts=True)
+        idx = int(np.argmax(counts)) if len(counts) else 0
+        return int(values[idx]) if len(values) else 0
+
+    @staticmethod
+    def _centroid(grid: Array, background: int) -> Optional[np.ndarray]:
+        mask = grid != background
+        if not np.any(mask):
+            return None
+        coords = np.argwhere(mask)
+        return coords.mean(axis=0)
+
+    def _estimate_translation_vector(self, source: Array, target: Array) -> Optional[np.ndarray]:
+        bg_src = self._estimate_background_color(source)
+        bg_tgt = self._estimate_background_color(target)
+        centroid_src = self._centroid(source, bg_src)
+        centroid_tgt = self._centroid(target, bg_tgt)
+        if centroid_src is None or centroid_tgt is None:
+            return None
+        return centroid_tgt - centroid_src
+
+    def _detect_stripe_axis(self, grid: Array) -> Optional[str]:
+        h, w = grid.shape
+        if h == 0 or w == 0:
+            return None
+
+        col_uniform = sum(1 for c in range(w) if len(np.unique(grid[:, c])) <= 2)
+        row_uniform = sum(1 for r in range(h) if len(np.unique(grid[r, :])) <= 2)
+
+        col_ratio = col_uniform / w
+        row_ratio = row_uniform / h
+
+        if col_ratio >= 0.6 and row_ratio < 0.6:
+            return 'vertical'
+        if row_ratio >= 0.6 and col_ratio < 0.6:
+            return 'horizontal'
+        return None
+
+    def _determine_target_shape(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        test_input: Array,
+        expected_shape: Optional[Tuple[int, int]],
+    ) -> Optional[Tuple[int, int]]:
+        if expected_shape is not None:
+            return expected_shape
+
+        output_shapes = [out.shape for _, out in train_pairs]
+        if not output_shapes:
+            return test_input.shape
+
+        if len(set(output_shapes)) == 1:
+            return output_shapes[0]
+
+        has_size_change = any(inp.shape != out.shape for inp, out in train_pairs)
+        placeholder = self._find_largest_placeholder(test_input, marker_color=8)
+        if has_size_change and placeholder:
+            return placeholder
+
+        heights = {shape[0] for shape in output_shapes}
+        widths = {shape[1] for shape in output_shapes}
+        test_h, test_w = test_input.shape
+
+        height = heights.pop() if len(heights) == 1 else test_h
+        width = widths.pop() if len(widths) == 1 else test_w
+        return (height, width)
+
+    def _find_largest_placeholder(
+        self, grid: Array, marker_color: int = 8
+    ) -> Optional[Tuple[int, int]]:
+        h, w = grid.shape
+        visited = np.zeros_like(grid, dtype=bool)
+        best: Optional[Tuple[int, int]] = None
+
+        for r in range(h):
+            for c in range(w):
+                if grid[r, c] == marker_color and not visited[r, c]:
+                    shape = self._measure_rectangular_region(grid, r, c, marker_color, visited)
+                    if shape is not None and min(shape) > 1:
+                        if best is None or shape[0] * shape[1] > best[0] * best[1]:
+                            best = shape
+        return best
+
+    def _measure_rectangular_region(
+        self,
+        grid: Array,
+        start_r: int,
+        start_c: int,
+        color: int,
+        visited: np.ndarray,
+    ) -> Optional[Tuple[int, int]]:
+        h, w = grid.shape
+        region_w = 0
+        for c in range(start_c, w):
+            if grid[start_r, c] == color:
+                region_w += 1
+            else:
+                break
+
+        region_h = 0
+        for r in range(start_r, h):
+            if all(grid[r, start_c + dc] == color for dc in range(region_w) if start_c + dc < w):
+                region_h += 1
+            else:
+                break
+
+        if region_h == 0 or region_w == 0:
+            return None
+
+        for r in range(start_r, start_r + region_h):
+            for c in range(start_c, start_c + region_w):
+                if r < h and c < w and grid[r, c] == color:
+                    visited[r, c] = True
+                else:
+                    return None
+
+        return (region_h, region_w)
+
+    def _enforce_size_constraints(
+        self,
+        grid: Array,
+        target_shape: Optional[Tuple[int, int]],
+        training_stats: Dict[str, Any],
+    ) -> Tuple[Array, bool]:
+        if target_shape is None:
+            return grid, True
+
+        target_h, target_w = target_shape
+        current = grid.copy()
+        h, w = current.shape
+
+        if h > target_h or w > target_w:
+            crop_h = min(h, target_h)
+            crop_w = min(w, target_w)
+            current = self._crop_to_shape(current, (crop_h, crop_w))
+            h, w = current.shape
+
+        if h < target_h or w < target_w:
+            fill = training_stats.get("dominant_color")
+            if fill is None:
+                values, counts = np.unique(current, return_counts=True)
+                if len(values):
+                    fill = int(values[counts.argmax()])
+                else:
+                    fill = 0
+            padded = np.full((max(h, target_h), max(w, target_w)), fill, dtype=current.dtype)
+            start_r = (padded.shape[0] - h) // 2
+            start_c = (padded.shape[1] - w) // 2
+            padded[start_r : start_r + h, start_c : start_c + w] = current
+            current = padded
+
+        if current.shape != target_shape:
+            current = self._crop_to_shape(current, target_shape)
+
+        return current, current.shape == target_shape
+
+    def _crop_to_shape(self, grid: Array, target_shape: Tuple[int, int]) -> Array:
+        target_h, target_w = target_shape
+        h, w = grid.shape
+        if h == target_h and w == target_w:
+            return grid.copy()
+
+        best_crop = grid[:target_h, :target_w].copy()
+        best_score = -1.0
+
+        max_r = max(h - target_h + 1, 1)
+        max_c = max(w - target_w + 1, 1)
+        for r in range(max_r):
+            for c in range(max_c):
+                end_r = min(r + target_h, h)
+                end_c = min(c + target_w, w)
+                crop = grid[r:end_r, c:end_c]
+                if crop.shape != (target_h, target_w):
+                    continue
+                diversity = len(np.unique(crop))
+                non_marker = np.count_nonzero(crop != 8)
+                score = diversity * 1000 + non_marker
+                if score > best_score:
+                    best_score = score
+                    best_crop = crop.copy()
+
+        return best_crop
+
+    def _evaluate_coherence(
+        self,
+        prediction: Array,
+        target_shape: Optional[Tuple[int, int]],
+        training_stats: Dict[str, Any],
+        test_input: Array,
+        shape_ok: bool,
+    ) -> int:
+        score = 0.0
+
+        if target_shape is None:
+            score += 0.5 if shape_ok else -0.5
+        else:
+            score += 3.0 if shape_ok else -1.5
+
+        color_hist = training_stats.get("color_hist")
+        pred_hist = self._normalized_histogram(prediction)
+        if color_hist is not None:
+            hist_diff = float(np.abs(pred_hist - color_hist).sum())
+            score -= hist_diff * 3.0
+            if hist_diff < 0.4:
+                score += 1.25
+
+        output_colors = training_stats.get("output_colors", set())
+        color_change_expected = training_stats.get("color_change", False)
+        pred_colors = {int(v) for v in np.unique(prediction)}
+        if not color_change_expected:
+            unseen = pred_colors - output_colors
+            if unseen:
+                score -= 2.0
+        else:
+            if pred_colors & output_colors:
+                score += 0.5
+
+        top_colors = training_stats.get("top_colors") or []
+        if top_colors:
+            dominant_pred = int(np.argmax(pred_hist)) if pred_hist.sum() > 0 else None
+            if dominant_pred is not None and dominant_pred not in top_colors[: min(3, len(top_colors))]:
+                score -= 1.5
+
+            training_hist = training_stats.get("color_hist")
+            if training_hist is not None:
+                ranked_training = [idx for idx, val in sorted(enumerate(training_hist), key=lambda item: item[1], reverse=True) if val > 0]
+                ranked_pred = [idx for idx, val in sorted(enumerate(pred_hist), key=lambda item: item[1], reverse=True) if val > 0]
+                mismatch = sum(1 for color in ranked_pred[:3] if color not in ranked_training[:3])
+                score -= mismatch * 0.5
+
+        if training_stats.get("likely_translation") and training_stats.get("translation_vector") is not None:
+            vector = training_stats["translation_vector"]
+            translated = self._apply_translation(
+                test_input,
+                vector,
+                training_stats.get("background_color", training_stats.get("dominant_color", 0)),
+            )
+            adapted, _ = self._enforce_size_constraints(
+                translated,
+                prediction.shape,
+                training_stats,
+            )
+            min_shape = (min(adapted.shape[0], prediction.shape[0]), min(adapted.shape[1], prediction.shape[1]))
+            adapted_crop = adapted[: min_shape[0], : min_shape[1]]
+            prediction_crop = prediction[: min_shape[0], : min_shape[1]]
+            mismatch = float(np.mean(adapted_crop != prediction_crop)) if min_shape[0] > 0 and min_shape[1] > 0 else 1.0
+            score -= mismatch * 4.0
+            if mismatch < 0.25:
+                score += 1.5
+            elif mismatch > 0.6:
+                score -= 0.5
+
+        stripe_axis = training_stats.get("stripe_axis")
+        if stripe_axis:
+            stripe_ratio = self._stripe_uniform_ratio(prediction, axis=0 if stripe_axis == 'vertical' else 1)
+            if stripe_ratio < 0.5:
+                score -= 1.5
+            else:
+                score += 0.5
+
+        if not np.array_equal(prediction, test_input):
+            score += 0.5
+
+        return score
+
+    @staticmethod
+    def _normalized_histogram(grid: Array) -> np.ndarray:
+        hist = np.zeros(10, dtype=np.float64)
+        unique, counts = np.unique(grid, return_counts=True)
+        for value, count in zip(unique, counts):
+            idx = int(value)
+            if 0 <= idx < hist.size:
+                hist[idx] += int(count)
+        total = hist.sum()
+        if total == 0:
+            return hist
+        return hist / total
+
+    def _stripe_uniform_ratio(self, grid: Array, axis: int) -> float:
+        h, w = grid.shape
+        if axis == 0 and w > 0:
+            uniform = sum(1 for c in range(w) if len(np.unique(grid[:, c])) <= 2)
+            return uniform / w
+        if axis == 1 and h > 0:
+            uniform = sum(1 for r in range(h) if len(np.unique(grid[r, :])) <= 2)
+            return uniform / h
+        return 0.0
+
+    def _apply_translation(
+        self,
+        grid: Array,
+        vector: Tuple[int, int],
+        fill: int,
+    ) -> Array:
+        dr, dc = vector
+        h, w = grid.shape
+        result = np.full((h, w), fill, dtype=grid.dtype)
+
+        src_r_start = max(0, -dr)
+        src_r_end = min(h, h - max(0, dr))
+        dst_r_start = max(0, dr)
+        dst_r_end = dst_r_start + (src_r_end - src_r_start)
+
+        src_c_start = max(0, -dc)
+        src_c_end = min(w, w - max(0, dc))
+        dst_c_start = max(0, dc)
+        dst_c_end = dst_c_start + (src_c_end - src_c_start)
+
+        if dst_r_end > dst_r_start and dst_c_end > dst_c_start:
+            result[dst_r_start:dst_r_end, dst_c_start:dst_c_end] = grid[src_r_start:src_r_end, src_c_start:src_c_end]
+
+        return result
 
 # [S:OBS v1] logging=structured fallback_metric=fallback_used pass
 
@@ -233,6 +689,30 @@ class ARCSolver:
         if self._last_outputs is not None:
             return self._last_outputs[0]
         return [task["test"][0]["input"]]
+
+    def _record_continuous_experience(
+        self,
+        task_id: str,
+        train_pairs: List[Tuple[Array, Array]],
+        hypothesis: Optional[Hypothesis],
+        solved: bool,
+        result: Dict[str, List[List[List[int]]]],
+    ) -> None:
+        if not train_pairs:
+            return
+        transformation = hypothesis.transformation_type if hypothesis else None
+        meta = {
+            "confidence": hypothesis.confidence if hypothesis else 0.0,
+            "program_sketch": hypothesis.program_sketch if hypothesis else None,
+            "attempt_shapes": [
+                list(np.asarray(grid).shape) for grid in result.get("attempt_1", [])
+            ],
+            "enhancements": self.use_enhancements,
+        }
+        try:
+            self.self_memory.record_experience(task_id, train_pairs, transformation, solved, meta)
+        except Exception as exc:
+            self.logger.debug("Continuous memory record failed: %s", exc)
     
     def _validate_solution(self, attempts: List[List[Array]], test_inputs: List[Array]) -> bool:
         """Basic validation to check if solution seems reasonable."""
@@ -261,6 +741,10 @@ class ARCSolver:
             'tasks_solved': self.stats['tasks_solved'],
             'fallback_usage': self.stats['fallback_used'] / max(1, self.stats['total_tasks']),
         }
+
+    def get_persona_summary(self) -> Dict[str, Any]:
+        """Expose the continuous self model summary."""
+        return self.self_memory.persona_summary()
 
 
 # Global solver instance (for backwards compatibility)

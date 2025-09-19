@@ -100,6 +100,23 @@ def infer_translation(inp: Array, out: Array) -> Optional[Tuple[str, Dict[str, i
     return None
 
 
+def infer_tiling(inp: Array, out: Array) -> Optional[Tuple[str, Dict[str, int]]]:
+    """Detect if the output is a uniform tiling of the input grid."""
+    h_in, w_in = inp.shape
+    h_out, w_out = out.shape
+    if h_in == 0 or w_in == 0:
+        return None
+    if h_out % h_in != 0 or w_out % w_in != 0:
+        return None
+    factor_h = h_out // h_in
+    factor_w = w_out // w_in
+    if factor_h == 1 and factor_w == 1:
+        return None
+    if np.array_equal(np.tile(inp, (factor_h, factor_w)), out):
+        return ("tile", {"factor_h": factor_h, "factor_w": factor_w})
+    return None
+
+
 def consistent_program_single_step(pairs: List[Tuple[Array, Array]]) -> List[List[Tuple[str, Dict[str, int]]]]:
     """Try to find single-operation programs that fit all training pairs.
 
@@ -119,6 +136,10 @@ def consistent_program_single_step(pairs: List[Tuple[Array, Array]]) -> List[Lis
     cm = infer_color_mapping(pairs[0][0], pairs[0][1])
     if cm is not None and all(infer_color_mapping(a, b) == cm for a, b in pairs):
         cands.append([("recolor", {"mapping": cm})])
+    # Tiling / scaling
+    tile = infer_tiling(pairs[0][0], pairs[0][1])
+    if tile is not None and all(infer_tiling(a, b) == tile for a, b in pairs):
+        cands.append([tile])
     return cands
 
 
