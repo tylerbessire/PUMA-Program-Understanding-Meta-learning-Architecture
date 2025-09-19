@@ -96,3 +96,11 @@ The system incorporates core knowledge priors that mirror human reasoning:
 5. **Curriculum Learning**: Progressive difficulty training
 
 This architecture provides a strong foundation for achieving the 85% accuracy target on ARC-AGI-2 while staying within Kaggle's compute constraints.
+
+## Functional Contextualist Extension
+
+The complementary behavioral roadmap described in
+[`functional_contextualist_architecture.md`](functional_contextualist_architecture.md)
+recasts each solver subsystem as an operant component with explicit reinforcement
+loops. Refer to that document for the integration plan covering the proposed
+`BehavioralEngine`, tacting extensions, and RFT-driven relational inference.
