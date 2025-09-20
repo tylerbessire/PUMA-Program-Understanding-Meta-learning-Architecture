@@ -9,27 +9,41 @@ features extracted from the training challenges and their known solutions.
 import argparse
 import json
 import os
-import numpy as np
 from pathlib import Path
-from typing import Dict, List, Any, Tuple
+from typing import Any, Dict, List, Tuple
+
+import numpy as np
 
 import sys
-sys.path.append(str(Path(__file__).parent.parent))
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(PROJECT_ROOT))
 
 from arc_solver.grid import to_array
 from arc_solver.features import extract_task_features
 from arc_solver.neural.guidance import SimpleClassifier
 
 
-def load_training_data(challenges_path: str, solutions_path: str = None) -> List[Dict[str, Any]]:
+def _resolve_path(path_str: str) -> Path:
+    """Resolve ``path_str`` relative to the project root."""
+
+    path = Path(path_str).expanduser()
+    if path.is_absolute():
+        return path
+    return PROJECT_ROOT / path
+
+
+def load_training_data(challenges_path: str, solutions_path: str | None = None) -> List[Dict[str, Any]]:
     """Load ARC training challenges and solutions."""
-    with open(challenges_path, 'r') as f:
+    challenges_path = _resolve_path(challenges_path)
+    with challenges_path.open('r', encoding='utf-8') as f:
         challenges = json.load(f)
-    
-    solutions = {}
-    if solutions_path and Path(solutions_path).exists():
-        with open(solutions_path, 'r') as f:
-            solutions = json.load(f)
+
+    solutions: Dict[str, Any] = {}
+    if solutions_path:
+        solutions_path = _resolve_path(solutions_path)
+        if solutions_path.exists():
+            with solutions_path.open('r', encoding='utf-8') as f:
+                solutions = json.load(f)
     
     tasks = []
     for task_id, task_data in challenges.items():
@@ -214,8 +228,11 @@ def save_classifier(classifier: SimpleClassifier, output_path: str):
         "operations": classifier.operations,
     }
 
-    tmp_path = f"{output_path}.tmp"
-    with open(tmp_path, "w", encoding="utf-8") as f:
+    output_path = _resolve_path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    tmp_path = output_path.parent / f"{output_path.name}.tmp"
+    with tmp_path.open("w", encoding="utf-8") as f:
         json.dump(model_data, f)
     os.replace(tmp_path, output_path)
 
@@ -234,7 +251,7 @@ def main():
     args = parser.parse_args()
     
     # Load training data
-    print(f"Loading training data from {args.train_json}")
+    print(f"Loading training data from { _resolve_path(args.train_json) }")
     tasks = load_training_data(args.train_json, args.solutions_json)
     print(f"Loaded {len(tasks)} training tasks")
     

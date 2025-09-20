@@ -10,10 +10,12 @@ import argparse
 import json
 import time
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 import sys
-sys.path.append(str(Path(__file__).parent.parent))
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.append(str(PROJECT_ROOT))
 
 from arc_solver.grid import to_array
 from arc_solver.features import compute_task_signature
@@ -21,15 +23,27 @@ from arc_solver.neural.episodic import EpisodicRetrieval
 from arc_solver.heuristics import consistent_program_single_step, score_candidate
 
 
-def load_training_data(challenges_path: str, solutions_path: str = None) -> List[Dict[str, Any]]:
+def _resolve_path(path_str: str) -> Path:
+    """Resolve ``path_str`` relative to the project root."""
+
+    path = Path(path_str).expanduser()
+    if path.is_absolute():
+        return path
+    return PROJECT_ROOT / path
+
+
+def load_training_data(challenges_path: str, solutions_path: str | None = None) -> List[Dict[str, Any]]:
     """Load ARC training challenges and solutions."""
-    with open(challenges_path, 'r') as f:
+    challenges_path = _resolve_path(challenges_path)
+    with challenges_path.open('r', encoding='utf-8') as f:
         challenges = json.load(f)
     
-    solutions = {}
-    if solutions_path and Path(solutions_path).exists():
-        with open(solutions_path, 'r') as f:
-            solutions = json.load(f)
+    solutions: Dict[str, Any] = {}
+    if solutions_path:
+        solutions_path = _resolve_path(solutions_path)
+        if solutions_path.exists():
+            with solutions_path.open('r', encoding='utf-8') as f:
+                solutions = json.load(f)
     
     tasks = []
     for task_id, task_data in challenges.items():
@@ -95,13 +109,18 @@ def solve_task_and_store(task: Dict[str, Any], episodic_memory: EpisodicRetrieva
     return False
 
 
-def build_episodic_memory(tasks: List[Dict[str, Any]], 
-                         db_path: str = "models/episodic_memory.json") -> EpisodicRetrieval:
+def build_episodic_memory(
+    tasks: List[Dict[str, Any]],
+    db_path: str = "models/episodic_memory.json",
+) -> EpisodicRetrieval:
     """Build episodic memory database from training tasks."""
     print(f"Building episodic memory database...")
     
     # Initialize episodic retrieval system
-    episodic_memory = EpisodicRetrieval(db_path)
+    db_path = _resolve_path(db_path)
+    db_path.parent.mkdir(parents=True, exist_ok=True)
+
+    episodic_memory = EpisodicRetrieval(str(db_path))
     
     solved_count = 0
     total_count = len(tasks)
@@ -185,24 +204,32 @@ def main():
     parser = argparse.ArgumentParser(description="Build episodic memory database for ARC solver")
     parser.add_argument('--train_json', required=True, help='Path to training challenges JSON')
     parser.add_argument('--solutions_json', help='Path to training solutions JSON (optional)')
-    parser.add_argument('--db_path', default='models/episodic_memory.json', 
-                       help='Output path for episodic memory database')
+    parser.add_argument(
+        '--db_path',
+        default='models/episodic_memory.json',
+        help='Output path for episodic memory database',
+    )
     parser.add_argument('--analyze', action='store_true', 
                        help='Perform coverage analysis after building')
     
     args = parser.parse_args()
     
     # Load training data
-    print(f"Loading training data from {args.train_json}")
+    resolved_train = _resolve_path(args.train_json)
+    resolved_solutions = _resolve_path(args.solutions_json) if args.solutions_json else None
+    print(f"Loading training data from {resolved_train}")
+    if resolved_solutions:
+        print(f"Loading solutions data from {resolved_solutions}")
     tasks = load_training_data(args.train_json, args.solutions_json)
     print(f"Loaded {len(tasks)} training tasks")
     
     # Ensure output directory exists
-    Path(args.db_path).parent.mkdir(parents=True, exist_ok=True)
+    db_path = _resolve_path(args.db_path)
+    db_path.parent.mkdir(parents=True, exist_ok=True)
     
     # Build episodic memory
     start_time = time.time()
-    episodic_memory = build_episodic_memory(tasks, args.db_path)
+    episodic_memory = build_episodic_memory(tasks, str(db_path))
     build_time = time.time() - start_time
     
     print(f"\nMemory building took {build_time:.2f} seconds")
