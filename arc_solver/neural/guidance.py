@@ -18,6 +18,7 @@ import numpy as np
 from ..grid import Array
 from ..features import extract_task_features
 from ..rft_engine.engine import RFTInference
+from ..tacting import TactSystem
 
 
 class SimpleClassifier:
@@ -35,18 +36,25 @@ class SimpleClassifier:
         self.bias1 = np.zeros(hidden_dim)
         self.weights2 = rng.standard_normal((hidden_dim, 7))
         self.bias2 = np.zeros(7)
-        
+
         # Operation mapping
         self.operations = ['rotate', 'flip', 'transpose', 'translate', 'recolor', 'crop', 'pad']
+
+    @staticmethod
+    def _sigmoid(z: np.ndarray) -> np.ndarray:
+        """Numerically stable sigmoid."""
+        z = np.clip(z, -60.0, 60.0)
+        return 1.0 / (1.0 + np.exp(-z))
     
     def forward(self, x: np.ndarray) -> np.ndarray:
         """Forward pass through the network."""
         if x.ndim == 1:
             x = x.reshape(1, -1)
         # First layer
-        h = np.maximum(0, np.dot(x, self.weights1) + self.bias1)  # ReLU
-        # Output layer with sigmoid
-        out = 1.0 / (1.0 + np.exp(-(np.dot(h, self.weights2) + self.bias2)))
+        hidden_pre = np.dot(x, self.weights1) + self.bias1
+        h = np.maximum(0, hidden_pre)  # ReLU
+        # Output layer with stable sigmoid
+        out = self._sigmoid(np.dot(h, self.weights2) + self.bias2)
         return out.squeeze()
 
     def train(
@@ -58,8 +66,9 @@ class SimpleClassifier:
 
         for _ in range(epochs):
             # Forward pass
-            h = np.maximum(0, X @ self.weights1 + self.bias1)
-            out = 1.0 / (1.0 + np.exp(-(h @ self.weights2 + self.bias2)))
+            hidden_pre = X @ self.weights1 + self.bias1
+            h = np.maximum(0, hidden_pre)
+            out = self._sigmoid(h @ self.weights2 + self.bias2)
 
             # Gradients for output layer (sigmoid + BCE)
             grad_out = (out - Y) / X.shape[0]
@@ -68,7 +77,7 @@ class SimpleClassifier:
 
             # Backprop into hidden layer (ReLU)
             grad_h = grad_out @ self.weights2.T
-            grad_h[h <= 0] = 0
+            grad_h[hidden_pre <= 0] = 0
             grad_w1 = X.T @ grad_h
             grad_b1 = grad_h.sum(axis=0)
 
@@ -92,13 +101,14 @@ class SimpleClassifier:
         if Y.ndim == 1:
             Y = Y.reshape(1, -1)
         reward = max(0.0, min(1.0, float(reward)))
-        h = np.maximum(0, X @ self.weights1 + self.bias1)
-        out = 1.0 / (1.0 + np.exp(-(h @ self.weights2 + self.bias2)))
+        hidden_pre = X @ self.weights1 + self.bias1
+        h = np.maximum(0, hidden_pre)
+        out = self._sigmoid(h @ self.weights2 + self.bias2)
         grad_out = (out - Y) * reward
         grad_w2 = h.T @ grad_out
         grad_b2 = grad_out.sum(axis=0)
         grad_h = grad_out @ self.weights2.T
-        grad_h[h <= 0] = 0
+        grad_h[hidden_pre <= 0] = 0
         grad_w1 = X.T @ grad_h
         grad_b1 = grad_h.sum(axis=0)
         self.weights2 -= lr * grad_w2
@@ -220,6 +230,9 @@ class NeuralGuidance:
         expected_dim = 17
         self.online_lr = 0.05
         self.operation_stats: Dict[str, Dict[str, float]] = {}
+        self.tact_system = TactSystem()
+        self.last_tact_profile = None
+        self.last_predicted_ops: List[str] = []
 
         if model_path and os.path.exists(model_path):
             try:
@@ -238,19 +251,41 @@ class NeuralGuidance:
     def predict_operations(self, train_pairs: List[Tuple[Array, Array]]) -> List[str]:
         """Predict which operations are likely relevant for the task."""
         features = extract_task_features(train_pairs)
-        
-        # Try neural guidance first, fall back to heuristic
+        tact_profile = self.tact_system.emit(features)
+
+        ordered_ops: List[str] = []
+
         if self.neural_model:
             try:
-                return self.neural_model.predict_operations(features)
+                ordered_ops.extend(
+                    self.neural_model.predict_operations(features)
+                )
             except Exception:
                 pass
-        
-        return self.heuristic_guidance.predict_operations(features)
+
+        ordered_ops.extend(self.tact_system.suggest_operations(tact_profile.tokens))
+        ordered_ops.extend(self.heuristic_guidance.predict_operations(features))
+
+        deduped: List[str] = []
+        seen: Set[str] = set()
+        for op in ordered_ops:
+            if op not in seen:
+                seen.add(op)
+                deduped.append(op)
+
+        if deduped:
+            self.last_predicted_ops = deduped
+        else:
+            self.last_predicted_ops = ['identity']
+
+        self.last_tact_profile = tact_profile
+
+        return self.last_predicted_ops
     
     def score_operations(self, train_pairs: List[Tuple[Array, Array]]) -> Dict[str, float]:
         """Get operation relevance scores."""
         features = extract_task_features(train_pairs)
+        tact_profile = self.tact_system.emit(features)
 
         scores = {
             'rotate': features.get('likely_rotation', 0),
@@ -268,6 +303,9 @@ class NeuralGuidance:
                 scores[op] = 0.7 * scores[op] + 0.3 * mean_reward
             else:
                 scores[op] = mean_reward
+
+        for op in self.tact_system.suggest_operations(tact_profile.tokens, top_k=8):
+            scores[op] = scores.get(op, 0.0) + 0.1
 
         return scores
 
@@ -290,10 +328,13 @@ class NeuralGuidance:
             stats["count"] += 1.0
             stats["mean_reward"] += (reward - stats["mean_reward"]) / stats["count"]
 
+        features = extract_task_features(train_pairs)
+        tact_profile = self.tact_system.emit(features)
+        self.tact_system.reinforce(tact_profile.tokens, operations, reward)
+
         if not self.neural_model:
             return
 
-        features = extract_task_features(train_pairs)
         feature_vec = self.neural_model._features_to_vector(features)
         label = np.zeros(len(self.neural_model.operations))
         for op in operations:

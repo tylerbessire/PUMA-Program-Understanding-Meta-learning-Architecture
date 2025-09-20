@@ -103,51 +103,80 @@ def extract_training_features_and_labels(tasks: List[Dict[str, Any]]) -> Tuple[n
     return np.array(features_list), np.array(labels_list)
 
 
-def train_classifier(features: np.ndarray, labels: np.ndarray, epochs: int = 100) -> SimpleClassifier:
-    """Train the neural guidance classifier."""
-    print(f"Training classifier on {len(features)} examples...")
-    
-    # Initialize classifier
+def train_classifier(
+    features: np.ndarray,
+    labels: np.ndarray,
+    epochs: int = 100,
+    lr: float = 1e-2,
+    batch_size: int = 128,
+) -> SimpleClassifier:
+    """Train the neural guidance classifier with mini-batch gradient descent."""
+    num_examples = len(features)
+    if num_examples == 0:
+        raise ValueError("no training examples provided")
+
+    print(f"Training classifier on {num_examples} examples...")
     classifier = SimpleClassifier(input_dim=features.shape[1])
-    
-    # Training loop with basic gradient descent
+
+    features = features.astype(np.float32, copy=False)
+    labels = labels.astype(np.float32, copy=False)
+
+    if batch_size <= 0:
+        raise ValueError("batch_size must be positive")
+
+    indices = np.arange(num_examples)
+    print_every = max(1, epochs // 10)
+
     for epoch in range(epochs):
+        np.random.shuffle(indices)
         total_loss = 0.0
-        
-        for i in range(len(features)):
-            # Forward pass
-            prediction = classifier.forward(features[i].reshape(1, -1))[0]
-            target = labels[i]
-            
-            # Binary cross-entropy loss
-            loss = -np.mean(target * np.log(prediction + 1e-8) + 
-                           (1 - target) * np.log(1 - prediction + 1e-8))
-            total_loss += loss
-            
-            # Simple gradient update (simplified backpropagation)
-            error = prediction - target
-            learning_rate = 0.001
-            
-            # Update output layer
-            h = np.maximum(0, np.dot(features[i].reshape(1, -1), classifier.weights1) + classifier.bias1)
-            classifier.weights2 -= learning_rate * np.outer(h.T, error)
-            classifier.bias2 -= learning_rate * error
-            
-            # Update hidden layer (simplified)
-            delta_h = np.dot(error, classifier.weights2.T) * (h > 0).astype(float)
-            classifier.weights1 -= learning_rate * np.outer(features[i], delta_h)
-            classifier.bias1 -= learning_rate * delta_h.flatten()
-        
-        avg_loss = total_loss / len(features)
-        if epoch % 20 == 0:
-            print(f"Epoch {epoch}/{epochs}, Average Loss: {avg_loss:.4f}")
-    
+
+        for start in range(0, num_examples, batch_size):
+            batch_idx = indices[start:start + batch_size]
+            X_batch = features[batch_idx]
+            Y_batch = labels[batch_idx]
+
+            hidden_pre = X_batch @ classifier.weights1 + classifier.bias1
+            hidden = np.maximum(0, hidden_pre)
+            logits = hidden @ classifier.weights2 + classifier.bias2
+            probs = classifier._sigmoid(logits)
+            probs_clipped = np.clip(probs, 1e-7, 1 - 1e-7)
+
+            batch_loss = -np.mean(
+                Y_batch * np.log(probs_clipped)
+                + (1.0 - Y_batch) * np.log(1.0 - probs_clipped)
+            )
+            total_loss += batch_loss * X_batch.shape[0]
+
+            grad_out = (probs - Y_batch) / X_batch.shape[0]
+            grad_w2 = hidden.T @ grad_out
+            grad_b2 = grad_out.sum(axis=0)
+
+            grad_hidden = grad_out @ classifier.weights2.T
+            grad_hidden[hidden_pre <= 0] = 0.0
+            grad_w1 = X_batch.T @ grad_hidden
+            grad_b1 = grad_hidden.sum(axis=0)
+
+            classifier.weights2 -= lr * grad_w2
+            classifier.bias2 -= lr * grad_b2
+            classifier.weights1 -= lr * grad_w1
+            classifier.bias1 -= lr * grad_b1
+
+        avg_loss = total_loss / num_examples
+        if (epoch + 1) % print_every == 0 or epoch == 0:
+            print(f"Epoch {epoch + 1}/{epochs}, Average Loss: {avg_loss:.4f}")
+
     return classifier
 
 
 def evaluate_classifier(classifier: SimpleClassifier, features: np.ndarray, labels: np.ndarray):
     """Evaluate classifier performance."""
-    predictions = np.array([classifier.forward(x.reshape(1, -1))[0] for x in features])
+    if len(features) == 0:
+        raise ValueError("no features provided for evaluation")
+
+    predictions = np.vstack([
+        classifier.forward(x.reshape(1, -1)).ravel() for x in features
+    ])
     binary_predictions = (predictions > 0.5).astype(float)
     
     # Per-operation accuracy
@@ -160,7 +189,15 @@ def evaluate_classifier(classifier: SimpleClassifier, features: np.ndarray, labe
     # Overall accuracy
     overall_accuracy = np.mean(binary_predictions == labels)
     print(f"\nOverall accuracy: {overall_accuracy:.3f}")
-    
+
+    tp = np.logical_and(binary_predictions == 1.0, labels == 1.0).sum()
+    fp = np.logical_and(binary_predictions == 1.0, labels == 0.0).sum()
+    fn = np.logical_and(binary_predictions == 0.0, labels == 1.0).sum()
+    precision = tp / (tp + fp + 1e-8)
+    recall = tp / (tp + fn + 1e-8)
+    micro_f1 = 2 * precision * recall / (precision + recall + 1e-8)
+    print(f"Micro-F1: {micro_f1:.3f} (precision={precision:.3f}, recall={recall:.3f})")
+
     return overall_accuracy
 
 
@@ -188,6 +225,8 @@ def main():
     parser.add_argument('--solutions_json', help='Path to training solutions JSON (optional)')
     parser.add_argument('--out', required=True, help='Output path for trained model')
     parser.add_argument('--epochs', type=int, default=100, help='Number of training epochs')
+    parser.add_argument('--learning_rate', type=float, default=1e-2, help='Learning rate for optimisation')
+    parser.add_argument('--batch_size', type=int, default=128, help='Mini-batch size')
     
     args = parser.parse_args()
     
@@ -206,7 +245,13 @@ def main():
     print(f"Extracted {len(features)} feature vectors with {features.shape[1]} features each")
     
     # Train classifier
-    classifier = train_classifier(features, labels, args.epochs)
+    classifier = train_classifier(
+        features,
+        labels,
+        epochs=args.epochs,
+        lr=args.learning_rate,
+        batch_size=args.batch_size,
+    )
     
     # Evaluate performance
     print("\nEvaluating trained classifier:")
