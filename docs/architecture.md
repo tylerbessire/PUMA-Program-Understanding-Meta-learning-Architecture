@@ -102,5 +102,9 @@ This architecture provides a strong foundation for achieving the 85% accuracy ta
 The complementary behavioral roadmap described in
 [`functional_contextualist_architecture.md`](functional_contextualist_architecture.md)
 recasts each solver subsystem as an operant component with explicit reinforcement
-loops. Refer to that document for the integration plan covering the proposed
-`BehavioralEngine`, tacting extensions, and RFT-driven relational inference.
+loops. The production `BehavioralEngine` (`arc_solver/behavioral_engine.py`) now
+implements the reinforcement loop, while the new `RFTEngine`
+(`arc_solver/rft_engine/engine.py`) supplies derived relational hints to neural
+guidance. Refer to that document for remaining tacting extensions and future RFT
+expansions.
+

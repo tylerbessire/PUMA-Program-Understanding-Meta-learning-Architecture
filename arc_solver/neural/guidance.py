@@ -11,12 +11,13 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
 
 from ..grid import Array
 from ..features import extract_task_features
+from ..rft_engine.engine import RFTInference
 
 
 class SimpleClassifier:
@@ -76,6 +77,34 @@ class SimpleClassifier:
             self.bias2 -= lr * grad_b2
             self.weights1 -= lr * grad_w1
             self.bias1 -= lr * grad_b1
+
+    def online_update(
+        self,
+        X: np.ndarray,
+        Y: np.ndarray,
+        reward: float,
+        lr: float = 0.05,
+    ) -> None:
+        """Perform a single weighted gradient step using reward scaling."""
+
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
+        if Y.ndim == 1:
+            Y = Y.reshape(1, -1)
+        reward = max(0.0, min(1.0, float(reward)))
+        h = np.maximum(0, X @ self.weights1 + self.bias1)
+        out = 1.0 / (1.0 + np.exp(-(h @ self.weights2 + self.bias2)))
+        grad_out = (out - Y) * reward
+        grad_w2 = h.T @ grad_out
+        grad_b2 = grad_out.sum(axis=0)
+        grad_h = grad_out @ self.weights2.T
+        grad_h[h <= 0] = 0
+        grad_w1 = X.T @ grad_h
+        grad_b1 = grad_h.sum(axis=0)
+        self.weights2 -= lr * grad_w2
+        self.bias2 -= lr * grad_b2
+        self.weights1 -= lr * grad_w1
+        self.bias1 -= lr * grad_b1
     
     def predict_operations(self, features: Dict[str, Any], threshold: float = 0.5) -> List[str]:
         """Predict which operations are likely relevant."""
@@ -189,6 +218,8 @@ class NeuralGuidance:
         self.heuristic_guidance = HeuristicGuidance()
         self.neural_model = None
         expected_dim = 17
+        self.online_lr = 0.05
+        self.operation_stats: Dict[str, Dict[str, float]] = {}
 
         if model_path and os.path.exists(model_path):
             try:
@@ -199,6 +230,10 @@ class NeuralGuidance:
                 self.neural_model = SimpleClassifier(expected_dim)
         else:
             self.neural_model = SimpleClassifier(expected_dim)
+        for op in [
+            'rotate', 'flip', 'transpose', 'translate', 'recolor', 'crop', 'pad', 'identity'
+        ]:
+            self.operation_stats.setdefault(op, {"count": 0.0, "mean_reward": 0.0})
     
     def predict_operations(self, train_pairs: List[Tuple[Array, Array]]) -> List[str]:
         """Predict which operations are likely relevant for the task."""
@@ -216,7 +251,7 @@ class NeuralGuidance:
     def score_operations(self, train_pairs: List[Tuple[Array, Array]]) -> Dict[str, float]:
         """Get operation relevance scores."""
         features = extract_task_features(train_pairs)
-        
+
         scores = {
             'rotate': features.get('likely_rotation', 0),
             'flip': features.get('likely_reflection', 0) * 0.7,
@@ -227,8 +262,45 @@ class NeuralGuidance:
             'pad': features.get('likely_pad', 0),
             'identity': 0.1,  # Always a small baseline
         }
-        
+        for op, stat in self.operation_stats.items():
+            mean_reward = stat.get("mean_reward", 0.0)
+            if op in scores:
+                scores[op] = 0.7 * scores[op] + 0.3 * mean_reward
+            else:
+                scores[op] = mean_reward
+
         return scores
+
+    def reinforce(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        program: List[Tuple[str, Dict[str, Any]]],
+        reward: float,
+        inference: Optional[RFTInference] = None,
+    ) -> None:
+        """Update neural guidance policy using reinforcement signal."""
+
+        reward = max(0.0, min(1.0, float(reward)))
+        operations: Set[str] = {op for op, _ in program}
+        if inference is not None:
+            for hints in inference.function_hints.values():
+                operations.update(hints)
+        for op in operations:
+            stats = self.operation_stats.setdefault(op, {"count": 0.0, "mean_reward": 0.0})
+            stats["count"] += 1.0
+            stats["mean_reward"] += (reward - stats["mean_reward"]) / stats["count"]
+
+        if not self.neural_model:
+            return
+
+        features = extract_task_features(train_pairs)
+        feature_vec = self.neural_model._features_to_vector(features)
+        label = np.zeros(len(self.neural_model.operations))
+        for op in operations:
+            if op in self.neural_model.operations:
+                idx = self.neural_model.operations.index(op)
+                label[idx] = 1.0
+        self.neural_model.online_update(feature_vec, label, reward, self.online_lr)
 
     def train_from_episode_db(
         self, db_path: str, epochs: int = 50, lr: float = 0.1

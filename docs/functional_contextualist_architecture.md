@@ -1,4 +1,5 @@
-[S:DOC v1] doc=functional_contextualist_architecture sections=5 scope=behavioral pass
+[S:DOC v2] doc=functional_contextualist_architecture sections=5 scope=behavioral pass
+
 
 # A Functional Contextualist Architecture for Abstract Reasoning: Integrating Behavioral Analysis into the PUMA Solver
 
@@ -47,12 +48,13 @@
 | Antecedent Stimulus | ARC task input | Evokes behavior |
 | Behavior / Operant | DSL program | Acts on environment |
 | Consequence | Grader output | Reinforcement |
-| Reinforcement Mechanism | Proposed BehavioralEngine | Reward delivery |
+| Reinforcement Mechanism | BehavioralEngine (`arc_solver/behavioral_engine.py`) | Reward delivery |
 | Stimulus Control | NeuralGuidance | Probability shaping |
 | Learning History | EpisodicRetrieval | Memory of reinforced behaviors |
 | Tacting | Proposed module atop `arc_solver/features.py` | Descriptive labeling |
 | Intraverbal Behavior | Enhanced search with chaining | Sequenced operations |
-| Relational Framing | Proposed RFTEngine | Derived relations |
+| Relational Framing | RFTEngine (`arc_solver/rft_engine/engine.py`) | Derived relations |
+
 
 ## 3. Engineering an RFT Engine for Novel Problem-Solving
 
@@ -69,14 +71,16 @@
 ## 4. Implementation Roadmap
 
 ### 4.1 BehavioralEngine
-- Online training loop orchestrating solver invocations.
-- Reward grader producing continuous feedback `[0.0, 1.0]`.
-- Broadcast reinforcement signals to adaptive modules.
+- **Module:** `arc_solver/behavioral_engine.py`
+- **Feature flag:** `PUMA_BEHAVIORAL_ENGINE` guarantees opt-in rollouts.
+- **Reward Loop:** `RewardGrader` emits dense `[0.0, 1.0]` rewards with pixel/shape breakdowns.
+- **Telemetry:** Structured JSON logs + moving-average metrics for monitoring.
+- **Integration:** Broadcasts reinforcement to `NeuralGuidance.reinforce()` and episodic memory.
 
 ### 4.2 Module Adaptations
-- **NeuralGuidance:** Online updates from rewards.
-- **EpisodicRetrieval:** Track average reward per program.
-- **EnhancedSearch:** Prioritise high-reward guidance/memory suggestions.
+- **NeuralGuidance (`arc_solver/neural/guidance.py`):** Online updates from rewards and RFT hints.
+- **EpisodicRetrieval (`arc_solver/neural/episodic.py`):** Tracks average reward per episode and ranks retrieval accordingly.
+- **EnhancedSearch (`arc_solver/enhanced_search.py`):** Consumes updated guidance statistics without code changes.
 
 ### 4.3 Agentic Integration
 - Embed RFT state into agentic solver observation space (`docs/AGENTIC_GENOMIC_SOLVER.md`).

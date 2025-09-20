@@ -96,6 +96,23 @@ python tools/train_guidance.py
 python tools/benchmark.py
 ```
 
+### Operant Behavioral Training
+
+```bash
+# Enable the behavioural loop (feature-flagged for safety)
+export PUMA_BEHAVIORAL_ENGINE=1
+
+# Run reinforcement training with default dataset paths
+python -c "from pathlib import Path;\
+from arc_solver.behavioral_engine import BehavioralEngine;\
+engine = BehavioralEngine();\
+engine.train(Path('data/arc-agi_training_challenges.json'), Path('data/arc-agi_training_solutions.json'), max_tasks=10)"
+```
+
+The command above executes the production `BehavioralEngine`, emitting structured
+JSON logs with reward metrics while updating neural guidance and episodic memory
+online. Unset `PUMA_BEHAVIORAL_ENGINE` to leave runtime behaviour unchanged.
+
 ### Python API
 
 ```python
