@@ -8,7 +8,7 @@ features extracted from the training challenges and their known solutions.
 
 import argparse
 import json
-import pickle
+import os
 import numpy as np
 from pathlib import Path
 from typing import Dict, List, Any, Tuple
@@ -202,20 +202,23 @@ def evaluate_classifier(classifier: SimpleClassifier, features: np.ndarray, labe
 
 
 def save_classifier(classifier: SimpleClassifier, output_path: str):
-    """Save trained classifier to pickle file."""
+    """Save trained classifier to JSON compatible with ``NeuralGuidance``."""
+
     model_data = {
-        'weights1': classifier.weights1,
-        'bias1': classifier.bias1,
-        'weights2': classifier.weights2,
-        'bias2': classifier.bias2,
-        'input_dim': classifier.input_dim,
-        'hidden_dim': classifier.hidden_dim,
-        'operations': classifier.operations,
+        "input_dim": classifier.input_dim,
+        "hidden_dim": classifier.hidden_dim,
+        "weights1": classifier.weights1.tolist(),
+        "bias1": classifier.bias1.tolist(),
+        "weights2": classifier.weights2.tolist(),
+        "bias2": classifier.bias2.tolist(),
+        "operations": classifier.operations,
     }
-    
-    with open(output_path, 'wb') as f:
-        pickle.dump(model_data, f)
-    
+
+    tmp_path = f"{output_path}.tmp"
+    with open(tmp_path, "w", encoding="utf-8") as f:
+        json.dump(model_data, f)
+    os.replace(tmp_path, output_path)
+
     print(f"Classifier saved to {output_path}")
 
 
