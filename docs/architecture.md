@@ -107,3 +107,4 @@ implements the reinforcement loop, while the new `RFTEngine`
 (`arc_solver/rft_engine/engine.py`) supplies derived relational hints to neural
 guidance. Refer to that document for remaining tacting extensions and future RFT
 expansions.
+

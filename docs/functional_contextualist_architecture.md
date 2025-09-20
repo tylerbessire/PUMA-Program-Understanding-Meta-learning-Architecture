@@ -1,5 +1,6 @@
 [S:DOC v2] doc=functional_contextualist_architecture sections=5 scope=behavioral pass
 
+
 # A Functional Contextualist Architecture for Abstract Reasoning: Integrating Behavioral Analysis into the PUMA Solver
 
 ## 1. Architectural Analysis of PUMA as a Behavioral System
@@ -53,6 +54,7 @@
 | Tacting | Proposed module atop `arc_solver/features.py` | Descriptive labeling |
 | Intraverbal Behavior | Enhanced search with chaining | Sequenced operations |
 | Relational Framing | RFTEngine (`arc_solver/rft_engine/engine.py`) | Derived relations |
+
 
 ## 3. Engineering an RFT Engine for Novel Problem-Solving
 
