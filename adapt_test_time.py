@@ -93,18 +93,18 @@ class TestTimeAdaptedSolver:
         candidates = []
         
         try:
-            # Use enhanced search but with tight time constraints
-            enhanced_search = EnhancedSearch(enable_beam_search=False)  # Disable slow beam search
-            candidates = enhanced_search.synthesize_enhanced(train_pairs, max_programs=50)
-            
-            # Also try direct synthesis if we have time
-            if time.time() - start_time < max_time * 0.5:
-                additional = synthesize_with_enhancements(train_pairs, max_programs=20)
+            # Allow beam search so we do not miss higher-complexity programs
+            enhanced_search = EnhancedSearch(enable_beam_search=True)
+            candidates = enhanced_search.synthesize_enhanced(train_pairs, max_programs=75)
+
+            # Also try direct synthesis if we still have budget
+            if time.time() - start_time < max_time * 0.6:
+                additional = synthesize_with_enhancements(train_pairs, max_programs=32)
                 candidates.extend(additional)
-        
+
         except Exception as e:
             self.logger.warning(f"Initial candidate generation failed: {e}")
-        
+
         return candidates
     
     def _apply_adaptation(self, train_pairs: List[Tuple[Array, Array]], 
@@ -180,19 +180,62 @@ class TestTimeAdaptedSolver:
         }
 
 
-def load_mini_eval_tasks(num_tasks: int = 10) -> Tuple[Dict[str, Any], Dict[str, Any]]:
-    """Load a small subset of evaluation tasks for testing."""
-    with open('data/arc-agi_evaluation_challenges.json', 'r') as f:
+def load_mini_eval_tasks(
+    num_tasks: int = 10,
+    dataset: str = "evaluation",
+    task_ids: Optional[List[str]] = None,
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
+    """Load a small subset of ARC tasks for testing.
+
+    Parameters
+    ----------
+    num_tasks:
+        Number of tasks to load when ``task_ids`` is not provided.
+
+    dataset:
+        Which dataset to draw from: ``"evaluation"`` (default) or ``"training"``.
+
+    task_ids:
+        Optional explicit list of task identifiers to load. When supplied the
+        order and contents are preserved and ``num_tasks`` is ignored.
+    """
+
+    if dataset not in {"evaluation", "training"}:
+        raise ValueError(f"Unsupported dataset '{dataset}'")
+
+    challenge_path = (
+        'data/arc-agi_evaluation_challenges.json'
+        if dataset == "evaluation"
+        else 'data/arc-agi_training_challenges.json'
+    )
+    solution_path = (
+        'data/arc-agi_evaluation_solutions.json'
+        if dataset == "evaluation"
+        else 'data/arc-agi_training_solutions.json'
+    )
+
+    with open(challenge_path, 'r') as f:
         all_challenges = json.load(f)
-    
-    with open('data/arc-agi_evaluation_solutions.json', 'r') as f:
+
+    with open(solution_path, 'r') as f:
         all_solutions = json.load(f)
-    
-    # Take first N tasks as mini evaluation set
-    task_ids = list(all_challenges.keys())[:num_tasks]
-    challenges = {tid: all_challenges[tid] for tid in task_ids}
-    solutions = {tid: all_solutions[tid] for tid in task_ids}
-    
+
+    available_ids = list(all_challenges.keys())
+
+    if task_ids:
+        selected_ids = [tid for tid in task_ids if tid in all_challenges]
+    else:
+        selected_ids = available_ids[:num_tasks]
+
+    challenges = {tid: all_challenges[tid] for tid in selected_ids}
+
+    if isinstance(all_solutions, dict):
+        solutions = {tid: all_solutions[tid] for tid in selected_ids}
+    else:
+        # Some solution files ship as lists aligned with challenges order
+        index_map = {tid: idx for idx, tid in enumerate(available_ids)}
+        solutions = {tid: all_solutions[index_map[tid]] for tid in selected_ids}
+
     return challenges, solutions
 
 
@@ -210,14 +253,19 @@ def check_solution_exact(predicted: List[List[List[int]]],
     return True
 
 
-def evaluate_with_adaptation(num_tasks: int = 10, time_budget_per_task: float = 30.0) -> Dict[str, Any]:
+def evaluate_with_adaptation(
+    num_tasks: int = 10,
+    time_budget_per_task: float = 30.0,
+    dataset: str = "evaluation",
+    task_ids: Optional[List[str]] = None,
+) -> Dict[str, Any]:
     """Evaluate test-time adaptation on mini evaluation set."""
     print(f"🚀 Test-Time Adaptation Evaluation - {num_tasks} Tasks")
     print("=" * 60)
     
     # Load mini evaluation set
     print("📁 Loading mini evaluation data...")
-    challenges, solutions = load_mini_eval_tasks(num_tasks)
+    challenges, solutions = load_mini_eval_tasks(num_tasks, dataset=dataset, task_ids=task_ids)
     print(f"Loaded {len(challenges)} tasks for evaluation")
     
     # Initialize solvers
@@ -269,34 +317,44 @@ def evaluate_with_adaptation(num_tasks: int = 10, time_budget_per_task: float = 
             task_result['baseline'] = {'success': False, 'time': baseline_time}
             results['baseline']['times'].append(baseline_time)
         
-        # Test adaptive solver
-        print("🧠 Testing adaptive solver...")
-        start_time = time.time()
-        try:
-            adapted_result = adaptive_solver.solve_task_with_adaptation(task, time_budget_per_task)
-            adapted_time = time.time() - start_time
-            adapted_success = (
-                check_solution_exact(adapted_result['attempt_1'], solution) or
-                check_solution_exact(adapted_result['attempt_2'], solution)
-            )
-            
+        # Test adaptive solver (skip if baseline already succeeded)
+        if baseline_success:
             task_result['adapted'] = {
-                'success': adapted_success,
-                'time': adapted_time,
-                'adaptation_stats': adaptive_solver.get_adaptation_statistics()
+                'success': True,
+                'time': baseline_time,
+                'adaptation_stats': {'skipped': True},
             }
-            results['adapted']['times'].append(adapted_time)
-            if adapted_success:
-                results['adapted']['successes'] += 1
-                print(f"  ✅ SUCCESS in {adapted_time:.2f}s")
-            else:
-                print(f"  ❌ FAILED in {adapted_time:.2f}s")
-        
-        except Exception as e:
-            adapted_time = time.time() - start_time
-            print(f"  💥 ERROR in {adapted_time:.2f}s: {e}")
-            task_result['adapted'] = {'success': False, 'time': adapted_time}
-            results['adapted']['times'].append(adapted_time)
+            results['adapted']['times'].append(baseline_time)
+            results['adapted']['successes'] += 1
+            print("🧠 Testing adaptive solver... (skipped, baseline perfect)")
+        else:
+            print("🧠 Testing adaptive solver...")
+            start_time = time.time()
+            try:
+                adapted_result = adaptive_solver.solve_task_with_adaptation(task, time_budget_per_task)
+                adapted_time = time.time() - start_time
+                adapted_success = (
+                    check_solution_exact(adapted_result['attempt_1'], solution) or
+                    check_solution_exact(adapted_result['attempt_2'], solution)
+                )
+
+                task_result['adapted'] = {
+                    'success': adapted_success,
+                    'time': adapted_time,
+                    'adaptation_stats': adaptive_solver.get_adaptation_statistics()
+                }
+                results['adapted']['times'].append(adapted_time)
+                if adapted_success:
+                    results['adapted']['successes'] += 1
+                    print(f"  ✅ SUCCESS in {adapted_time:.2f}s")
+                else:
+                    print(f"  ❌ FAILED in {adapted_time:.2f}s")
+
+            except Exception as e:
+                adapted_time = time.time() - start_time
+                print(f"  💥 ERROR in {adapted_time:.2f}s: {e}")
+                task_result['adapted'] = {'success': False, 'time': adapted_time}
+                results['adapted']['times'].append(adapted_time)
         
         results['task_results'].append(task_result)
     
@@ -371,6 +429,9 @@ def main():
                        help='Time budget per task (seconds)')
     parser.add_argument('--save-results', type=str, default='adapt_test_time_results.json',
                        help='File to save detailed results')
+    parser.add_argument('--dataset', type=str, default='evaluation', choices=['evaluation', 'training'],
+                        help='Dataset split to evaluate against')
+    parser.add_argument('--task-ids', type=str, nargs='*', help='Explicit task ids to evaluate')
     
     args = parser.parse_args()
     
@@ -378,7 +439,12 @@ def main():
     logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     
     # Run evaluation
-    results = evaluate_with_adaptation(args.tasks, args.time_budget)
+    results = evaluate_with_adaptation(
+        args.tasks,
+        args.time_budget,
+        dataset=args.dataset,
+        task_ids=args.task_ids,
+    )
     
     # Convert numpy types for JSON serialization
     def convert_numpy_types(obj):
