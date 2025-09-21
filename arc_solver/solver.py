@@ -11,6 +11,8 @@ from typing import Any, Dict, List, Optional, Tuple
 import numpy as np
 import os
 import logging
+import json
+from pathlib import Path
 
 from .grid import to_array, to_list, Array
 from .search import (
@@ -34,25 +36,40 @@ class ARCSolver:
     
     def __init__(self, use_enhancements: bool = True,
                  guidance_model_path: str = None,
-                 episode_db_path: str = "episodes.json"):
+                 episode_db_path: str = "episodes.json",
+                 enable_logging: bool = None,
+                 checkpoint_path: str = None):
         self.use_enhancements = use_enhancements
         self.guidance_model_path = guidance_model_path
         self.episode_db_path = episode_db_path
+        self.checkpoint_path = checkpoint_path or "checkpoint.json"
+        
+        # Logging control - check environment variable or parameter
+        if enable_logging is None:
+            enable_logging = os.environ.get('ARC_ENABLE_LOGGING', 'true').lower() in ('1', 'true', 'yes')
+        self.enable_logging = enable_logging
+        
         self.stats = {
             'tasks_solved': 0,
             'total_tasks': 0,
             'enhancement_success_rate': 0.0,
             'fallback_used': 0,
         }
+        self.submission_results = {}  # For checkpoint saving
 
-        # Structured logger for observability
+        # Structured logger for observability - controlled by enable_logging
         self.logger = logging.getLogger(self.__class__.__name__)
         if not self.logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s: %(message)s')
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
-        self.logger.setLevel(logging.INFO)
+        
+        # Set logging level based on enable_logging flag
+        if self.enable_logging:
+            self.logger.setLevel(logging.INFO)
+        else:
+            self.logger.setLevel(logging.CRITICAL)  # Only show critical errors
         self._last_outputs: Optional[Tuple[List[List[List[int]]], List[List[List[int]]]]] = None
         # Continuous memory and hypotheses
         self.self_memory = ContinuousSelfMemory()
@@ -104,7 +121,8 @@ class ARCSolver:
         else:
             # Inconsistent outputs - let enhanced search detect from test input
             expected_shape = None
-            self.logger.info(f"Inconsistent output shapes detected: {output_shapes}, enabling dynamic detection")
+            if self.enable_logging:
+                self.logger.info(f"Inconsistent output shapes detected: {output_shapes}, enabling dynamic detection")
 
         # Generate and store hypotheses about the transformation.
         self._last_hypotheses = self.hypothesis_engine.generate_hypotheses(train_pairs)
@@ -168,7 +186,8 @@ class ARCSolver:
         enhanced: List[List[Array]] = []
         if self.use_enhancements:
             try:
-                self.logger.info("Using enhanced search for prediction")
+                if self.enable_logging:
+                    self.logger.info("Using enhanced search for prediction")
                 progs = synthesize_with_enhancements(train_pairs, expected_shape=expected_shape, test_input=test_input)
                 
                 # Import human reasoner for enhanced prediction
@@ -179,7 +198,8 @@ class ARCSolver:
                                               human_reasoner=human_reasoner,
                                               train_pairs=train_pairs)
             except Exception as e:
-                self.logger.exception("Enhanced prediction error: %s", e)
+                if self.enable_logging:
+                    self.logger.exception("Enhanced prediction error: %s", e)
 
         # Baseline predictions for ensemble
         progs_base = synth_baseline(train_pairs, expected_shape=expected_shape)
@@ -187,11 +207,13 @@ class ARCSolver:
 
         # Validate enhanced prediction
         if enhanced and self._validate_solution(enhanced, [test_input]):
-            self.logger.info(f"Enhanced prediction valid - shape: {enhanced[0][0].shape}")
+            if self.enable_logging:
+                self.logger.info(f"Enhanced prediction valid - shape: {enhanced[0][0].shape}")
             return [enhanced[0], baseline[0]]
 
         self.stats['fallback_used'] += 1
-        self.logger.info("Using baseline prediction")
+        if self.enable_logging:
+            self.logger.info("Using baseline prediction")
         return baseline
 
     def _postprocess_predictions(
@@ -317,11 +339,12 @@ class ARCSolver:
 
         if templates:
             episodic_count = max(0, len(templates) - len(new_templates))
-            self.logger.info(
-                "Loaded %d placeholder template(s) (%d from episodic memory)",
-                len(templates),
-                episodic_count,
-            )
+            if self.enable_logging:
+                self.logger.info(
+                    "Loaded %d placeholder template(s) (%d from episodic memory)",
+                    len(templates),
+                    episodic_count,
+                )
 
     def _persist_placeholder_templates(
         self, train_pairs: List[Tuple[Array, Array]]
@@ -356,12 +379,14 @@ class ARCSolver:
                 metadata={"placeholder_templates": payloads},
             )
             self.episodic_retrieval.save()
-            self.logger.info(
-                "Persisted %d placeholder template(s) to episodic memory",
-                len(payloads),
-            )
+            if self.enable_logging:
+                self.logger.info(
+                    "Persisted %d placeholder template(s) to episodic memory",
+                    len(payloads),
+                )
         except Exception as exc:
-            self.logger.debug("Failed to persist placeholder templates: %s", exc)
+            if self.enable_logging:
+                self.logger.debug("Failed to persist placeholder templates: %s", exc)
 
     def _compute_training_stats(
         self, train_pairs: List[Tuple[Array, Array]]
@@ -860,7 +885,8 @@ class ARCSolver:
         try:
             self.self_memory.record_experience(task_id, train_pairs, transformation, solved, meta)
         except Exception as exc:
-            self.logger.debug("Continuous memory record failed: %s", exc)
+            if self.enable_logging:
+                self.logger.debug("Continuous memory record failed: %s", exc)
     
     def _validate_solution(self, attempts: List[List[Array]], test_inputs: List[Array]) -> bool:
         """Basic validation to check if solution seems reasonable."""
@@ -893,6 +919,69 @@ class ARCSolver:
     def get_persona_summary(self) -> Dict[str, Any]:
         """Expose the continuous self model summary."""
         return self.self_memory.persona_summary()
+    
+    def save_checkpoint(self, task_id: str = None, force: bool = False) -> None:
+        """Save current progress to checkpoint file."""
+        if not self.submission_results and not force:
+            return
+            
+        try:
+            checkpoint_data = {
+                'submission_results': self.submission_results,
+                'stats': self.stats,
+                'completed_tasks': list(self.submission_results.keys()),
+                'last_task': task_id,
+                'timestamp': str(Path(__file__).stat().st_mtime)
+            }
+            
+            with open(self.checkpoint_path, 'w') as f:
+                json.dump(checkpoint_data, f, indent=2)
+                
+            if self.enable_logging:
+                self.logger.info(f"Checkpoint saved: {len(self.submission_results)} tasks completed")
+        except Exception as exc:
+            if self.enable_logging:
+                self.logger.error(f"Failed to save checkpoint: {exc}")
+    
+    def load_checkpoint(self) -> Dict[str, Any]:
+        """Load progress from checkpoint file."""
+        try:
+            if not Path(self.checkpoint_path).exists():
+                return {}
+                
+            with open(self.checkpoint_path, 'r') as f:
+                checkpoint_data = json.load(f)
+                
+            self.submission_results = checkpoint_data.get('submission_results', {})
+            
+            # Update stats if they exist
+            saved_stats = checkpoint_data.get('stats', {})
+            for key, value in saved_stats.items():
+                if key in self.stats:
+                    self.stats[key] = value
+                    
+            if self.enable_logging:
+                completed = len(self.submission_results)
+                last_task = checkpoint_data.get('last_task', 'unknown')
+                self.logger.info(f"Checkpoint loaded: {completed} tasks completed, last: {last_task}")
+                
+            return checkpoint_data
+        except Exception as exc:
+            if self.enable_logging:
+                self.logger.error(f"Failed to load checkpoint: {exc}")
+            return {}
+    
+    def add_submission_result(self, task_id: str, result: Dict[str, List[List[List[int]]]]) -> None:
+        """Add a task result to submission tracking."""
+        self.submission_results[task_id] = result
+        
+        # Save checkpoint every 10 tasks to prevent memory buildup
+        if len(self.submission_results) % 10 == 0:
+            self.save_checkpoint(task_id)
+    
+    def get_submission_results(self) -> Dict[str, Dict[str, List[List[List[int]]]]]:
+        """Get all submission results for final export."""
+        return self.submission_results.copy()
 
 
 # Global solver instance (for backwards compatibility)
