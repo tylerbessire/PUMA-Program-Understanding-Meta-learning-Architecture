@@ -25,6 +25,12 @@ from .comprehensive_memory import get_comprehensive_memory
 from .human_reasoning import HumanGradeReasoner
 from .shape_guard import ShapeGuard, SmartRecolorMapper
 from .search_gating import SearchGate, BlockSizeNegotiator, TaskSignatureAnalyzer
+from .intraverbal import IntraverbalChainer
+from .placeholders import (
+    PlaceholderTemplateEngine,
+    deserialize_placeholder_template,
+    serialize_placeholder_template,
+)
 
 
 class EnhancedSearch:
@@ -38,6 +44,7 @@ class EnhancedSearch:
         self.sketch_miner = SketchMiner()
         self.test_time_trainer = TestTimeTrainer()
         self.human_reasoner = HumanGradeReasoner()
+        self.intraverbal = IntraverbalChainer()
         self.search_stats = {}
         self.enable_beam_search = enable_beam_search
         
@@ -86,6 +93,7 @@ class EnhancedSearch:
             'task_signature': task_signature,
             'human_reasoning_candidates': 0,
             'episodic_candidates': 0,
+            'episodic_placeholder_candidates': 0,
             'facts_candidates': 0,
             'heuristic_candidates': 0,
             'beam_candidates': 0,
@@ -110,7 +118,11 @@ class EnhancedSearch:
         memory_candidates = self._get_memory_candidates(train_pairs)
         all_candidates.extend(memory_candidates)
         self.search_stats['memory_candidates'] = len(memory_candidates)
-        
+
+        episodic_placeholder_candidates = self._get_episodic_placeholder_candidates(train_pairs)
+        all_candidates.extend(episodic_placeholder_candidates)
+        self.search_stats['episodic_placeholder_candidates'] = len(episodic_placeholder_candidates)
+
         # Step 1.5: Facts-guided heuristic search
         facts_candidates = self._facts_guided_search(train_pairs)
         all_candidates.extend(facts_candidates)
@@ -166,8 +178,25 @@ class EnhancedSearch:
         
         # Update episodic memory with any successful programs
         successful_programs = [p for p in final_programs if score_candidate(p, train_pairs) > 0.99]
+        placeholder_payloads = []
+        if getattr(self.human_reasoner, "placeholder_templates", None):
+            target_shape = train_pairs[0][1].shape if train_pairs else None
+            for template in self.human_reasoner.placeholder_templates:
+                payload = serialize_placeholder_template(template)
+                if target_shape is not None:
+                    payload["target_shape"] = [int(dim) for dim in target_shape]
+                placeholder_payloads.append(payload)
+
+        metadata: Optional[Dict[str, Any]] = None
+        if placeholder_payloads:
+            metadata = {"placeholder_templates": placeholder_payloads}
+
         if successful_programs:
-            self.episodic_retrieval.add_successful_solution(train_pairs, successful_programs)
+            self.episodic_retrieval.add_successful_solution(
+                train_pairs,
+                successful_programs,
+                metadata=metadata,
+            )
             # Also update sketch miner
             for program in successful_programs:
                 self.sketch_miner.add_successful_program(program)
@@ -187,7 +216,32 @@ class EnhancedSearch:
             candidates.append(program)
             
         return candidates
-    
+
+    def _get_episodic_placeholder_candidates(
+        self, train_pairs: List[Tuple[Array, Array]]
+    ) -> List[List[Tuple[str, Dict[str, Any]]]]:
+        """Retrieve placeholder templates from episodic memory as candidates."""
+
+        payloads = self.episodic_retrieval.get_placeholder_templates(train_pairs, max_templates=5)
+        candidates: List[List[Tuple[str, Dict[str, Any]]]] = []
+
+        for idx, payload in enumerate(payloads):
+            metadata: Dict[str, Any] = {
+                '_source': 'episodic_placeholder',
+                '_template': payload,
+                'confidence': 0.9,
+                'verification_score': 0.7,
+            }
+            target_shape = payload.get('target_shape')
+            if target_shape:
+                metadata['_target_shape'] = tuple(int(x) for x in target_shape)
+            metadata['placeholder_color'] = payload.get('placeholder_color')
+            metadata['placeholder_shape'] = tuple(payload.get('shape', [])) if payload.get('shape') else None
+            program_name = f"episodic_placeholder_{idx}"
+            candidates.append([(program_name, metadata)])
+
+        return candidates
+
     def _facts_guided_search(self, train_pairs: List[Tuple[Array, Array]]) -> List[List[Tuple[str, Dict[str, int]]]]:
         """Search guided by extracted task facts."""
         if not train_pairs:
@@ -384,54 +438,67 @@ class EnhancedSearch:
         # Get expected output shape
         expected_shape = train_pairs[0][1].shape
         
-        # Score all candidates with shape constraints and caching
-        scored_candidates = []
-        cache = {}  # De-duplicate scoring
-        
+        # Score all candidates with shape constraints and intraverbal chaining bonus
+        scored_candidates: List[Tuple[float, float, float, List[Tuple[str, Dict[str, int]]]]] = []
+        cache: Dict[str, float] = {}
+
         for program in candidates:
             program_key = str(program)
             if program_key in cache:
-                score = cache[program_key]
+                base_score = cache[program_key]
             else:
-                score = self._score_with_shape_constraint(program, train_pairs, expected_shape)
-                cache[program_key] = score
-                
-            scored_candidates.append((score, program))
-        
-        # Sort by score (descending)
+                base_score = self._score_with_shape_constraint(program, train_pairs, expected_shape)
+                cache[program_key] = base_score
+
+            intraverbal_bonus = self.intraverbal.score_sequence(program)
+            combined_score = 0.85 * base_score + 0.15 * intraverbal_bonus
+            scored_candidates.append((combined_score, base_score, intraverbal_bonus, program))
+
         scored_candidates.sort(key=lambda x: x[0], reverse=True)
-        
+
         # Apply anchor sweep to near-perfect candidates (skip human reasoning)
-        enhanced_candidates = []
-        for score, program in scored_candidates:
-            if 0.85 <= score < 0.99 and not self._is_human_reasoning_candidate(program):  # Near miss - try anchor sweep
+        enhanced_candidates: List[Tuple[float, float, float, List[Tuple[str, Dict[str, int]]]]] = []
+        for combined, base_score, intraverbal_bonus, program in scored_candidates:
+            if 0.85 <= base_score < 0.99 and not self._is_human_reasoning_candidate(program):  # Near miss - try anchor sweep
                 try:
                     improved_result, improved_score, anchor_info = self._try_anchor_sweep(program, train_pairs)
-                    if improved_score > score:
-                        print(f"DEBUG: Anchor sweep improved score from {score:.3f} to {improved_score:.3f}")
-                        enhanced_candidates.append((improved_score, program))
+                    if improved_score > base_score:
+                        print(f"DEBUG: Anchor sweep improved score from {base_score:.3f} to {improved_score:.3f}")
+                        new_combined = 0.85 * improved_score + 0.15 * intraverbal_bonus
+                        enhanced_candidates.append((new_combined, improved_score, intraverbal_bonus, program))
                         self.search_stats['anchor_improvements'] += 1
                     else:
-                        enhanced_candidates.append((score, program))
+                        enhanced_candidates.append((combined, base_score, intraverbal_bonus, program))
                 except Exception as e:
                     print(f"DEBUG: Anchor sweep failed for program: {e}")
-                    enhanced_candidates.append((score, program))
+                    enhanced_candidates.append((combined, base_score, intraverbal_bonus, program))
             else:
-                enhanced_candidates.append((score, program))
-        
+                enhanced_candidates.append((combined, base_score, intraverbal_bonus, program))
+
         # Re-sort after anchor improvements
         enhanced_candidates.sort(key=lambda x: x[0], reverse=True)
-        
+
         # Take only high-scoring programs
-        good_programs = [program for score, program in enhanced_candidates if score > 0.99]
-        
+        good_programs = [program for _, base_score, _, program in enhanced_candidates if base_score > 0.99]
+
         # If no perfect programs, take the best available
         if not good_programs and enhanced_candidates:
-            good_programs = [program for score, program in enhanced_candidates[:max_programs]]
-        
+            good_programs = [program for _, _, _, program in enhanced_candidates[:max_programs]]
+
         # Diversify the program set
         final_programs = diversify_programs(good_programs)
-        
+
+        # Store debug ranking info (top 12)
+        self.search_stats['candidate_rankings'] = [
+            {
+                'combined': float(combined),
+                'base': float(base_score),
+                'intraverbal': float(intraverbal_bonus),
+                'program': program,
+            }
+            for combined, base_score, intraverbal_bonus, program in enhanced_candidates[:12]
+        ]
+
         return final_programs[:max_programs]
     
     def _is_human_reasoning_candidate(self, program: List[Tuple[str, Dict[str, int]]]) -> bool:
@@ -452,56 +519,33 @@ class EnhancedSearch:
                 if self._is_human_reasoning_candidate(program):
                     # Use existing verification score for human reasoning
                     verification_score = program[0][1].get('verification_score', 0.0)
-                    
-                    # Apply shape constraint to human reasoning result
+                    target_shape = program[0][1].get('_target_shape') if program[0][1].get('_target_shape_boost') else expected_shape
+
                     hypothesis_obj = program[0][1].get('_hypothesis_obj')
                     if hypothesis_obj:
-                        try:
-                            # TARGETED EXTRACTION: Special handling for target shape boost
-                            if program[0][1].get('_target_shape_boost') and program[0][1].get('_target_shape'):
-                                target_shape = program[0][1].get('_target_shape')
-                                # Apply the hypothesis but force the target shape immediately
-                                raw_result = hypothesis_obj.construction_rule(inp)
-                                result = self._force_shape_compliance(raw_result, target_shape)
-                                print(f"DEBUG: Applied targeted extraction: {raw_result.shape} -> {result.shape}")
-                            else:
-                                raw_result = hypothesis_obj.construction_rule(inp)
-                                
-                                # SHAPE GOVERNANCE: Force target shape
-                                if raw_result.shape != expected_shape:
-                                    result = self._force_shape_compliance(raw_result, expected_shape)
-                                else:
-                                    result = raw_result
-                            
-                            # Calculate accuracy with shape compliance
-                            if result.shape == expected_out.shape:
-                                matches = np.sum(result == expected_out)
-                                accuracy = matches / expected_out.size
-                                
-                                # SPECIAL BOOST: For targeted shape extraction
-                                if program[0][1].get('_target_shape_boost'):
-                                    print(f"DEBUG: Targeted extraction accuracy: {accuracy:.3f}")
-                                    if accuracy > 0.05:  # Very low threshold for targeted extraction
-                                        accuracy = min(1.0, accuracy * 3.0)  # Strong boost
-                                        print(f"DEBUG: Applied targeted boost: {accuracy:.3f}")
-                                
-                                # SPECIAL BOOST: For dynamic shape detection hits  
-                                elif ('adjacent_replacement' in (hypothesis_obj.name if hasattr(hypothesis_obj, 'name') else '') and 
-                                      raw_result.shape == expected_shape and
-                                      accuracy > 0.1):  # Some reasonable content
-                                    print(f"DEBUG: Shape-targeted hypothesis boost: {hypothesis_obj.name} -> {accuracy:.3f}")
-                                    accuracy = min(1.0, accuracy * 2.0)  # Strong boost for shape match
-                                
-                                # Boost score if shape was corrected
-                                elif raw_result.shape != expected_shape and accuracy > 0.8:
-                                    accuracy = min(1.0, accuracy * 1.1)  # 10% boost for good shape adaptation
-                                
-                                total_score += accuracy
-                                valid_pairs += 1
-                            else:
-                                self.search_stats['shape_violations'] += 1
-                        except Exception:
-                            total_score += verification_score  # Use cached score as fallback
+                        raw_result = hypothesis_obj.construction_rule(inp)
+                        if target_shape is not None and raw_result.shape != target_shape:
+                            result = self._force_shape_compliance(raw_result, target_shape)
+                            print(f"DEBUG: Applied targeted extraction: {raw_result.shape} -> {result.shape}")
+                        else:
+                            result = raw_result
+                    else:
+                        result = None
+
+                    if result is not None:
+                        scoring_result = result
+                        if scoring_result.shape != expected_out.shape:
+                            scoring_result = self._force_shape_compliance(scoring_result, expected_out.shape)
+
+                        if scoring_result.shape == expected_out.shape:
+                            matches = np.sum(scoring_result == expected_out)
+                            accuracy = matches / expected_out.size
+                            if program[0][1].get('_target_shape_boost'):
+                                accuracy = max(accuracy, verification_score * 0.6)
+                            total_score += accuracy
+                            valid_pairs += 1
+                        else:
+                            total_score += verification_score
                             valid_pairs += 1
                     else:
                         total_score += verification_score
@@ -707,41 +751,79 @@ class EnhancedSearch:
         for i, hypothesis in enumerate(hypotheses[:5]):  # Top 5 hypotheses
             if hypothesis.verification_score > 0.5:  # Only well-verified hypotheses
                 # Create a custom program that applies this hypothesis with metadata
-                program = [(hypothesis.name, {
+                metadata = {
                     'hypothesis_id': i,
                     'confidence': hypothesis.confidence,
                     'verification_score': hypothesis.verification_score,
                     '_source': 'human_reasoner',  # Metadata flag
                     '_hypothesis_obj': hypothesis  # Store the actual hypothesis
-                })]
+                }
+                if getattr(hypothesis, 'metadata', None):
+                    for key, value in hypothesis.metadata.items():
+                        metadata[f'_{key}'] = value
+
+                if metadata.get('_type') == 'placeholder_template':
+                    target_shape = metadata.get('_target_shape')
+                    if target_shape:
+                        metadata['_target_shape'] = tuple(int(x) for x in target_shape)
+                        metadata['_target_shape_boost'] = True
+
+                program = [(hypothesis.name, metadata)]
                 candidates.append(program)
                 print(f"DEBUG: Added human reasoning program: {hypothesis.name} (score: {hypothesis.verification_score:.3f})")
         
         # CRITICAL FIX: For extraction tasks with dynamic target shape, create a targeted hypothesis
         if expected_shape and hypotheses:
-            # Find the best adjacent_replacement hypothesis (any shape) and adapt it
-            best_adjacent_hypothesis = None
-            best_score = 0
-            
-            for hypothesis in hypotheses:
-                if 'adjacent_replacement_8' in hypothesis.name and hypothesis.verification_score > best_score:
-                    best_adjacent_hypothesis = hypothesis
-                    best_score = hypothesis.verification_score
-            
-            if best_adjacent_hypothesis:
-                # Create a targeted program that uses the best adjacent replacement logic
-                # but forces the expected shape
-                targeted_program = [(f"targeted_extraction_{expected_shape[0]}x{expected_shape[1]}", {
-                    'hypothesis_id': 999,  # Special ID
-                    'confidence': best_adjacent_hypothesis.confidence,
-                    'verification_score': min(1.0, best_adjacent_hypothesis.verification_score * 4.0),  # Strong boost
+            # Prefer RFT-guided transformation hypotheses if available
+            targeted_candidates = [h for h in hypotheses if getattr(h, 'metadata', None) and h.metadata.get('type') == 'transformation_extraction']
+
+            if targeted_candidates:
+                targeted_candidates.sort(key=lambda h: h.verification_score * h.confidence, reverse=True)
+                best_targeted = targeted_candidates[0]
+                meta = {
+                    'hypothesis_id': 999,
+                    'confidence': best_targeted.confidence,
+                    'verification_score': min(1.0, best_targeted.verification_score * 3.0),
                     '_source': 'human_reasoner',
-                    '_hypothesis_obj': best_adjacent_hypothesis,
+                    '_hypothesis_obj': best_targeted,
                     '_target_shape_boost': True,
-                    '_target_shape': expected_shape  # Store the target shape
-                })]
+                    '_target_shape': best_targeted.metadata.get('target_shape', expected_shape),
+                }
+                for key, value in best_targeted.metadata.items():
+                    meta[f'_{key}'] = value
+
+                targeted_program = [(f"targeted_transformation_{meta['_target_shape'][0]}x{meta['_target_shape'][1]}", meta)]
                 candidates.append(targeted_program)
-                print(f"DEBUG: Added TARGETED extraction for {expected_shape} (adapted from {best_adjacent_hypothesis.name}, boosted score: {min(1.0, best_adjacent_hypothesis.verification_score * 4.0):.3f})")
+                print(
+                    "DEBUG: Added transformation-guided extraction for"
+                    f" {meta['_target_shape']} (verification boost: {meta['verification_score']:.3f})"
+                )
+
+            else:
+                # Legacy adjacent replacement fallback
+                best_adjacent_hypothesis = None
+                best_score = 0
+
+                for hypothesis in hypotheses:
+                    if 'adjacent_replacement_8' in hypothesis.name and hypothesis.verification_score > best_score:
+                        best_adjacent_hypothesis = hypothesis
+                        best_score = hypothesis.verification_score
+
+                if best_adjacent_hypothesis:
+                    targeted_program = [(f"targeted_extraction_{expected_shape[0]}x{expected_shape[1]}", {
+                        'hypothesis_id': 999,
+                        'confidence': best_adjacent_hypothesis.confidence,
+                        'verification_score': min(1.0, best_adjacent_hypothesis.verification_score * 4.0),
+                        '_source': 'human_reasoner',
+                        '_hypothesis_obj': best_adjacent_hypothesis,
+                        '_target_shape_boost': True,
+                        '_target_shape': expected_shape
+                    })]
+                    candidates.append(targeted_program)
+                    print(
+                        f"DEBUG: Added TARGETED extraction for {expected_shape}"
+                        f" (adapted from {best_adjacent_hypothesis.name}, boosted score: {min(1.0, best_adjacent_hypothesis.verification_score * 4.0):.3f})"
+                    )
         
         return candidates
     
@@ -785,17 +867,13 @@ def predict_two_enhanced(
                 # Check if this is a human reasoning program (using metadata flag)
                 if (len(program) == 1 and program[0][1].get('_source') == 'human_reasoner'
                     and human_reasoner is not None and train_pairs is not None):
-                    
-                    # Get the stored hypothesis object and apply it
+
                     hypothesis = program[0][1].get('_hypothesis_obj')
                     if hypothesis:
-                        # TARGETED EXTRACTION: Apply shape governance
                         if program[0][1].get('_target_shape_boost') and program[0][1].get('_target_shape'):
                             target_shape = program[0][1].get('_target_shape')
                             raw_result = hypothesis.construction_rule(ti)
-                            # Force compliance with target shape
                             if raw_result.shape != target_shape:
-                                # Use the enhanced search's shape compliance method
                                 enhanced_search = EnhancedSearch()
                                 result = enhanced_search._force_shape_compliance(raw_result, target_shape)
                                 print(f"DEBUG: Prediction shape governance: {raw_result.shape} -> {result.shape}")
@@ -804,12 +882,29 @@ def predict_two_enhanced(
                         else:
                             result = hypothesis.construction_rule(ti)
                     else:
-                        # Fallback: use human reasoner to solve
                         result = human_reasoner.solve_task(train_pairs, ti)
                     
                     # EMERGENCY FIX: Apply specific pattern fixes
                     result = _apply_emergency_fixes(result)
                     
+                    outs.append(result)
+                elif len(program) == 1 and program[0][1].get('_source') == 'episodic_placeholder':
+                    payload = program[0][1].get('_template') or {}
+                    try:
+                        template = deserialize_placeholder_template(payload)
+                        placeholder_engine = PlaceholderTemplateEngine()
+                        result = placeholder_engine.apply_template(ti, template)
+                    except Exception:
+                        result = None
+
+                    if result is None:
+                        result = ti.copy()
+
+                    target_shape = program[0][1].get('_target_shape')
+                    if target_shape and tuple(result.shape) != tuple(target_shape):
+                        enhanced_search = EnhancedSearch()
+                        result = enhanced_search._force_shape_compliance(result, tuple(target_shape))
+
                     outs.append(result)
                 else:
                     # Regular program execution

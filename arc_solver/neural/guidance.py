@@ -11,12 +11,14 @@ from __future__ import annotations
 
 import json
 import os
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 import numpy as np
 
 from ..grid import Array
 from ..features import extract_task_features
+from ..rft_engine.engine import RFTInference
+from ..tacting import TactSystem
 
 
 class SimpleClassifier:
@@ -34,18 +36,25 @@ class SimpleClassifier:
         self.bias1 = np.zeros(hidden_dim)
         self.weights2 = rng.standard_normal((hidden_dim, 7))
         self.bias2 = np.zeros(7)
-        
+
         # Operation mapping
         self.operations = ['rotate', 'flip', 'transpose', 'translate', 'recolor', 'crop', 'pad']
+
+    @staticmethod
+    def _sigmoid(z: np.ndarray) -> np.ndarray:
+        """Numerically stable sigmoid."""
+        z = np.clip(z, -60.0, 60.0)
+        return 1.0 / (1.0 + np.exp(-z))
     
     def forward(self, x: np.ndarray) -> np.ndarray:
         """Forward pass through the network."""
         if x.ndim == 1:
             x = x.reshape(1, -1)
         # First layer
-        h = np.maximum(0, np.dot(x, self.weights1) + self.bias1)  # ReLU
-        # Output layer with sigmoid
-        out = 1.0 / (1.0 + np.exp(-(np.dot(h, self.weights2) + self.bias2)))
+        hidden_pre = np.dot(x, self.weights1) + self.bias1
+        h = np.maximum(0, hidden_pre)  # ReLU
+        # Output layer with stable sigmoid
+        out = self._sigmoid(np.dot(h, self.weights2) + self.bias2)
         return out.squeeze()
 
     def train(
@@ -57,8 +66,9 @@ class SimpleClassifier:
 
         for _ in range(epochs):
             # Forward pass
-            h = np.maximum(0, X @ self.weights1 + self.bias1)
-            out = 1.0 / (1.0 + np.exp(-(h @ self.weights2 + self.bias2)))
+            hidden_pre = X @ self.weights1 + self.bias1
+            h = np.maximum(0, hidden_pre)
+            out = self._sigmoid(h @ self.weights2 + self.bias2)
 
             # Gradients for output layer (sigmoid + BCE)
             grad_out = (out - Y) / X.shape[0]
@@ -67,7 +77,7 @@ class SimpleClassifier:
 
             # Backprop into hidden layer (ReLU)
             grad_h = grad_out @ self.weights2.T
-            grad_h[h <= 0] = 0
+            grad_h[hidden_pre <= 0] = 0
             grad_w1 = X.T @ grad_h
             grad_b1 = grad_h.sum(axis=0)
 
@@ -76,6 +86,35 @@ class SimpleClassifier:
             self.bias2 -= lr * grad_b2
             self.weights1 -= lr * grad_w1
             self.bias1 -= lr * grad_b1
+
+    def online_update(
+        self,
+        X: np.ndarray,
+        Y: np.ndarray,
+        reward: float,
+        lr: float = 0.05,
+    ) -> None:
+        """Perform a single weighted gradient step using reward scaling."""
+
+        if X.ndim == 1:
+            X = X.reshape(1, -1)
+        if Y.ndim == 1:
+            Y = Y.reshape(1, -1)
+        reward = max(0.0, min(1.0, float(reward)))
+        hidden_pre = X @ self.weights1 + self.bias1
+        h = np.maximum(0, hidden_pre)
+        out = self._sigmoid(h @ self.weights2 + self.bias2)
+        grad_out = (out - Y) * reward
+        grad_w2 = h.T @ grad_out
+        grad_b2 = grad_out.sum(axis=0)
+        grad_h = grad_out @ self.weights2.T
+        grad_h[hidden_pre <= 0] = 0
+        grad_w1 = X.T @ grad_h
+        grad_b1 = grad_h.sum(axis=0)
+        self.weights2 -= lr * grad_w2
+        self.bias2 -= lr * grad_b2
+        self.weights1 -= lr * grad_w1
+        self.bias1 -= lr * grad_b1
     
     def predict_operations(self, features: Dict[str, Any], threshold: float = 0.5) -> List[str]:
         """Predict which operations are likely relevant."""
@@ -189,6 +228,11 @@ class NeuralGuidance:
         self.heuristic_guidance = HeuristicGuidance()
         self.neural_model = None
         expected_dim = 17
+        self.online_lr = 0.05
+        self.operation_stats: Dict[str, Dict[str, float]] = {}
+        self.tact_system = TactSystem()
+        self.last_tact_profile = None
+        self.last_predicted_ops: List[str] = []
 
         if model_path and os.path.exists(model_path):
             try:
@@ -199,24 +243,50 @@ class NeuralGuidance:
                 self.neural_model = SimpleClassifier(expected_dim)
         else:
             self.neural_model = SimpleClassifier(expected_dim)
+        for op in [
+            'rotate', 'flip', 'transpose', 'translate', 'recolor', 'crop', 'pad', 'identity'
+        ]:
+            self.operation_stats.setdefault(op, {"count": 0.0, "mean_reward": 0.0})
     
     def predict_operations(self, train_pairs: List[Tuple[Array, Array]]) -> List[str]:
         """Predict which operations are likely relevant for the task."""
         features = extract_task_features(train_pairs)
-        
-        # Try neural guidance first, fall back to heuristic
+        tact_profile = self.tact_system.emit(features)
+
+        ordered_ops: List[str] = []
+
         if self.neural_model:
             try:
-                return self.neural_model.predict_operations(features)
+                ordered_ops.extend(
+                    self.neural_model.predict_operations(features)
+                )
             except Exception:
                 pass
-        
-        return self.heuristic_guidance.predict_operations(features)
+
+        ordered_ops.extend(self.tact_system.suggest_operations(tact_profile.tokens))
+        ordered_ops.extend(self.heuristic_guidance.predict_operations(features))
+
+        deduped: List[str] = []
+        seen: Set[str] = set()
+        for op in ordered_ops:
+            if op not in seen:
+                seen.add(op)
+                deduped.append(op)
+
+        if deduped:
+            self.last_predicted_ops = deduped
+        else:
+            self.last_predicted_ops = ['identity']
+
+        self.last_tact_profile = tact_profile
+
+        return self.last_predicted_ops
     
     def score_operations(self, train_pairs: List[Tuple[Array, Array]]) -> Dict[str, float]:
         """Get operation relevance scores."""
         features = extract_task_features(train_pairs)
-        
+        tact_profile = self.tact_system.emit(features)
+
         scores = {
             'rotate': features.get('likely_rotation', 0),
             'flip': features.get('likely_reflection', 0) * 0.7,
@@ -227,8 +297,51 @@ class NeuralGuidance:
             'pad': features.get('likely_pad', 0),
             'identity': 0.1,  # Always a small baseline
         }
-        
+        for op, stat in self.operation_stats.items():
+            mean_reward = stat.get("mean_reward", 0.0)
+            if op in scores:
+                scores[op] = 0.7 * scores[op] + 0.3 * mean_reward
+            else:
+                scores[op] = mean_reward
+
+        for op in self.tact_system.suggest_operations(tact_profile.tokens, top_k=8):
+            scores[op] = scores.get(op, 0.0) + 0.1
+
         return scores
+
+    def reinforce(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        program: List[Tuple[str, Dict[str, Any]]],
+        reward: float,
+        inference: Optional[RFTInference] = None,
+    ) -> None:
+        """Update neural guidance policy using reinforcement signal."""
+
+        reward = max(0.0, min(1.0, float(reward)))
+        operations: Set[str] = {op for op, _ in program}
+        if inference is not None:
+            for hints in inference.function_hints.values():
+                operations.update(hints)
+        for op in operations:
+            stats = self.operation_stats.setdefault(op, {"count": 0.0, "mean_reward": 0.0})
+            stats["count"] += 1.0
+            stats["mean_reward"] += (reward - stats["mean_reward"]) / stats["count"]
+
+        features = extract_task_features(train_pairs)
+        tact_profile = self.tact_system.emit(features)
+        self.tact_system.reinforce(tact_profile.tokens, operations, reward)
+
+        if not self.neural_model:
+            return
+
+        feature_vec = self.neural_model._features_to_vector(features)
+        label = np.zeros(len(self.neural_model.operations))
+        for op in operations:
+            if op in self.neural_model.operations:
+                idx = self.neural_model.operations.index(op)
+                label[idx] = 1.0
+        self.neural_model.online_update(feature_vec, label, reward, self.online_lr)
 
     def train_from_episode_db(
         self, db_path: str, epochs: int = 50, lr: float = 0.1

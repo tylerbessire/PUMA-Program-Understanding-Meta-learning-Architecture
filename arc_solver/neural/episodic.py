@@ -50,6 +50,8 @@ class Episode:
     train_pairs: List[Tuple[Array, Array]] = field(default_factory=list)
     success_count: int = 1
     metadata: Dict[str, Any] = field(default_factory=dict)
+    reward_total: float = 0.0
+    reward_count: int = 0
     features: Dict[str, Any] = field(init=False)
 
     def __post_init__(self) -> None:
@@ -60,6 +62,17 @@ class Episode:
             )
         except Exception as exc:  # pragma: no cover - defensive programming
             raise ValueError(f"invalid training pairs for episode: {exc}") from exc
+
+    @property
+    def average_reward(self) -> float:
+        if self.reward_count <= 0:
+            return 0.0
+        return self.reward_total / float(self.reward_count)
+
+    def register_reward(self, reward: float) -> None:
+        reward = max(0.0, float(reward))
+        self.reward_total += reward
+        self.reward_count += 1
 
     # ------------------------------------------------------------------
     # Serialization helpers
@@ -78,6 +91,8 @@ class Episode:
             ],
             "success_count": self.success_count,
             "metadata": self.metadata,
+            "reward_total": self.reward_total,
+            "reward_count": self.reward_count,
             "features": self.features,
         }
 
@@ -111,6 +126,8 @@ class Episode:
             train_pairs=train_pairs,
             success_count=data.get("success_count", 1),
             metadata=data.get("metadata", {}),
+            reward_total=float(data.get("reward_total", 0.0)),
+            reward_count=int(data.get("reward_count", 0)),
         )
         # If features were stored, reuse them to avoid recomputation
         if "features" in data:
@@ -217,6 +234,7 @@ class EpisodeDatabase:
         task_id: str,
         train_pairs: List[Tuple[Array, Array]],
         metadata: Optional[Dict[str, Any]] = None,
+        reward: Optional[float] = None,
     ) -> int:
         """Store a solved episode and return its identifier."""
         episode = Episode(
@@ -226,6 +244,8 @@ class EpisodeDatabase:
             train_pairs=train_pairs,
             metadata=metadata or {},
         )
+        if reward is not None:
+            episode.register_reward(reward)
 
         episode_id = self._next_id
         self._next_id += 1
@@ -304,12 +324,52 @@ class EpisodeDatabase:
         results = self.query_hierarchy(train_pairs, 0.0, max_programs)
         if not results:
             results = self.query_by_similarity(train_pairs, 0.0, max_programs)
+        # Sort by reward-aware priority
+        results.sort(key=lambda item: (item[0].average_reward, item[1]), reverse=True)
         for episode, _ in results:
             for program in episode.programs:
                 candidates.append(program)
                 if len(candidates) >= max_programs:
                     return candidates
         return candidates
+
+    def get_placeholder_templates(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        max_templates: int = 5,
+    ) -> List[Dict[str, Any]]:
+        """Return serialized placeholder templates from similar episodes."""
+
+        if not train_pairs:
+            return []
+
+        collected: List[Dict[str, Any]] = []
+        seen: set[str] = set()
+
+        signature = compute_task_signature(train_pairs)
+        for episode in self.query_by_signature(signature):
+            for payload in episode.metadata.get("placeholder_templates", []):
+                key = json.dumps(payload, sort_keys=True)
+                if key in seen:
+                    continue
+                collected.append(payload)
+                seen.add(key)
+                if len(collected) >= max_templates:
+                    return collected
+
+        if len(collected) < max_templates:
+            similar = self.query_by_similarity(train_pairs, similarity_threshold=0.2, max_results=5)
+            for episode, _ in similar:
+                for payload in episode.metadata.get("placeholder_templates", []):
+                    key = json.dumps(payload, sort_keys=True)
+                    if key in seen:
+                        continue
+                    collected.append(payload)
+                    seen.add(key)
+                    if len(collected) >= max_templates:
+                        return collected
+
+        return collected
 
     def remove_episode(self, episode_id: int) -> None:
         """Remove an episode from the database."""
@@ -441,12 +501,28 @@ class EpisodicRetrieval:
         train_pairs: List[Tuple[Array, Array]],
         programs: List[Program],
         task_id: str = "",
+        reward: Optional[float] = None,
+        metadata: Optional[Dict[str, Any]] = None,
     ) -> None:
         """Store a successful solution in the episodic database."""
 
         signature = compute_task_signature(train_pairs)
-        self.database.store_episode(signature, programs, task_id, train_pairs)
+        self.database.store_episode(
+            signature,
+            programs,
+            task_id,
+            train_pairs,
+            metadata=metadata,
+            reward=reward,
+        )
         self.cache.clear()
+
+    def get_placeholder_templates(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        max_templates: int = 5,
+    ) -> List[Dict[str, Any]]:
+        return self.database.get_placeholder_templates(train_pairs, max_templates)
 
     def save(self) -> None:
         """Persist the underlying database."""
@@ -519,4 +595,3 @@ class AnalogicalReasoner:
             vals = [float(fd.get(k, 0.0)) for fd in feature_dicts]
             pattern[k] = float(np.mean(vals))
         return pattern
-
