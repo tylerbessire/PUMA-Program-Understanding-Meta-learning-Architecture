@@ -333,6 +333,44 @@ class EpisodeDatabase:
                     return candidates
         return candidates
 
+    def get_placeholder_templates(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        max_templates: int = 5,
+    ) -> List[Dict[str, Any]]:
+        """Return serialized placeholder templates from similar episodes."""
+
+        if not train_pairs:
+            return []
+
+        collected: List[Dict[str, Any]] = []
+        seen: set[str] = set()
+
+        signature = compute_task_signature(train_pairs)
+        for episode in self.query_by_signature(signature):
+            for payload in episode.metadata.get("placeholder_templates", []):
+                key = json.dumps(payload, sort_keys=True)
+                if key in seen:
+                    continue
+                collected.append(payload)
+                seen.add(key)
+                if len(collected) >= max_templates:
+                    return collected
+
+        if len(collected) < max_templates:
+            similar = self.query_by_similarity(train_pairs, similarity_threshold=0.2, max_results=5)
+            for episode, _ in similar:
+                for payload in episode.metadata.get("placeholder_templates", []):
+                    key = json.dumps(payload, sort_keys=True)
+                    if key in seen:
+                        continue
+                    collected.append(payload)
+                    seen.add(key)
+                    if len(collected) >= max_templates:
+                        return collected
+
+        return collected
+
     def remove_episode(self, episode_id: int) -> None:
         """Remove an episode from the database."""
         episode = self.episodes.pop(episode_id, None)
@@ -479,6 +517,13 @@ class EpisodicRetrieval:
         )
         self.cache.clear()
 
+    def get_placeholder_templates(
+        self,
+        train_pairs: List[Tuple[Array, Array]],
+        max_templates: int = 5,
+    ) -> List[Dict[str, Any]]:
+        return self.database.get_placeholder_templates(train_pairs, max_templates)
+
     def save(self) -> None:
         """Persist the underlying database."""
         self.database.save()
@@ -550,4 +595,3 @@ class AnalogicalReasoner:
             vals = [float(fd.get(k, 0.0)) for fd in feature_dicts]
             pattern[k] = float(np.mean(vals))
         return pattern
-

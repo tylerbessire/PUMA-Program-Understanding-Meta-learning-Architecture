@@ -20,6 +20,13 @@ from .search import (
 from .enhanced_search import synthesize_with_enhancements, predict_two_enhanced
 from .hypothesis import HypothesisEngine, Hypothesis
 from .continuous_learning import ContinuousSelfMemory
+from .neural.episodic import EpisodicRetrieval
+from .placeholders import (
+    PlaceholderTemplate,
+    PlaceholderTemplateEngine,
+    deserialize_placeholder_template,
+    serialize_placeholder_template,
+)
 
 
 class ARCSolver:
@@ -45,11 +52,15 @@ class ARCSolver:
             formatter = logging.Formatter('%(asctime)s %(name)s %(levelname)s: %(message)s')
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
-            self.logger.setLevel(logging.INFO)
+        self.logger.setLevel(logging.INFO)
         self._last_outputs: Optional[Tuple[List[List[List[int]]], List[List[List[int]]]]] = None
         # Continuous memory and hypotheses
         self.self_memory = ContinuousSelfMemory()
         self.hypothesis_engine = HypothesisEngine(continuous_memory=self.self_memory)
+        self.episodic_retrieval = EpisodicRetrieval(episode_db_path)
+        self.placeholder_engine = PlaceholderTemplateEngine()
+        self._placeholder_templates: List[PlaceholderTemplate] = []
+        self._new_placeholder_templates: List[PlaceholderTemplate] = []
         self._last_hypotheses: List[Hypothesis] = []
 
     def solve_task(self, task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
@@ -66,6 +77,10 @@ class ARCSolver:
             except Exception:
                 continue
             train_pairs.append((a, b))
+
+        self._load_placeholder_templates(train_pairs)
+        if not self.use_enhancements:
+            self._persist_placeholder_templates(train_pairs)
 
         # Extract test inputs with graceful degradation
         test_inputs: List[Array] = []
@@ -188,6 +203,11 @@ class ARCSolver:
         training_stats: Dict[str, Any],
     ) -> Optional[Tuple[Array, Array]]:
         if not predictions:
+            target_shape = self._determine_target_shape(train_pairs, test_input, expected_shape)
+            placeholder = self._apply_placeholder_templates(test_input)
+            if placeholder is not None:
+                adjusted, _ = self._enforce_size_constraints(placeholder, target_shape, training_stats)
+                return adjusted, adjusted
             return None
 
         target_shape = self._determine_target_shape(train_pairs, test_input, expected_shape)
@@ -208,12 +228,140 @@ class ARCSolver:
             processed.append((coherence, idx, adjusted))
 
         if not processed:
+            placeholder = self._apply_placeholder_templates(test_input)
+            if placeholder is not None:
+                adjusted, _ = self._enforce_size_constraints(placeholder, target_shape, training_stats)
+                return adjusted, adjusted
             return None
 
         processed.sort(key=lambda item: (-item[0], item[1]))
         best = processed[0][2]
         second = processed[1][2] if len(processed) > 1 else best
         return best, second
+
+    def _apply_placeholder_templates(self, grid: Array) -> Optional[Array]:
+        """Apply detected placeholder templates to the given grid."""
+        if not self._placeholder_templates:
+            return None
+
+        current = grid.copy()
+        applied = False
+
+        for template in self._placeholder_templates:
+            try:
+                result = self.placeholder_engine.apply_template(current, template)
+            except Exception:
+                continue
+            if result is not None:
+                current = result
+                applied = True
+
+        return current if applied else None
+
+    def _load_placeholder_templates(
+        self, train_pairs: List[Tuple[Array, Array]]
+    ) -> None:
+        """Populate local placeholder templates from detection and episodic memory."""
+
+        self._placeholder_templates = []
+        self._new_placeholder_templates = []
+        if not train_pairs:
+            return
+
+        templates: List[PlaceholderTemplate] = []
+        seen_template_keys: set = set()
+        episodic_keys: set = set()
+
+        def template_key(template: PlaceholderTemplate) -> Tuple:
+            signature = template.signature
+            return (
+                signature.placeholder_color,
+                signature.shape,
+                signature.left,
+                signature.right,
+                signature.top,
+                signature.bottom,
+                tuple(template.fill_pattern.flatten()),
+            )
+
+        def add_template(template: PlaceholderTemplate) -> None:
+            key = template_key(template)
+            if key in seen_template_keys:
+                return
+            seen_template_keys.add(key)
+            templates.append(template)
+
+        detected = self.placeholder_engine.detect_templates(train_pairs)
+
+        episodic_payloads: List[Dict[str, Any]] = []
+        if self.episodic_retrieval:
+            episodic_payloads = self.episodic_retrieval.get_placeholder_templates(train_pairs, max_templates=6)
+            for payload in episodic_payloads:
+                try:
+                    template = deserialize_placeholder_template(payload)
+                except Exception:
+                    continue
+                key = template_key(template)
+                episodic_keys.add(key)
+                add_template(template)
+
+        new_templates: List[PlaceholderTemplate] = []
+        for template in detected:
+            key = template_key(template)
+            add_template(template)
+            if key not in episodic_keys:
+                new_templates.append(template)
+
+        self._placeholder_templates = templates
+        self._new_placeholder_templates = new_templates
+
+        if templates:
+            episodic_count = max(0, len(templates) - len(new_templates))
+            self.logger.info(
+                "Loaded %d placeholder template(s) (%d from episodic memory)",
+                len(templates),
+                episodic_count,
+            )
+
+    def _persist_placeholder_templates(
+        self, train_pairs: List[Tuple[Array, Array]]
+    ) -> None:
+        """Persist newly detected placeholder templates to episodic memory."""
+
+        if not self._new_placeholder_templates or not train_pairs:
+            return
+        if self.use_enhancements:
+            return
+        if not self.episodic_retrieval:
+            return
+
+        payloads: List[Dict[str, Any]] = []
+        target_shape = train_pairs[0][1].shape if train_pairs else None
+        for template in self._new_placeholder_templates:
+            try:
+                payload = serialize_placeholder_template(template)
+            except Exception:
+                continue
+            if target_shape is not None:
+                payload["target_shape"] = [int(dim) for dim in target_shape]
+            payloads.append(payload)
+
+        if not payloads:
+            return
+
+        try:
+            self.episodic_retrieval.add_successful_solution(
+                train_pairs,
+                [],
+                metadata={"placeholder_templates": payloads},
+            )
+            self.episodic_retrieval.save()
+            self.logger.info(
+                "Persisted %d placeholder template(s) to episodic memory",
+                len(payloads),
+            )
+        except Exception as exc:
+            self.logger.debug("Failed to persist placeholder templates: %s", exc)
 
     def _compute_training_stats(
         self, train_pairs: List[Tuple[Array, Array]]

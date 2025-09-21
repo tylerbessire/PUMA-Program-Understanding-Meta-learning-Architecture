@@ -11,12 +11,11 @@ from typing import List, Tuple, Dict, Any, Optional, Set
 from collections import defaultdict
 from dataclasses import dataclass
 import hashlib
-import json
 
 from .grid import Array, to_array
 from .object_reasoning import ObjectReasoner, ObjectHypothesisGenerator, ObjectTransformation
-from .patterns import PlaceholderTemplateEngine, PlaceholderTemplate
 from .rft import RelationalFrameAnalyzer, RelationalFact
+from .placeholders import PlaceholderTemplate, PlaceholderTemplateEngine
 
 
 @dataclass
@@ -47,20 +46,19 @@ class HumanGradeReasoner:
         self.hypotheses = []
         self.spatial_relations = []
         self.discovered_patterns = {}
+        self.placeholder_engine = PlaceholderTemplateEngine()
+        self.placeholder_templates: List[PlaceholderTemplate] = []
         self.object_reasoner = ObjectReasoner()
         self.object_hypothesis_generator = ObjectHypothesisGenerator()
-        self.placeholder_engine = PlaceholderTemplateEngine()
         self.relational_facts: Optional[Dict[str, List[RelationalFact]]] = None
-        self.successful_macros = []
         
-    def analyze_task(self, train_pairs: List[Tuple[Array, Array]], task_id: str = "unknown_task") -> List[SpatialHypothesis]:
+    def analyze_task(self, train_pairs: List[Tuple[Array, Array]]) -> List[SpatialHypothesis]:
         """Analyze task like a human would - form hypotheses about spatial relationships."""
         if not train_pairs:
             return []
             
         print("=== HUMAN-GRADE ANALYSIS ===")
         self.hypotheses = []
-        self.successful_macros = [] # Reset for the new task
         
         # Step 1: Object-level analysis (NEW - RFT reasoning)
         object_transformations = self._generate_object_hypotheses(train_pairs)
@@ -70,8 +68,9 @@ class HumanGradeReasoner:
         key_elements = self._identify_key_elements(train_pairs)
         print(f"Key elements identified: {len(key_elements)}")
 
-        # Step 2.1: Placeholder-driven hypotheses
-        self._generate_placeholder_hypotheses(train_pairs)
+        self.placeholder_templates = self.placeholder_engine.detect_templates(train_pairs)
+        if self.placeholder_templates:
+            print(f"Detected {len(self.placeholder_templates)} placeholder templates")
 
         # Step 2.5: Capture relational facts for downstream coordination
         analyzer = RelationalFrameAnalyzer()
@@ -83,11 +82,8 @@ class HumanGradeReasoner:
         
         # Step 4: Test hypotheses across all training examples
         self._verify_hypotheses(train_pairs)
-
-        # Step 5: Validate and store successful hypotheses as macros (Phase 3)
-        self._validate_and_store_macros(train_pairs, task_id)
         
-        # Step 6: Rank simple-to-complex, then by confidence*verification
+        # Step 4: Rank simple-to-complex, then by confidence*verification
         self.hypotheses.sort(
             key=lambda h: (
                 getattr(h, "complexity", 1.0),
@@ -98,9 +94,6 @@ class HumanGradeReasoner:
         print(f"Generated {len(self.hypotheses)} hypotheses")
         for i, h in enumerate(self.hypotheses[:3]):
             print(f"  {i+1}. {h.name}: {h.description} (confidence: {h.confidence:.2f}, verified: {h.verification_score:.2f})")
-
-        # Step 7: Save any newly found macros to disk
-        self._save_macros_to_disk()
             
         return self.hypotheses
     
@@ -326,65 +319,13 @@ class HumanGradeReasoner:
                             except:
                                 continue
         return patterns
-
-    def _generate_placeholder_hypotheses(self, train_pairs: List[Tuple[Array, Array]]) -> None:
-        """Create hypotheses from detected placeholder templates."""
-
-        templates = self.placeholder_engine.detect_templates(train_pairs)
-        if not templates:
-            return
-
-        print(f"Placeholder templates detected: {len(templates)}")
-
-        for idx, template in enumerate(templates):
-
-            def construction_rule(inp: Array, template=template) -> Array:
-                result = self.placeholder_engine.apply_template(inp, template)
-                if result is None:
-                    raise ValueError("placeholder template mismatch")
-                return result
-
-            verification = self._verify_placeholder_template(template, train_pairs)
-
-            name = f"placeholder_template_{idx}"
-            description = "Reconstruct placeholder using border signature"
-
-            self.hypotheses.append(
-                SpatialHypothesis(
-                    name=name,
-                    description=description,
-                    confidence=0.85,
-                    construction_rule=construction_rule,
-                    verification_score=verification,
-                    complexity=1.5,
-                    metadata={
-                        "template_signature": template.signature,
-                        "template_shape": template.placeholder_shape,
-                    },
-                )
-            )
-
-            print(f"  Placeholder hypothesis: {name} (verified: {verification:.3f})")
-
-    def _verify_placeholder_template(
-        self,
-        template: PlaceholderTemplate,
-        train_pairs: List[Tuple[Array, Array]],
-    ) -> float:
-        successes = 0
-        total = len(train_pairs)
-        for inp, expected in train_pairs:
-            try:
-                result = self.placeholder_engine.apply_template(inp, template)
-            except Exception:
-                result = None
-            if result is not None and np.array_equal(result, expected):
-                successes += 1
-        return successes / total if total else 0.0
-
+    
     def _generate_spatial_hypotheses(self, train_pairs: List[Tuple[Array, Array]], elements: List[Dict[str, Any]]):
         """Generate hypotheses about how to construct outputs."""
         
+        if self.placeholder_templates:
+            self._generate_template_hypotheses(train_pairs)
+
         # Hypothesis 1: Direct spatial relationship replacement
         target_placeholders = [e for e in elements if e['type'] == 'target_placeholder']
         if target_placeholders:
@@ -403,6 +344,39 @@ class HumanGradeReasoner:
         # Hypothesis 4: Multi-source composition (human creativity)
         self._generate_composition_hypotheses(train_pairs, elements)
     
+    def _generate_template_hypotheses(self, train_pairs: List[Tuple[Array, Array]]) -> None:
+        """Generate hypotheses from learned placeholder templates."""
+        for idx, template in enumerate(self.placeholder_templates):
+            def template_rule(inp: Array, *, _template=template) -> Array:
+                result = self.placeholder_engine.apply_template(inp, _template)
+                if result is None:
+                    raise ValueError("placeholder template mismatch")
+                return result
+
+            fill_colors = np.unique(template.fill_pattern).tolist()
+            target_shape = train_pairs[0][1].shape if train_pairs else template.fill_pattern.shape
+            metadata = {
+                'type': 'placeholder_template',
+                'placeholder_color': template.signature.placeholder_color,
+                'placeholder_shape': tuple(int(x) for x in template.signature.shape),
+                'target_shape': tuple(int(x) for x in target_shape),
+                'fill_colors': fill_colors,
+            }
+            self.hypotheses.append(
+                SpatialHypothesis(
+                    name=f"placeholder_template_{idx}",
+                    description="Apply learned placeholder fill pattern",
+                    confidence=0.95,
+                    construction_rule=template_rule,
+                    metadata=metadata,
+                    complexity=0.9,
+                )
+            )
+            print(
+                f"  Placeholder template hypothesis {idx}: "
+                f"shape={template.signature.shape}, color={template.signature.placeholder_color}"
+            )
+
     def _generate_replacement_hypotheses(self, train_pairs: List[Tuple[Array, Array]], placeholders: List[Dict[str, Any]]):
         """Generate hypotheses for replacing placeholder regions."""
         
@@ -738,69 +712,24 @@ class HumanGradeReasoner:
         if row_offset == 0 and col_offset == 0:
             return self._find_best_extraction_region(inp, target_shape)
 
-        target_h, target_w = target_shape
+        source_r1 = r1 - row_offset
+        source_r2 = r2 - row_offset
+        source_c1 = c1 - col_offset
+        source_c2 = c2 - col_offset
+
         h, w = inp.shape
+        if source_r1 < 0 or source_c1 < 0 or source_r2 > h or source_c2 > w:
+            return self._find_best_extraction_region(inp, target_shape)
 
-        def extract_with_offset(row_shift: int, col_shift: int, allow_adjust: bool = False):
-            """Attempt to extract a region using the provided translation shift."""
-            sr1 = r1 - row_shift
-            sc1 = c1 - col_shift
+        candidate = inp[source_r1:source_r2, source_c1:source_c2]
+        if candidate.shape != target_shape:
+            return self._find_best_extraction_region(inp, target_shape)
 
-            if allow_adjust and (sr1 < 0 or sc1 < 0 or sr1 + target_h > h or sc1 + target_w > w):
-                sr1 = max(0, min(sr1, h - target_h))
-                sc1 = max(0, min(sc1, w - target_w))
+        # Reject candidate if it is predominantly placeholder color
+        if np.all(candidate == fill_color):
+            return self._find_best_extraction_region(inp, target_shape)
 
-            sr2 = sr1 + target_h
-            sc2 = sc1 + target_w
-
-            if sr1 < 0 or sc1 < 0 or sr2 > h or sc2 > w:
-                return None
-
-            candidate = inp[sr1:sr2, sc1:sc2]
-            if candidate.shape != target_shape:
-                return None
-            if np.all(candidate == fill_color):
-                return None
-            return candidate.copy()
-
-        def collect_offsets() -> List[Tuple[int, int]]:
-            offsets: List[Tuple[int, int]] = []
-            seen: Set[Tuple[int, int]] = set()
-
-            def add_offset(r_off: int, c_off: int) -> None:
-                key = (int(r_off), int(c_off))
-                if key in seen:
-                    return
-                seen.add(key)
-                offsets.append(key)
-
-            add_offset(row_offset, col_offset)
-            if row_offset or col_offset:
-                add_offset(-row_offset, -col_offset)
-                add_offset(row_offset, -col_offset)
-                add_offset(-row_offset, col_offset)
-                add_offset(0, col_offset)
-                add_offset(row_offset, 0)
-
-                # Try scaled variants to keep direction but reduce magnitude
-                for scale in (0.75, 0.5, 0.25):
-                    scaled_r = int(round(row_offset * scale))
-                    scaled_c = int(round(col_offset * scale))
-                    add_offset(scaled_r, scaled_c)
-                    add_offset(-scaled_r, -scaled_c)
-
-            add_offset(0, 0)
-            return offsets
-
-        offsets_to_try = collect_offsets()
-
-        for allow_adjust in (False, True):
-            for shifted_row, shifted_col in offsets_to_try:
-                candidate = extract_with_offset(shifted_row, shifted_col, allow_adjust=allow_adjust)
-                if candidate is not None:
-                    return candidate
-
-        return self._find_best_extraction_region(inp, target_shape)
+        return candidate.copy()
 
     def _generate_relational_hypotheses(self, train_pairs: List[Tuple[Array, Array]]):
         if not self.relational_facts:
@@ -1163,79 +1092,6 @@ class HumanGradeReasoner:
                 hypothesis.verification_score = total_score / valid_tests
             else:
                 hypothesis.verification_score = 0.0
-
-    def _validate_and_store_macros(self, train_pairs: List[Tuple[Array, Array]], task_id: str):
-        """
-        Validate successful hypotheses and store them as reusable macros.
-        Phase 3 of the Placeholder Reconstruction Plan.
-        """
-        print("--- Validating and Storing Macros ---")
-        perfect_hypotheses = [h for h in self.hypotheses if h.verification_score == 1.0]
-
-        for hypothesis in perfect_hypotheses:
-            # 1. Create a serializable program from the hypothesis
-            program = None
-            if hypothesis.metadata and hypothesis.metadata.get('type') == 'transformation_extraction':
-                # This is a hypothesis we know how to serialize
-                program = [
-                    ('extract_using_transformation', {
-                        'target_shape': hypothesis.metadata.get('target_shape'),
-                        'translation': hypothesis.metadata.get('translation'),
-                        'subject_signature': hypothesis.metadata.get('subject_signature'),
-                        'object_signature': hypothesis.metadata.get('object_signature'),
-                    })
-                ]
-            
-            elif hypothesis.metadata and 'template_signature' in hypothesis.metadata:
-                 program = [
-                    ('apply_placeholder_template', {
-                        'template_signature': hypothesis.metadata.get('template_signature'),
-                        'template_shape': hypothesis.metadata.get('template_shape'),
-                    })
-                ]
-
-            if program is None:
-                # Cannot serialize this hypothesis type yet, so we skip it.
-                print(f"Skipping non-serializable hypothesis: {hypothesis.name}")
-                continue
-
-            # 2. Create a template key
-            template_key = hashlib.sha256(str(program).encode()).hexdigest()
-
-            # 3. Add to our list of successful macros for this session
-            macro = {
-                'task_id': task_id,
-                'template_key': template_key,
-                'program': program,
-                'source_hypothesis': {
-                    'name': hypothesis.name,
-                    'description': hypothesis.description,
-                    'complexity': hypothesis.complexity,
-                }
-            }
-            self.successful_macros.append(macro)
-            print(f"Stored macro for hypothesis: {hypothesis.name}")
-
-    def _save_macros_to_disk(self, sketches_file: str = 'sketches.json'):
-        """Saves the collected successful macros to a JSON file."""
-        if not self.successful_macros:
-            return
-
-        try:
-            with open(sketches_file, 'r') as f:
-                existing_macros = json.load(f)
-        except (FileNotFoundError, json.JSONDecodeError):
-            existing_macros = []
-
-        # Avoid duplicates
-        existing_keys = {m.get('template_key') for m in existing_macros}
-        new_macros = [m for m in self.successful_macros if m.get('template_key') not in existing_keys]
-
-        if new_macros:
-            all_macros = existing_macros + new_macros
-            with open(sketches_file, 'w') as f:
-                json.dump(all_macros, f, indent=2)
-            print(f"Saved {len(new_macros)} new macros to {sketches_file}")
     
     def solve_task(self, train_pairs: List[Tuple[Array, Array]], test_input: Array) -> Array:
         """Solve a task using human-grade reasoning with shape governance."""

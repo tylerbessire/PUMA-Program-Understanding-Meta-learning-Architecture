@@ -58,6 +58,7 @@ class RewardBreakdown:
     shape_accuracy: float
     behaviour_bonus: float
     program_length_penalty: float
+    generalization_penalty: float
     reward: float
 
 
@@ -115,14 +116,37 @@ class RewardGrader:
             + shape_accuracy * self.shape_weight
             + behaviour_bonus * self.behaviour_weight
         )
-        reward = max(0.0, min(1.0, reward - penalty))
+        generalization_penalty = self._generalization_penalty(predictions, targets)
+        reward = max(0.0, min(1.0, reward - penalty - generalization_penalty))
         return RewardBreakdown(
             pixel_accuracy=pixel_accuracy,
             shape_accuracy=shape_accuracy,
             behaviour_bonus=behaviour_bonus,
             program_length_penalty=penalty,
+            generalization_penalty=generalization_penalty,
             reward=reward,
         )
+
+    def _generalization_penalty(
+        self,
+        predictions: Sequence[Array],
+        targets: Sequence[Array],
+    ) -> float:
+        penalty = 0.0
+        if len(predictions) > 1 and len(targets) > 1:
+            first_pred = predictions[0]
+            preds_identical = all(np.array_equal(first_pred, pred) for pred in predictions[1:])
+            first_target = targets[0]
+            targets_identical = all(np.array_equal(first_target, tgt) for tgt in targets[1:])
+            if preds_identical and not targets_identical:
+                penalty += 0.1
+
+        constant_predictions = all(np.all(pred == pred.flat[0]) for pred in predictions) if predictions else False
+        constant_targets = all(np.all(tgt == tgt.flat[0]) for tgt in targets) if targets else False
+        if constant_predictions and not constant_targets:
+            penalty += 0.1
+
+        return penalty
 
 
 @dataclass
@@ -231,6 +255,7 @@ class BehavioralEngine:
                 continue
             solved = best_breakdown.reward > 0.999
             guidance.reinforce(train_pairs, best_program, best_breakdown.reward, inference)
+            search.intraverbal.reinforce(best_program, best_breakdown.reward)
             episodic.add_successful_solution(
                 train_pairs,
                 [best_program],
@@ -311,6 +336,7 @@ class BehavioralEngine:
             "pixel_accuracy": breakdown.pixel_accuracy,
             "shape_accuracy": breakdown.shape_accuracy,
             "behaviour_bonus": breakdown.behaviour_bonus,
+            "generalization_penalty": breakdown.generalization_penalty,
             "program_length": len(program),
             "global": self.metrics.as_dict(),
         }

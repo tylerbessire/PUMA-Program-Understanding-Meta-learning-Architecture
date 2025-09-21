@@ -21,7 +21,6 @@ from arc_solver.grid import (
     pad_to,
     bg_color,
 )
-from .patterns import PlaceholderTemplate, PlaceholderTemplateEngine
 
 
 class Op:
@@ -628,69 +627,6 @@ def op_human_spatial_reasoning(a: Array, hypothesis_name: str = "",
     return a  # Will be replaced by the actual hypothesis result
 
 
-# Custom operations for placeholder reconstruction
-def op_create_pattern_fill(a: Array, pattern: List[int], target_bounds: Tuple[int, int, int, int], direction: str) -> Array:
-    """Create a grid with pattern filled in the target bounds."""
-    from .placeholder_reconstruction import create_pattern_fill
-    return create_pattern_fill(a, pattern, target_bounds, direction)
-
-
-def op_tile_pattern(a: Array, pattern: List[int], target_bounds: Tuple[int, int, int, int], direction: str) -> Array:
-    """Tile a pattern within the target bounds."""
-    from .placeholder_reconstruction import tile_pattern
-    return tile_pattern(a, pattern, target_bounds, direction)
-
-
-def op_paste_at(source: Array, target_top: int, target_left: int, *, target_grid: Optional[Array] = None) -> Array:
-    """Paste source grid into target at specified position."""
-    from .placeholder_reconstruction import paste_at
-    if target_grid is None:
-        # Create a target grid of appropriate size
-        target_grid = np.zeros((source.shape[0] + target_top, source.shape[1] + target_left), dtype=source.dtype)
-    return paste_at(source, target_grid, target_top, target_left)
-
-
-def op_apply_advanced_mirroring(a: Array, template: Any, strategy: str) -> Array:
-    """Apply advanced mirroring strategies."""
-    from .placeholder_reconstruction import apply_advanced_mirroring
-    return apply_advanced_mirroring(a, template, strategy)
-
-
-def op_derive_recolor_mapping(a: Array, template: Any, candidate_region: Array) -> Dict[int, int]:
-    """Derive recolor mapping from border analysis."""
-    from .placeholder_reconstruction import derive_recolor_mapping
-    return derive_recolor_mapping(a, template, candidate_region)
-
-
-def op_extract_stripe_patterns(a: Array, template: Any) -> Dict[str, Array]:
-    """Extract stripe patterns from borders."""
-    from .placeholder_reconstruction import extract_stripe_patterns
-    return extract_stripe_patterns(a, template)
-
-
-def op_apply_placeholder_template(a: Array, template_signature: str, template_shape: Tuple[int, int]) -> Array:
-    """Applies a placeholder template to reconstruct a grid."""
-    engine = PlaceholderTemplateEngine()
-    # This is a simplified version. We need to reconstruct the template object.
-    # For now, we'll rely on the engine's internal cache if it exists, 
-    # but this will likely fail if the template isn't already in memory.
-    # A proper implementation would need to deserialize the template fully.
-    template = PlaceholderTemplate(signature=template_signature, placeholder_shape=template_shape, fill_fn=lambda x: x) # Dummy fill_fn
-    result = engine.apply_template(a, template)
-    if result is None:
-        raise ValueError("Failed to apply placeholder template from macro.")
-    return result
-
-
-def op_extract_using_transformation(a: Array, **kwargs) -> Array:
-    """Placeholder for applying a transformation from a macro."""
-    # This is a complex operation that depends on the HumanGradeReasoner state.
-    # Implementing this as a pure function would require significant refactoring.
-    # For now, this will act as a placeholder and return the input grid.
-    print("WARNING: op_extract_using_transformation is not fully implemented and will not produce the correct output.")
-    return a
-
-
 # Registry of primitive operations ---------------------------------------------------------
 OPS: Dict[str, Op] = {
     "identity": Op("identity", op_identity, 1, []),
@@ -715,13 +651,6 @@ OPS: Dict[str, Op] = {
     "extract_distinct_regions": Op("extract_distinct_regions", op_extract_distinct_regions, 1, []),
     "human_spatial_reasoning": Op("human_spatial_reasoning", op_human_spatial_reasoning, 1, 
                                   ["hypothesis_name", "hypothesis_id", "confidence", "verification_score"]),
-    
-    # Placeholder reconstruction operations
-    "create_pattern_fill": Op("create_pattern_fill", op_create_pattern_fill, 1, ["pattern", "target_bounds", "direction"]),
-    "tile_pattern": Op("tile_pattern", op_tile_pattern, 1, ["pattern", "target_bounds", "direction"]),
-    "paste_at": Op("paste_at", op_paste_at, 1, ["target_top", "target_left", "target_grid"]),
-    "apply_placeholder_template": Op("apply_placeholder_template", op_apply_placeholder_template, 1, ["template_signature", "template_shape"]),
-    "extract_using_transformation": Op("extract_using_transformation", op_extract_using_transformation, 1, ["target_shape", "translation", "subject_signature", "object_signature"]),
 }
 
 

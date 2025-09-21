@@ -35,10 +35,13 @@
 - **Mands:** Responses motivated by establishing operations.
 
 ### 2.2 Tacting Module Proposal
-- Extend features/objects to produce learned symbolic descriptors.
+- Implemented in `arc_solver/tacting.py`, extending feature extraction with
+  reinforcement-aware symbolic descriptors.
 - Reinforce tact emission when associated programs solve tasks.
 
 ### 2.3 Intraverbal Chaining for Program Synthesis
+- `arc_solver/intraverbal.py` tracks operation bigrams to score and reinforce
+  program chains alongside search.
 - Treat program generation as conditional probability chain `P(op_n | grid_{n-1}, tacts)`.
 - Allow shaping via progressive reinforcement on partial programs.
 

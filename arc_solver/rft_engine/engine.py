@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
+from dataclasses import dataclass, field
+from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple, Union
 
 from ..object_reasoning import ObjectExtractor, SpatialAnalyzer
 from ..grid import Array
@@ -18,6 +18,49 @@ class RelationalFact:
     frame: str
     context: str
     confidence: float
+    metadata: Dict[str, Union[float, int]] = field(default_factory=dict)
+
+    def mirrored(self) -> "RelationalFact":
+        """Return the relation with source/target swapped (mutual entailment)."""
+
+        return RelationalFact(
+            source=self.target,
+            target=self.source,
+            frame=self.frame,
+            context=self.context,
+            confidence=self.confidence,
+            metadata=self.metadata.copy(),
+        )
+
+    def compose_with(self, other: "RelationalFact") -> Optional["RelationalFact"]:
+        """Return a composed relation if frames are compatible (combinatorial entailment).
+
+        Currently we only support composition of translation comparisons by summing
+        their offsets.  Returns ``None`` if the composition is not applicable.
+        """
+
+        if (
+            self.frame == other.frame == "comparison"
+            and self.context.startswith("translation")
+            and other.context.startswith("translation")
+            and self.target == other.source
+        ):
+            dr1 = self.metadata.get("dr")
+            dc1 = self.metadata.get("dc")
+            dr2 = other.metadata.get("dr")
+            dc2 = other.metadata.get("dc")
+            if dr1 is None or dc1 is None or dr2 is None or dc2 is None:
+                return None
+            combined = (dr1 + dr2, dc1 + dc2)
+            return RelationalFact(
+                source=self.source,
+                target=other.target,
+                frame="comparison",
+                context=f"translation:{combined[0]}:{combined[1]}",
+                confidence=min(self.confidence, other.confidence),
+                metadata={"dr": combined[0], "dc": combined[1]},
+            )
+        return None
 
 
 @dataclass
@@ -121,10 +164,41 @@ class RFTEngine:
 
     def _derive_relations(self, source_id: str, target_id: str, obj_in, obj_out) -> List[RelationalFact]:
         relations: List[RelationalFact] = []
+        source_desc = obj_in.descriptors or {}
+        target_desc = obj_out.descriptors or {}
+        color_metadata = {"color_in": obj_in.color, "color_out": obj_out.color}
+        color_metadata.update(
+            {
+                "shape_in": obj_in.shape_type,
+                "shape_out": obj_out.shape_type,
+                "border_palette_in": tuple(source_desc.get("border_colors", [])),
+                "border_palette_out": tuple(target_desc.get("border_colors", [])),
+                "touches_border_in": int(bool(source_desc.get("touches_border"))),
+                "touches_border_out": int(bool(target_desc.get("touches_border"))),
+            }
+        )
         if obj_in.color == obj_out.color:
-            relations.append(RelationalFact(source_id, target_id, "coordination", "color", 0.9))
+            relations.append(
+                RelationalFact(
+                    source=source_id,
+                    target=target_id,
+                    frame="coordination",
+                    context="color",
+                    confidence=0.9,
+                    metadata=color_metadata,
+                )
+            )
         else:
-            relations.append(RelationalFact(source_id, target_id, "opposition", "color", 0.8))
+            relations.append(
+                RelationalFact(
+                    source=source_id,
+                    target=target_id,
+                    frame="opposition",
+                    context="color",
+                    confidence=0.8,
+                    metadata=color_metadata,
+                )
+            )
         translation = self._translation_vector(obj_in, obj_out)
         if translation is not None:
             relations.append(
@@ -134,6 +208,14 @@ class RFTEngine:
                     "comparison",
                     f"translation:{translation[0]}:{translation[1]}",
                     0.85,
+                    metadata={
+                        "dr": translation[0],
+                        "dc": translation[1],
+                        "width": obj_in.width,
+                        "height": obj_in.height,
+                        "shape_in": obj_in.shape_type,
+                        "shape_out": obj_out.shape_type,
+                    },
                 )
             )
         return relations
@@ -147,6 +229,24 @@ class RFTEngine:
             hints.add("translate")
         if obj_in.size != obj_out.size:
             hints.add("resize")
+
+        source_desc = obj_in.descriptors or {}
+        target_desc = obj_out.descriptors or {}
+
+        if source_desc.get("touches_border") and target_desc.get("touches_border"):
+            hints.add("preserve_border")
+        if source_desc.get("symmetry_horizontal") or target_desc.get("symmetry_horizontal"):
+            hints.add("symmetry_horizontal")
+        if source_desc.get("symmetry_vertical") or target_desc.get("symmetry_vertical"):
+            hints.add("symmetry_vertical")
+
+        interior_in = source_desc.get("interior_colors", [])
+        interior_out = target_desc.get("interior_colors", [])
+        if interior_in == [] and interior_out:
+            hints.add("fill_placeholder")
+        if len(source_desc.get("row_stripes", [])) > 0 and any(len(set(row)) > 1 for row in source_desc.get("row_stripes", [])):
+            hints.add("stripe_sensitive")
+
         return hints
 
     def _translation_vector(self, obj_in, obj_out) -> Optional[Tuple[int, int]]:
@@ -166,40 +266,46 @@ class RFTEngine:
             node_b = self._node_id(idx, "spatial", rel.obj2_id)
             relations.append(
                 RelationalFact(
-                    node_a,
-                    node_b,
-                    "spatial",
-                    rel.relation,
-                    rel.confidence,
+                    source=node_a,
+                    target=node_b,
+                    frame="spatial",
+                    context=rel.relation,
+                    confidence=rel.confidence,
+                    metadata={
+                        "distance": rel.distance,
+                    },
                 )
             )
         return relations
 
     def _apply_entailment(self, relations: List[RelationalFact]) -> None:
-        symmetrical = []
-        transitive_candidates: Dict[str, List[RelationalFact]] = {}
-        for rel in relations:
-            if rel.frame in {"coordination", "opposition", "comparison"}:
-                symmetrical.append(
-                    RelationalFact(rel.target, rel.source, rel.frame, rel.context, rel.confidence)
-                )
-            if rel.frame == "comparison" and rel.context.startswith("translation"):
-                key = rel.context
-                transitive_candidates.setdefault(key, []).append(rel)
-        relations.extend(symmetrical)
-        for rel_list in transitive_candidates.values():
-            for i in range(len(rel_list)):
-                for j in range(len(rel_list)):
-                    if rel_list[i].target == rel_list[j].source:
-                        relations.append(
-                            RelationalFact(
-                                rel_list[i].source,
-                                rel_list[j].target,
-                                "comparison",
-                                rel_list[i].context,
-                                min(rel_list[i].confidence, rel_list[j].confidence),
-                            )
-                        )
+        seen: Set[Tuple[str, str, str, str]] = {
+            (rel.source, rel.target, rel.frame, rel.context) for rel in relations
+        }
+        extra: List[RelationalFact] = []
+
+        # Mutual entailment (bidirectional reasoning)
+        for rel in list(relations):
+            if rel.frame in {"coordination", "opposition", "comparison", "spatial"}:
+                mirrored = rel.mirrored()
+                key = (mirrored.source, mirrored.target, mirrored.frame, mirrored.context)
+                if key not in seen:
+                    extra.append(mirrored)
+                    seen.add(key)
+
+        # Combinatorial entailment (compose translations)
+        base_relations = relations + extra  # include symmetrical relations when composing
+        for rel_a in base_relations:
+            for rel_b in base_relations:
+                composed = rel_a.compose_with(rel_b)
+                if composed is None:
+                    continue
+                key = (composed.source, composed.target, composed.frame, composed.context)
+                if key not in seen:
+                    extra.append(composed)
+                    seen.add(key)
+
+        relations.extend(extra)
 
     def _transform_functions(self, relations: List[RelationalFact], hints: Dict[str, Set[str]]) -> None:
         adjacency: Dict[str, Set[str]] = {}

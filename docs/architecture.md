@@ -105,6 +105,7 @@ recasts each solver subsystem as an operant component with explicit reinforcemen
 loops. The production `BehavioralEngine` (`arc_solver/behavioral_engine.py`) now
 implements the reinforcement loop, while the new `RFTEngine`
 (`arc_solver/rft_engine/engine.py`) supplies derived relational hints to neural
-guidance. Refer to that document for remaining tacting extensions and future RFT
-expansions.
-
+guidance. Tacting (`arc_solver/tacting.py`) and intraverbal chaining
+(`arc_solver/intraverbal.py`) provide the learned verbal operants that feed into
+the reinforcement loop. Refer to that document for remaining extensions and
+future RFT expansions.

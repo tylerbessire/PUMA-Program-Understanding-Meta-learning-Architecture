@@ -6,7 +6,7 @@ Converts grids to objects, builds spatial relations, and reasons at object level
 
 import numpy as np
 from typing import List, Tuple, Dict, Any, Optional, Set
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from collections import defaultdict
 import json
 
@@ -22,6 +22,7 @@ class ARCObject:
     bounding_box: Tuple[int, int, int, int]  # (min_row, min_col, max_row, max_col)
     shape_type: str  # 'rectangle', 'line', 'L_shape', 'cross', 'single', 'irregular'
     size: int
+    descriptors: Dict[str, Any] = field(default_factory=dict)
     
     @property
     def center(self) -> Tuple[float, float]:
@@ -78,7 +79,7 @@ class ObjectExtractor:
                     positions = self._flood_fill(grid, visited, r, c, color)
                     
                     if len(positions) > 0:
-                        obj = self._create_object(obj_id, color, positions)
+                        obj = self._create_object(grid, obj_id, color, positions)
                         objects.append(obj)
                         obj_id += 1
         
@@ -105,7 +106,13 @@ class ObjectExtractor:
         
         return positions
     
-    def _create_object(self, obj_id: int, color: int, positions: Set[Tuple[int, int]]) -> ARCObject:
+    def _create_object(
+        self,
+        grid: Array,
+        obj_id: int,
+        color: int,
+        positions: Set[Tuple[int, int]],
+    ) -> ARCObject:
         """Create object from positions."""
         pos_list = list(positions)
         min_r = min(pos[0] for pos in pos_list)
@@ -116,13 +123,16 @@ class ObjectExtractor:
         bounding_box = (min_r, min_c, max_r, max_c)
         shape_type = self._classify_shape(positions, bounding_box)
         
+        descriptors = self._compute_descriptors(grid, positions, bounding_box)
+
         return ARCObject(
             id=obj_id,
             color=color,
             positions=positions,
             bounding_box=bounding_box,
             shape_type=shape_type,
-            size=len(positions)
+            size=len(positions),
+            descriptors=descriptors,
         )
     
     def _classify_shape(self, positions: Set[Tuple[int, int]], bbox: Tuple[int, int, int, int]) -> str:
@@ -146,6 +156,59 @@ class ObjectExtractor:
             return 'cross'
         else:
             return 'irregular'
+
+    def _compute_descriptors(
+        self,
+        grid: Array,
+        positions: Set[Tuple[int, int]],
+        bbox: Tuple[int, int, int, int],
+    ) -> Dict[str, Any]:
+        """Derive contextual descriptors used by higher-level reasoning."""
+
+        min_r, min_c, max_r, max_c = bbox
+        h, w = grid.shape
+        patch = grid[min_r:max_r + 1, min_c:max_c + 1]
+
+        # Border vs interior palettes
+        border_mask = np.zeros_like(patch, dtype=bool)
+        border_mask[0, :] = border_mask[-1, :] = True
+        border_mask[:, 0] = True
+        border_mask[:, -1] = True
+
+        border_colors = np.unique(patch[border_mask]).tolist()
+        interior_colors = np.unique(patch[~border_mask]).tolist() if patch.size > border_mask.sum() else []
+
+        # Symmetry flags
+        horizontal_sym = bool(patch.shape[1] > 1 and np.array_equal(patch, np.fliplr(patch)))
+        vertical_sym = bool(patch.shape[0] > 1 and np.array_equal(patch, np.flipud(patch)))
+
+        # Stripe summaries
+        row_stripes = [tuple(np.unique(row)) for row in patch]
+        col_stripes = [tuple(np.unique(col)) for col in patch.T]
+
+        # Distances to borders
+        dist_top = min_r
+        dist_left = min_c
+        dist_bottom = (h - 1) - max_r
+        dist_right = (w - 1) - max_c
+
+        touches_border = dist_top == 0 or dist_left == 0 or dist_bottom == 0 or dist_right == 0
+
+        descriptors: Dict[str, Any] = {
+            "border_colors": border_colors,
+            "interior_colors": interior_colors,
+            "row_stripes": row_stripes,
+            "column_stripes": col_stripes,
+            "symmetry_horizontal": horizontal_sym,
+            "symmetry_vertical": vertical_sym,
+            "distance_top": dist_top,
+            "distance_left": dist_left,
+            "distance_bottom": dist_bottom,
+            "distance_right": dist_right,
+            "touches_border": touches_border,
+        }
+
+        return descriptors
 
 
 class SpatialAnalyzer:
