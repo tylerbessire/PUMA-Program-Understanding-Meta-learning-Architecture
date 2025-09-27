@@ -19,6 +19,11 @@ from .search import (
     synthesize as synth_baseline,
     predict_two as predict_two_baseline,
 )
+from puma.rft.feature_flags import RFT_ENABLED, build_limits
+from puma.rft.orchestrator import solve_with_rft
+from puma.rft.tracking import HypothesisMemory
+from puma.rft.demo.grid import build_context as build_rft_grid_context
+from puma.rft.explain import explain_last_run
 from .enhanced_search import synthesize_with_enhancements, predict_two_enhanced
 from .hypothesis import HypothesisEngine, Hypothesis
 from .continuous_learning import ContinuousSelfMemory
@@ -79,6 +84,10 @@ class ARCSolver:
         self._placeholder_templates: List[PlaceholderTemplate] = []
         self._new_placeholder_templates: List[PlaceholderTemplate] = []
         self._last_hypotheses: List[Hypothesis] = []
+        self.rft_enabled = RFT_ENABLED
+        self._rft_limits = build_limits()
+        self._rft_memory = HypothesisMemory()
+        self._last_rft_status: Optional[str] = None
 
     def solve_task(self, task: Dict[str, List[Dict[str, List[List[int]]]]]) -> Dict[str, List[List[List[int]]]]:
         """Solve a single ARC task using enhanced or baseline methods."""
@@ -177,6 +186,9 @@ class ARCSolver:
         self._record_continuous_experience(task_id, train_pairs, best_hypothesis, solved_training, result)
         if solved_training:
             self.stats['tasks_solved'] += 1
+        if self.rft_enabled:
+            attempt1, attempt2 = self._maybe_run_rft_adapter(task, attempt1, attempt2)
+            result = {"attempt_1": attempt1, "attempt_2": attempt2}
         return result
 
     def _get_predictions(
@@ -215,6 +227,50 @@ class ARCSolver:
         if self.enable_logging:
             self.logger.info("Using baseline prediction")
         return baseline
+
+    def _maybe_run_rft_adapter(
+        self,
+        task: Dict[str, Any],
+        attempt1: List[List[List[int]]],
+        attempt2: List[List[List[int]]],
+    ) -> Tuple[List[List[List[int]]], List[List[List[int]]]]:
+        """Optionally run the RFT orchestrator when the demo flag is present."""
+
+        metadata = task.get("metadata") or {}
+        rft_config = metadata.get("rft_demo")
+        if not rft_config or "grid" not in rft_config:
+            return attempt1, attempt2
+        grid_spec = rft_config["grid"]
+        grid = grid_spec.get("grid")
+        targets = grid_spec.get("targets", [])
+        if not isinstance(grid, list) or not grid:
+            return attempt1, attempt2
+        try:
+            context, rules = build_rft_grid_context(grid, targets, limits=self._rft_limits)
+        except Exception:
+            return attempt1, attempt2
+        context, status = solve_with_rft(
+            context,
+            rules,
+            self._rft_memory,
+            outer_budget=self._rft_limits.outer_budget,
+        )
+        self._last_rft_status = status
+        if self.enable_logging:
+            self.logger.debug("RFT status=%s\n%s", status, explain_last_run(context))
+        if status != "DONE" or not grid_spec.get("inject_output", False):
+            return attempt1, attempt2
+        solved_grid = context.state.grid
+        if solved_grid and isinstance(solved_grid[0][0], str):
+            palette: Dict[str, int] = {"black": 0}
+            next_id = 1
+            for row in solved_grid:
+                for color in row:
+                    if color not in palette:
+                        palette[color] = next_id
+                        next_id += 1
+            solved_grid = [[palette[color] for color in row] for row in solved_grid]
+        return [solved_grid for _ in attempt1], [solved_grid for _ in attempt2]
 
     def _postprocess_predictions(
         self,
