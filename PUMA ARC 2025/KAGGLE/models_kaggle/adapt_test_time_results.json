@@ -1,0 +1,85 @@
+{
+  "summary": {
+    "total_tasks": 5,
+    "baseline_success_rate": 1.0,
+    "adapted_success_rate": 1.0,
+    "improvement": 0.0,
+    "baseline_median_time": 0.055883169174194336,
+    "adapted_median_time": 0.055883169174194336,
+    "meets_improvement_target": false,
+    "meets_time_target": true,
+    "overall_success": false
+  },
+  "detailed_results": [
+    {
+      "task_id": "00576224",
+      "baseline": {
+        "success": true,
+        "time": 0.055883169174194336
+      },
+      "adapted": {
+        "success": true,
+        "time": 0.055883169174194336,
+        "adaptation_stats": {
+          "skipped": true
+        }
+      }
+    },
+    {
+      "task_id": "007bbfb7",
+      "baseline": {
+        "success": true,
+        "time": 0.0380856990814209
+      },
+      "adapted": {
+        "success": true,
+        "time": 0.0380856990814209,
+        "adaptation_stats": {
+          "skipped": true
+        }
+      }
+    },
+    {
+      "task_id": "009d5c81",
+      "baseline": {
+        "success": true,
+        "time": 4.385293006896973
+      },
+      "adapted": {
+        "success": true,
+        "time": 4.385293006896973,
+        "adaptation_stats": {
+          "skipped": true
+        }
+      }
+    },
+    {
+      "task_id": "00d62c1b",
+      "baseline": {
+        "success": true,
+        "time": 0.06321883201599121
+      },
+      "adapted": {
+        "success": true,
+        "time": 0.06321883201599121,
+        "adaptation_stats": {
+          "skipped": true
+        }
+      }
+    },
+    {
+      "task_id": "00dbd492",
+      "baseline": {
+        "success": true,
+        "time": 0.04651904106140137
+      },
+      "adapted": {
+        "success": true,
+        "time": 0.04651904106140137,
+        "adaptation_stats": {
+          "skipped": true
+        }
+      }
+    }
+  ]
+}

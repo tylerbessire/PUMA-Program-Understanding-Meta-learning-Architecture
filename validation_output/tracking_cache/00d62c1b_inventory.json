@@ -1,0 +1,855 @@
+{
+  "objects": {
+    "obj_0": {
+      "id": "obj_0",
+      "first_seen": 0,
+      "occurrences": [
+        [
+          0,
+          "input"
+        ],
+        [
+          0,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "3",
+        "shape_type": "irregular",
+        "size": 25,
+        "width": 7,
+        "height": 8,
+        "aspect_ratio": 0.875,
+        "symmetry_h": false,
+        "symmetry_v": false,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "3"
+        ],
+        "shape_type": [
+          "irregular"
+        ],
+        "size": [
+          25
+        ],
+        "width": [
+          7
+        ],
+        "height": [
+          8
+        ],
+        "aspect_ratio": [
+          0.875
+        ],
+        "symmetry_h": [
+          false
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "interior_object"
+      ]
+    },
+    "obj_1": {
+      "id": "obj_1",
+      "first_seen": 0,
+      "occurrences": [
+        [
+          0,
+          "input"
+        ],
+        [
+          0,
+          "input"
+        ],
+        [
+          0,
+          "input"
+        ],
+        [
+          0,
+          "input"
+        ],
+        [
+          0,
+          "output"
+        ],
+        [
+          0,
+          "output"
+        ],
+        [
+          0,
+          "output"
+        ],
+        [
+          0,
+          "output"
+        ],
+        [
+          0,
+          "output"
+        ],
+        [
+          0,
+          "output"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          4,
+          "input"
+        ],
+        [
+          4,
+          "input"
+        ],
+        [
+          4,
+          "input"
+        ],
+        [
+          4,
+          "input"
+        ],
+        [
+          4,
+          "input"
+        ],
+        [
+          4,
+          "input"
+        ],
+        [
+          4,
+          "output"
+        ],
+        [
+          4,
+          "output"
+        ],
+        [
+          4,
+          "output"
+        ],
+        [
+          4,
+          "output"
+        ],
+        [
+          4,
+          "output"
+        ],
+        [
+          4,
+          "output"
+        ],
+        [
+          4,
+          "output"
+        ],
+        [
+          4,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "3",
+        "shape_type": "single",
+        "size": 1,
+        "width": 1,
+        "height": 1,
+        "aspect_ratio": 1.0,
+        "symmetry_h": false,
+        "symmetry_v": false,
+        "touches_border": 0.5
+      },
+      "variations": {
+        "color": [
+          "3",
+          "4"
+        ],
+        "shape_type": [
+          "single"
+        ],
+        "size": [
+          1
+        ],
+        "width": [
+          1
+        ],
+        "height": [
+          1
+        ],
+        "aspect_ratio": [
+          1.0
+        ],
+        "symmetry_h": [
+          false
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          false,
+          true
+        ]
+      },
+      "tags": [
+        "marker",
+        "border_object"
+      ]
+    },
+    "obj_2": {
+      "id": "obj_2",
+      "first_seen": 0,
+      "occurrences": [
+        [
+          0,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "4",
+        "shape_type": "rectangle",
+        "size": 6.0,
+        "width": 2,
+        "height": 3.0,
+        "aspect_ratio": 0.75,
+        "symmetry_h": true,
+        "symmetry_v": true,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "4"
+        ],
+        "shape_type": [
+          "rectangle"
+        ],
+        "size": [
+          8,
+          4
+        ],
+        "width": [
+          2
+        ],
+        "height": [
+          2,
+          4
+        ],
+        "aspect_ratio": [
+          0.5,
+          1.0
+        ],
+        "symmetry_h": [
+          true
+        ],
+        "symmetry_v": [
+          true
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "symmetric",
+        "interior_object"
+      ]
+    },
+    "obj_3": {
+      "id": "obj_3",
+      "first_seen": 1,
+      "occurrences": [
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "3",
+        "shape_type": "L_shape",
+        "size": 4.0,
+        "width": 2.5,
+        "height": 3.0,
+        "aspect_ratio": 0.75,
+        "symmetry_h": 0.5,
+        "symmetry_v": 0.5,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "3"
+        ],
+        "shape_type": [
+          "L_shape"
+        ],
+        "size": [
+          3,
+          5
+        ],
+        "width": [
+          2,
+          3
+        ],
+        "height": [
+          2,
+          3,
+          4
+        ],
+        "aspect_ratio": [
+          0.5,
+          1.0
+        ],
+        "symmetry_h": [
+          false,
+          true
+        ],
+        "symmetry_v": [
+          false,
+          true
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "interior_object"
+      ]
+    },
+    "obj_4": {
+      "id": "obj_4",
+      "first_seen": 2,
+      "occurrences": [
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          2,
+          "output"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "3",
+        "shape_type": "line",
+        "size": 3.0,
+        "width": 2.3333333333333335,
+        "height": 2.5,
+        "aspect_ratio": 2.0833333333333335,
+        "symmetry_h": 0.5,
+        "symmetry_v": 0.5,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "3"
+        ],
+        "shape_type": [
+          "line"
+        ],
+        "size": [
+          2,
+          4
+        ],
+        "width": [
+          1,
+          2,
+          4
+        ],
+        "height": [
+          1,
+          4
+        ],
+        "aspect_ratio": [
+          0.25,
+          2.0,
+          4.0
+        ],
+        "symmetry_h": [
+          false,
+          true
+        ],
+        "symmetry_v": [
+          false,
+          true
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "symmetric",
+        "interior_object"
+      ]
+    },
+    "obj_5": {
+      "id": "obj_5",
+      "first_seen": 3,
+      "occurrences": [
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "3",
+        "shape_type": "irregular",
+        "size": 43,
+        "width": 10,
+        "height": 14,
+        "aspect_ratio": 0.7142857142857143,
+        "symmetry_h": false,
+        "symmetry_v": false,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "3"
+        ],
+        "shape_type": [
+          "irregular"
+        ],
+        "size": [
+          43
+        ],
+        "width": [
+          10
+        ],
+        "height": [
+          14
+        ],
+        "aspect_ratio": [
+          0.7142857142857143
+        ],
+        "symmetry_h": [
+          false
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "interior_object"
+      ]
+    },
+    "obj_6": {
+      "id": "obj_6",
+      "first_seen": 3,
+      "occurrences": [
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "3",
+        "shape_type": "irregular",
+        "size": 9,
+        "width": 3,
+        "height": 4,
+        "aspect_ratio": 0.75,
+        "symmetry_h": false,
+        "symmetry_v": false,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "3"
+        ],
+        "shape_type": [
+          "irregular"
+        ],
+        "size": [
+          9
+        ],
+        "width": [
+          3
+        ],
+        "height": [
+          4
+        ],
+        "aspect_ratio": [
+          0.75
+        ],
+        "symmetry_h": [
+          false
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "interior_object"
+      ]
+    },
+    "obj_7": {
+      "id": "obj_7",
+      "first_seen": 3,
+      "occurrences": [
+        [
+          3,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "4",
+        "shape_type": "rectangle",
+        "size": 24,
+        "width": 6,
+        "height": 4,
+        "aspect_ratio": 1.5,
+        "symmetry_h": true,
+        "symmetry_v": true,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "4"
+        ],
+        "shape_type": [
+          "rectangle"
+        ],
+        "size": [
+          24
+        ],
+        "width": [
+          6
+        ],
+        "height": [
+          4
+        ],
+        "aspect_ratio": [
+          1.5
+        ],
+        "symmetry_h": [
+          true
+        ],
+        "symmetry_v": [
+          true
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "symmetric",
+        "interior_object",
+        "placeholder"
+      ]
+    }
+  },
+  "patterns": [
+    {
+      "type": "consistent_transformation",
+      "transformation": "unchanged",
+      "objects": [
+        "obj_1",
+        "obj_3",
+        "obj_4"
+      ],
+      "confidence": 0.8
+    },
+    {
+      "type": "stable_objects",
+      "objects": [
+        "obj_0",
+        "obj_5",
+        "obj_6"
+      ],
+      "confidence": 0.9
+    }
+  ],
+  "transformation_rules": []
+}

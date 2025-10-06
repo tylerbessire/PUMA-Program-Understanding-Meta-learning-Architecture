@@ -1,0 +1,499 @@
+{
+  "objects": {
+    "obj_0": {
+      "id": "obj_0",
+      "first_seen": 0,
+      "occurrences": [
+        [
+          0,
+          "input"
+        ],
+        [
+          0,
+          "output"
+        ],
+        [
+          4,
+          "input"
+        ],
+        [
+          4,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "8",
+        "shape_type": "irregular",
+        "size": 30.5,
+        "width": 9.5,
+        "height": 8,
+        "aspect_ratio": 1.1875,
+        "symmetry_h": false,
+        "symmetry_v": false,
+        "touches_border": 0.5
+      },
+      "variations": {
+        "color": [
+          "8",
+          "2",
+          "7"
+        ],
+        "shape_type": [
+          "irregular"
+        ],
+        "size": [
+          30,
+          31
+        ],
+        "width": [
+          9,
+          10
+        ],
+        "height": [
+          8
+        ],
+        "aspect_ratio": [
+          1.25,
+          1.125
+        ],
+        "symmetry_h": [
+          false
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          false,
+          true
+        ]
+      },
+      "tags": [
+        "border_object"
+      ]
+    },
+    "obj_1": {
+      "id": "obj_1",
+      "first_seen": 0,
+      "occurrences": [
+        [
+          0,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "1",
+        "shape_type": "irregular",
+        "size": 5,
+        "width": 2.5,
+        "height": 2.5,
+        "aspect_ratio": 1.0833333333333333,
+        "symmetry_h": 0.5,
+        "symmetry_v": 0.5,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "8",
+          "1",
+          "3"
+        ],
+        "shape_type": [
+          "irregular"
+        ],
+        "size": [
+          5
+        ],
+        "width": [
+          2,
+          3
+        ],
+        "height": [
+          2,
+          3
+        ],
+        "aspect_ratio": [
+          0.6666666666666666,
+          1.5
+        ],
+        "symmetry_h": [
+          false,
+          true
+        ],
+        "symmetry_v": [
+          false,
+          true
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "symmetric",
+        "interior_object"
+      ]
+    },
+    "obj_2": {
+      "id": "obj_2",
+      "first_seen": 0,
+      "occurrences": [
+        [
+          0,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "input"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          1,
+          "output"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "1",
+        "shape_type": "single",
+        "size": 1,
+        "width": 1,
+        "height": 1,
+        "aspect_ratio": 1.0,
+        "symmetry_h": false,
+        "symmetry_v": false,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "8",
+          "1",
+          "3"
+        ],
+        "shape_type": [
+          "single"
+        ],
+        "size": [
+          1
+        ],
+        "width": [
+          1
+        ],
+        "height": [
+          1
+        ],
+        "aspect_ratio": [
+          1.0
+        ],
+        "symmetry_h": [
+          false
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "marker",
+        "interior_object"
+      ]
+    },
+    "obj_3": {
+      "id": "obj_3",
+      "first_seen": 1,
+      "occurrences": [
+        [
+          1,
+          "input"
+        ],
+        [
+          2,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          3,
+          "output"
+        ],
+        [
+          4,
+          "input"
+        ]
+      ],
+      "attributes": {
+        "color": "1",
+        "shape_type": "L_shape",
+        "size": 4.0,
+        "width": 2.5,
+        "height": 2.5,
+        "aspect_ratio": 1.25,
+        "symmetry_h": 0.5,
+        "symmetry_v": 0.5,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "8",
+          "1",
+          "3"
+        ],
+        "shape_type": [
+          "L_shape"
+        ],
+        "size": [
+          3,
+          4,
+          5
+        ],
+        "width": [
+          2,
+          3
+        ],
+        "height": [
+          2,
+          3
+        ],
+        "aspect_ratio": [
+          1.5,
+          1.0
+        ],
+        "symmetry_h": [
+          false,
+          true
+        ],
+        "symmetry_v": [
+          false,
+          true
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "symmetric",
+        "interior_object"
+      ]
+    },
+    "obj_4": {
+      "id": "obj_4",
+      "first_seen": 2,
+      "occurrences": [
+        [
+          2,
+          "input"
+        ],
+        [
+          2,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "8",
+        "shape_type": "irregular",
+        "size": 24,
+        "width": 9,
+        "height": 5,
+        "aspect_ratio": 1.8,
+        "symmetry_h": true,
+        "symmetry_v": false,
+        "touches_border": true
+      },
+      "variations": {
+        "color": [
+          "8",
+          "2"
+        ],
+        "shape_type": [
+          "irregular"
+        ],
+        "size": [
+          24
+        ],
+        "width": [
+          9
+        ],
+        "height": [
+          5
+        ],
+        "aspect_ratio": [
+          1.8
+        ],
+        "symmetry_h": [
+          true
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          true
+        ]
+      },
+      "tags": [
+        "symmetric",
+        "border_object"
+      ]
+    },
+    "obj_5": {
+      "id": "obj_5",
+      "first_seen": 3,
+      "occurrences": [
+        [
+          3,
+          "input"
+        ],
+        [
+          3,
+          "output"
+        ]
+      ],
+      "attributes": {
+        "color": "8",
+        "shape_type": "line",
+        "size": 2,
+        "width": 2,
+        "height": 1,
+        "aspect_ratio": 2.0,
+        "symmetry_h": true,
+        "symmetry_v": false,
+        "touches_border": false
+      },
+      "variations": {
+        "color": [
+          "8",
+          "3"
+        ],
+        "shape_type": [
+          "line"
+        ],
+        "size": [
+          2
+        ],
+        "width": [
+          2
+        ],
+        "height": [
+          1
+        ],
+        "aspect_ratio": [
+          2.0
+        ],
+        "symmetry_h": [
+          true
+        ],
+        "symmetry_v": [
+          false
+        ],
+        "touches_border": [
+          false
+        ]
+      },
+      "tags": [
+        "symmetric",
+        "interior_object"
+      ]
+    }
+  },
+  "patterns": [],
+  "transformation_rules": []
+}

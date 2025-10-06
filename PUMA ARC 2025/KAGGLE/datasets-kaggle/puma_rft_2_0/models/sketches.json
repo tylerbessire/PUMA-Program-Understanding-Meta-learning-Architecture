@@ -1,0 +1,42 @@
+[
+  {
+    "operations": [
+      "rotate"
+    ],
+    "param_constraints": {},
+    "frequency": 3,
+    "success_rate": 0.0
+  },
+  {
+    "operations": [
+      "translate"
+    ],
+    "param_constraints": {},
+    "frequency": 2,
+    "success_rate": 0.0
+  },
+  {
+    "operations": [
+      "flip"
+    ],
+    "param_constraints": {},
+    "frequency": 2,
+    "success_rate": 0.0
+  },
+  {
+    "operations": [
+      "transpose"
+    ],
+    "param_constraints": {},
+    "frequency": 2,
+    "success_rate": 0.0
+  },
+  {
+    "operations": [
+      "recolor"
+    ],
+    "param_constraints": {},
+    "frequency": 2,
+    "success_rate": 0.0
+  }
+]

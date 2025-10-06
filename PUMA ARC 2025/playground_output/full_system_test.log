@@ -1,0 +1,1106 @@
+PERF: Data loading took 0.04s
+🔧 Local environment detected
+✅ Initialized puma package alias
+   → Synced models directory
+✅ Using arc_solver from: /Volumes/Sabby/PUMA-usbstick/PUMA ARC 2025/PUMA/arc_solver
+PERF: Solver initialization took 0.05s
+📚 Loaded previous learning: 1 tasks with history
+================================================================================
+PLAYGROUND EVALUATION SUITE
+================================================================================
+Tasks: 5
+LLM: Disabled
+Learning: Enabled
+================================================================================
+
+
+================================================================================
+Task 1/5: 0934a4d8
+================================================================================
+
+Train pairs: 4
+Test inputs: 1
+PERF: Task setup took 0.00s
+
+1. Building object inventory...
+   Objects: 18
+   Patterns: 2
+   Transformation rules: 2
+PERF: Build object inventory took 0.08s
+
+2. RFT tracking...
+   Using cached tracking state
+   Conflicts: 269
+   Repair tasks: 269
+PERF: RFT tracking took 0.19s
+
+3. Generating pliance rules...
+   📚 Found 1 previous attempt(s) - applying learned patterns...
+   Learned patterns: ['color_removal', 'extraction', 'transformed', 'resized', 'size_reduction']
+   Rules to add: ['Rule for size_reduction', 'Rule for color_removal', 'Rule for resized']
+   ✨ Applied learned rule: learned_color_removal (from previous failure)
+   ✨ Applied learned rule: learned_resized (from previous failure)
+   ✨ Applied learned rule: learned_size_reduction (from previous failure)
+   Emitted rule: auto_deleted (confidence: 0.80)
+   Total rules: 4
+PERF: Generate pliance rules took 0.00s
+
+4. Validating rules...
+   learned_color_removal: 0.0% accuracy
+      Repairing (low accuracy)...
+   learned_resized: 0.0% accuracy
+      Repairing (low accuracy)...
+   learned_size_reduction: 0.0% accuracy
+      Repairing (low accuracy)...
+   auto_deleted: 0.0% accuracy
+      Repairing (low accuracy)...
+PERF: Validating rules took 0.19s
+
+5. Solving...
+DEBUG: synthesize_enhanced called with expected_shape=None, test_input=provided
+DEBUG: Inconsistent outputs, chose representative: (9, 4)
+DEBUG: Enhanced task signature: {'input_shapes': [(30, 30), (30, 30), (30, 30), (30, 30)], 'output_shapes': [(9, 4), (4, 5), (3, 7), (4, 4)], 'consistent_input': True, 'consistent_output': False, 'input_size': (30, 30), 'output_size': (9, 4), 'size_change': '30x30_to_9x4_extraction', 'primary_pattern': 'extraction', 'color_change': True, 'spatial_relationships': {'has_symmetry': False, 'has_translation': False, 'has_scaling': True, 'preserves_topology': True}}
+DEBUG: Found 8-filled placeholder regions: [(9, 3)], chose: (9, 3)
+DEBUG: Detected dynamic target shape from test input: (9, 3)
+DEBUG: Found 5 learned patterns
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG PatternCompiler: Found adaptive rule - Output dimensions match bounding box of color 8 objects
+DEBUG PatternCompiler: Compiled adaptive extraction pattern!
+DEBUG: Compiled pattern 'extraction' into executable program
+DEBUG PatternCompiler: Found adaptive rule - Output dimensions match bounding box of color 8 objects
+DEBUG PatternCompiler: Compiled adaptive transformed pattern!
+DEBUG: Compiled pattern 'transformed' into executable program
+DEBUG PatternCompiler: Found adaptive rule - Output dimensions match bounding box of color 8 objects
+DEBUG PatternCompiler: Compiled adaptive resized pattern!
+DEBUG: Compiled pattern 'resized' into executable program
+DEBUG PatternCompiler: Found adaptive rule - Output dimensions match bounding box of color 8 objects
+DEBUG PatternCompiler: Compiled adaptive size_reduction pattern!
+DEBUG: Compiled pattern 'size_reduction' into executable program
+DEBUG: Successfully compiled 5 patterns into programs
+DEBUG: Added 5 pattern-compiled candidates to candidate list
+DEBUG: Passing expected_shape to human reasoning: (9, 3)
+=== HUMAN-GRADE ANALYSIS ===
+  Object hypothesis: object_move_0 (verified: 0.000)
+  Object hypothesis: object_move_1 (verified: 0.000)
+  Object hypothesis: object_move_2 (verified: 0.000)
+  Object hypothesis: object_move_3 (verified: 0.000)
+  Object hypothesis: object_move_4 (verified: 0.000)
+  Object hypothesis: object_move_5 (verified: 0.000)
+  Object hypothesis: object_move_6 (verified: 0.000)
+  Object hypothesis: object_move_7 (verified: 0.000)
+  Object hypothesis: object_move_8 (verified: 0.000)
+  Object hypothesis: object_move_9 (verified: 0.000)
+  Object hypothesis: object_move_10 (verified: 0.000)
+  Object hypothesis: object_move_11 (verified: 0.000)
+  Object hypothesis: object_move_12 (verified: 0.000)
+  Object hypothesis: object_move_13 (verified: 0.000)
+  Object hypothesis: object_move_14 (verified: 0.000)
+  Object hypothesis: object_move_15 (verified: 0.000)
+  Object hypothesis: object_move_16 (verified: 0.000)
+  Object hypothesis: object_move_17 (verified: 0.000)
+  Object hypothesis: object_move_18 (verified: 0.000)
+  Object hypothesis: object_move_19 (verified: 0.000)
+  Object hypothesis: object_move_20 (verified: 0.000)
+  Object hypothesis: object_move_21 (verified: 0.000)
+  Object hypothesis: object_move_22 (verified: 0.000)
+  Object hypothesis: object_move_23 (verified: 0.000)
+  Object hypothesis: object_copy_24 (verified: 0.000)
+  Object hypothesis: object_recolor_25 (verified: 0.000)
+  Object hypothesis: object_move_26 (verified: 0.000)
+  Object hypothesis: object_move_27 (verified: 0.000)
+  Object hypothesis: object_move_28 (verified: 0.000)
+  Object hypothesis: object_move_29 (verified: 0.000)
+  Object hypothesis: object_move_30 (verified: 0.000)
+  Object hypothesis: object_move_31 (verified: 0.000)
+  Object hypothesis: object_move_32 (verified: 0.000)
+  Object hypothesis: object_move_33 (verified: 0.000)
+  Object hypothesis: object_move_34 (verified: 0.000)
+  Object hypothesis: object_move_35 (verified: 0.000)
+  Object hypothesis: object_move_36 (verified: 0.000)
+  Object hypothesis: object_move_37 (verified: 0.000)
+  Object hypothesis: object_move_38 (verified: 0.000)
+  Object hypothesis: object_recolor_39 (verified: 0.000)
+  Object hypothesis: object_recolor_40 (verified: 0.000)
+  Object hypothesis: object_move_41 (verified: 0.000)
+  Object hypothesis: object_move_42 (verified: 0.000)
+  Object hypothesis: object_move_43 (verified: 0.000)
+  Object hypothesis: object_recolor_44 (verified: 0.000)
+Object transformations found: 45
+  Found target placeholder in example 0: (9, 4) filled with 8
+  Found target placeholder in example 1: (4, 5) filled with 8
+  Found target placeholder in example 2: (3, 7) filled with 8
+  Found target placeholder in example 3: (4, 4) filled with 8
+Key elements identified: 3517
+DEBUG: Target shapes from training: {(4, 4), (3, 7), (4, 5), (9, 4)}
+DEBUG: Generating hypotheses for (9, 4) placeholder
+DEBUG: Generating hypotheses for (4, 5) placeholder
+DEBUG: Generating hypotheses for (3, 7) placeholder
+DEBUG: Generating hypotheses for (4, 4) placeholder
+Generated 3584 hypotheses
+  1. object_move_0: Object-level move: {'color': 6, 'shape': 'single'} -> {'direction': 'left', 'distance': 3.605551275463989, 'dr': -2.0, 'dc': -3.0} (confidence: 0.90, verified: 0.00)
+  2. object_move_1: Object-level move: {'color': 2, 'shape': 'single'} -> {'direction': 'left', 'distance': 9.848857801796104, 'dr': -4.0, 'dc': -9.0} (confidence: 0.90, verified: 0.00)
+  3. object_move_2: Object-level move: {'color': 4, 'shape': 'single'} -> {'direction': 'left', 'distance': 7.0710678118654755, 'dr': -1.0, 'dc': -7.0} (confidence: 0.90, verified: 0.00)
+DEBUG: Human reasoning generated 3584 hypotheses
+DEBUG: Added TARGETED extraction for (9, 3) (adapted from adjacent_replacement_8_9x4, boosted score: 0.750)
+Warning: Memory file fast_comprehensive_memory.json not found, using empty memory
+Built indices: 0 pattern types, 0 RFT facts
+DEBUG: Task signature: {'input_size': (30, 30), 'output_size': (9, 4), 'size_change': '30x30_to_9x4', 'primary_pattern': 'extraction', 'color_change': False}
+DEBUG: Looking for pattern type 'extraction' in []
+DEBUG: Added 0 extraction patterns
+DEBUG: Found 0 similar patterns
+DEBUG: Memory suggested 0 operations
+DEBUG: Size reduction detected (30, 30) -> (9, 4)
+DEBUG: Scoring human reasoning 'targeted_extraction_9x3': 0.750
+DEBUG: Applied targeted extraction: (4, 4) -> (9, 3)
+DEBUG: Applied targeted extraction: (4, 4) -> (9, 3)
+DEBUG: Applied targeted extraction: (4, 4) -> (9, 3)
+DEBUG: Applied targeted extraction: (4, 4) -> (9, 3)
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (9, 4)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (4, 5)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (3, 7)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (4, 4)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: extraction
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (7, 2), expected (9, 4)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (2, 3), expected (4, 5)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (1, 5), expected (3, 7)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (2, 2), expected (4, 4)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: transformed
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (7, 2), expected (9, 4)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (2, 3), expected (4, 5)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (1, 5), expected (3, 7)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (2, 2), expected (4, 4)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: resized
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (7, 2), expected (9, 4)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (2, 3), expected (4, 5)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (1, 5), expected (3, 7)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (2, 2), expected (4, 4)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: size_reduction
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (7, 2), expected (9, 4)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (2, 3), expected (4, 5)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (1, 5), expected (3, 7)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (2, 2), expected (4, 4)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring human reasoning 'targeted_extraction_9x3': 0.750
+DEBUG: Found 6 programs, best score: 0.750
+DEBUG: Scoring human reasoning 'targeted_extraction_9x3': 0.750
+DEBUG: Prediction shape governance: (4, 4) -> (9, 3)
+   Solve time: 23.27s
+   Programs found: 0
+PERF: Solving took 23.27s
+
+6. Checking predictions...
+   No predictions generated
+
+================================================================================
+LEARNING FROM FAILURE: 0934a4d8
+================================================================================
+
+🤖 LLM Analysis: Learning from correct answer...
+
+📋 Rule Issues Detected:
+  - 4 rules with <70% accuracy
+
+🧠 LLM Insights:
+  Patterns in correct solution: ['color_removal', 'transformed', 'size_reduction', 'extraction', 'resized']
+  Correct approach: Transform: Reduce from (30, 30) to (9, 4) | Remove colors: [8, 5, 7] | Common changes: {'width': {'from': 2, 'to': 1, 'frequency': 0.5}, 'aspect_ratio': {'from': 2.0, 'to': 0.5, 'frequency': 0.5}, 'symmetry_v': {'from': False, 'to': True, 'frequency': 0.75}, 'height': {'from': 1, 'to': 2, 'frequency': 0.5}, 'touches_border': {'from': False, 'to': True, 'frequency': 0.75}, 'symmetry_h': {'from': True, 'to': False, 'frequency': 0.75}} | Common changes: {'touches_border': {'from': False, 'to': True, 'frequency': 0.6666666666666666}} | Test: (30, 30) → (9, 3) | Extract region of size (9, 3)
+  Why we failed: Generated 2 rules but none matched the correct transformation
+  What to do next time: Need better pattern recognition for these transformation types
+
+✓ Failure logged and analyzed with LLM guidance
+
+================================================================================
+Task 2/5: 135a2760
+================================================================================
+
+Train pairs: 2
+Test inputs: 1
+PERF: Task setup took 0.00s
+
+1. Building object inventory...
+   Objects: 9
+   Patterns: 1
+   Transformation rules: 1
+PERF: Build object inventory took 0.01s
+
+2. RFT tracking...
+   Using cached tracking state
+   Conflicts: 80
+   Repair tasks: 80
+PERF: RFT tracking took 0.04s
+
+3. Generating pliance rules...
+   Total rules: 0
+PERF: Generate pliance rules took 0.00s
+
+5. Solving...
+DEBUG: synthesize_enhanced called with expected_shape=None, test_input=provided
+DEBUG: Both inconsistent, chose: input=(21, 22), output=(21, 22)
+DEBUG: Enhanced task signature: {'input_shapes': [(5, 13), (21, 22)], 'output_shapes': [(5, 13), (21, 22)], 'consistent_input': False, 'consistent_output': False, 'input_size': (21, 22), 'output_size': (21, 22), 'size_change': None, 'primary_pattern': 'complex_same_size', 'color_change': False, 'spatial_relationships': {'has_symmetry': False, 'has_translation': False, 'has_scaling': False, 'preserves_topology': True}}
+DEBUG: Detected dynamic target shape from test input: (29, 29)
+DEBUG: Found 5 learned patterns
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'transformed' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'size_reduction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'extraction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'resized' into executable program
+DEBUG: Successfully compiled 5 patterns into programs
+DEBUG: Added 5 pattern-compiled candidates to candidate list
+DEBUG: Passing expected_shape to human reasoning: (29, 29)
+=== HUMAN-GRADE ANALYSIS ===
+  Object hypothesis: object_move_0 (verified: 0.000)
+  Object hypothesis: object_move_1 (verified: 0.000)
+  Object hypothesis: object_move_2 (verified: 0.000)
+  Object hypothesis: object_move_3 (verified: 0.000)
+  Object hypothesis: object_move_4 (verified: 0.000)
+  Object hypothesis: object_copy_5 (verified: 0.000)
+  Object hypothesis: object_copy_6 (verified: 0.000)
+  Object hypothesis: object_move_7 (verified: 0.000)
+  Object hypothesis: object_move_8 (verified: 0.000)
+  Object hypothesis: object_move_9 (verified: 0.000)
+  Object hypothesis: object_move_10 (verified: 0.000)
+  Object hypothesis: object_move_11 (verified: 0.000)
+  Object hypothesis: object_move_12 (verified: 0.000)
+  Object hypothesis: object_move_13 (verified: 0.000)
+  Object hypothesis: object_move_14 (verified: 0.000)
+  Object hypothesis: object_move_15 (verified: 0.000)
+  Object hypothesis: object_move_16 (verified: 0.000)
+  Object hypothesis: object_move_17 (verified: 0.000)
+  Object hypothesis: object_move_18 (verified: 0.000)
+  Object hypothesis: object_move_19 (verified: 0.000)
+  Object hypothesis: object_move_20 (verified: 0.000)
+  Object hypothesis: object_move_21 (verified: 0.000)
+  Object hypothesis: object_move_22 (verified: 0.000)
+  Object hypothesis: object_move_23 (verified: 0.000)
+  Object hypothesis: object_move_24 (verified: 0.000)
+  Object hypothesis: object_move_25 (verified: 0.000)
+  Object hypothesis: object_move_26 (verified: 0.000)
+  Object hypothesis: object_move_27 (verified: 0.000)
+  Object hypothesis: object_move_28 (verified: 0.000)
+  Object hypothesis: object_move_29 (verified: 0.000)
+  Object hypothesis: object_move_30 (verified: 0.000)
+  Object hypothesis: object_move_31 (verified: 0.000)
+  Object hypothesis: object_move_32 (verified: 0.000)
+  Object hypothesis: object_move_33 (verified: 0.000)
+  Object hypothesis: object_move_34 (verified: 0.000)
+  Object hypothesis: object_move_35 (verified: 0.000)
+  Object hypothesis: object_move_36 (verified: 0.000)
+  Object hypothesis: object_move_37 (verified: 0.000)
+  Object hypothesis: object_move_38 (verified: 0.000)
+  Object hypothesis: object_move_39 (verified: 0.000)
+  Object hypothesis: object_move_40 (verified: 0.000)
+  Object hypothesis: object_move_41 (verified: 0.000)
+  Object hypothesis: object_move_42 (verified: 0.000)
+  Object hypothesis: object_move_43 (verified: 0.000)
+  Object hypothesis: object_move_44 (verified: 0.000)
+  Object hypothesis: object_move_45 (verified: 0.000)
+  Object hypothesis: object_move_46 (verified: 0.000)
+  Object hypothesis: object_move_47 (verified: 0.000)
+  Object hypothesis: object_move_48 (verified: 0.000)
+  Object hypothesis: object_move_49 (verified: 0.000)
+  Object hypothesis: object_move_50 (verified: 0.000)
+  Object hypothesis: object_move_51 (verified: 0.000)
+  Object hypothesis: object_move_52 (verified: 0.000)
+  Object hypothesis: object_move_53 (verified: 0.000)
+  Object hypothesis: object_move_54 (verified: 0.000)
+  Object hypothesis: object_move_55 (verified: 0.000)
+  Object hypothesis: object_move_56 (verified: 0.000)
+  Object hypothesis: object_move_57 (verified: 0.000)
+  Object hypothesis: object_move_58 (verified: 0.000)
+  Object hypothesis: object_move_59 (verified: 0.000)
+  Object hypothesis: object_move_60 (verified: 0.000)
+  Object hypothesis: object_move_61 (verified: 0.000)
+  Object hypothesis: object_move_62 (verified: 0.000)
+  Object hypothesis: object_move_63 (verified: 0.000)
+  Object hypothesis: object_move_64 (verified: 0.000)
+  Object hypothesis: object_move_65 (verified: 0.000)
+  Object hypothesis: object_move_66 (verified: 0.000)
+  Object hypothesis: object_move_67 (verified: 0.000)
+  Object hypothesis: object_move_68 (verified: 0.000)
+  Object hypothesis: object_copy_69 (verified: 0.000)
+  Object hypothesis: object_copy_70 (verified: 0.000)
+  Object hypothesis: object_copy_71 (verified: 0.000)
+  Object hypothesis: object_copy_72 (verified: 0.000)
+  Object hypothesis: object_copy_73 (verified: 0.000)
+Object transformations found: 74
+Key elements identified: 3
+Generated 86 hypotheses
+  1. object_move_0: Object-level move: {'color': 1, 'shape': 'single'} -> {'direction': 'right', 'distance': 8.0, 'dr': 0.0, 'dc': 8.0} (confidence: 0.90, verified: 0.98)
+  2. object_move_1: Object-level move: {'color': 3, 'shape': 'single'} -> {'direction': 'right', 'distance': 6.0, 'dr': 0.0, 'dc': 6.0} (confidence: 0.90, verified: 0.98)
+  3. object_move_2: Object-level move: {'color': 1, 'shape': 'single'} -> {'direction': 'right', 'distance': 6.0, 'dr': 0.0, 'dc': 6.0} (confidence: 0.90, verified: 0.98)
+DEBUG: Human reasoning generated 86 hypotheses
+DEBUG: Added human reasoning program: object_move_0 (score: 0.983)
+DEBUG: Added human reasoning program: object_move_1 (score: 0.983)
+DEBUG: Added human reasoning program: object_move_2 (score: 0.983)
+DEBUG: Added human reasoning program: object_move_3 (score: 0.983)
+DEBUG: Added human reasoning program: object_move_4 (score: 0.983)
+DEBUG: Task signature: {'input_size': (5, 13), 'output_size': (5, 13), 'size_change': None, 'primary_pattern': 'complex_same_size', 'color_change': False}
+DEBUG: Looking for pattern type 'complex_same_size' in []
+DEBUG: Found 0 similar patterns
+DEBUG: Memory suggested 0 operations
+DEBUG: Scoring human reasoning 'object_move_0': 0.983
+DEBUG: Scoring human reasoning 'object_move_1': 0.983
+DEBUG: Scoring human reasoning 'object_move_2': 0.983
+DEBUG: Scoring human reasoning 'object_move_3': 0.983
+DEBUG: Scoring human reasoning 'object_move_4': 0.983
+DEBUG: Applied targeted extraction: (21, 22) -> (5, 13)
+DEBUG: Applied targeted extraction: (21, 22) -> (5, 13)
+DEBUG: Applied targeted extraction: (21, 22) -> (5, 13)
+DEBUG: Applied targeted extraction: (21, 22) -> (5, 13)
+DEBUG: Applied targeted extraction: (21, 22) -> (5, 13)
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (5, 13)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (21, 22)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: transformed
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (5, 13)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (21, 22)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: size_reduction
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (5, 13)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (21, 22)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: extraction
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (5, 13)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (21, 22)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: resized
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (5, 13)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (21, 22)
+DEBUG: Pattern score: 0.15
+DEBUG: Found 11 programs, best score: 0.000
+DEBUG: Scoring human reasoning 'object_move_0': 0.983
+DEBUG: Scoring human reasoning 'object_move_1': 0.983
+DEBUG: Scoring human reasoning 'object_move_2': 0.983
+DEBUG: Scoring human reasoning 'object_move_3': 0.983
+DEBUG: Scoring human reasoning 'object_move_4': 0.983
+   Solve time: 12.21s
+   Programs found: 0
+PERF: Solving took 12.21s
+
+6. Checking predictions...
+   No predictions generated
+
+================================================================================
+LEARNING FROM FAILURE: 135a2760
+================================================================================
+
+🤖 LLM Analysis: Learning from correct answer...
+
+📋 Rule Issues Detected:
+  - No pliance rules generated
+
+🧠 LLM Insights:
+  Patterns in correct solution: ['same_size_transformation', 'transformed', 'resized']
+  Correct approach: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Test: (29, 29) → (29, 29)
+  Why we failed: Generated 2 rules but none matched the correct transformation
+  What to do next time: Need better pattern recognition for these transformation types
+
+✓ Failure logged and analyzed with LLM guidance
+
+================================================================================
+Task 3/5: 136b0064
+================================================================================
+
+Train pairs: 3
+Test inputs: 1
+PERF: Task setup took 0.00s
+
+1. Building object inventory...
+   Objects: 8
+   Patterns: 2
+   Transformation rules: 2
+PERF: Build object inventory took 0.00s
+
+2. RFT tracking...
+   Using cached tracking state
+   Conflicts: 38
+   Repair tasks: 38
+PERF: RFT tracking took 0.01s
+
+3. Generating pliance rules...
+   Emitted rule: auto_deleted (confidence: 0.80)
+   Emitted rule: recolor_1_to_5 (confidence: 0.70)
+   Total rules: 2
+PERF: Generate pliance rules took 0.00s
+
+4. Validating rules...
+   auto_deleted: 0.0% accuracy
+      Repairing (low accuracy)...
+   recolor_1_to_5: 0.0% accuracy
+      Repairing (low accuracy)...
+PERF: Validating rules took 0.00s
+
+5. Solving...
+DEBUG: synthesize_enhanced called with expected_shape=None, test_input=provided
+DEBUG: Both inconsistent, chose: input=(15, 15), output=(15, 7)
+DEBUG: Enhanced task signature: {'input_shapes': [(15, 15), (7, 15), (11, 15)], 'output_shapes': [(15, 7), (7, 7), (11, 7)], 'consistent_input': False, 'consistent_output': False, 'input_size': (15, 15), 'output_size': (15, 7), 'size_change': '15x15_to_15x7_extraction', 'primary_pattern': 'extraction', 'color_change': True, 'spatial_relationships': {'has_symmetry': False, 'has_translation': False, 'has_scaling': True, 'preserves_topology': True}}
+DEBUG: Dynamic detection failed, using representative: (15, 7)
+DEBUG: Found 8 learned patterns
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'transformed' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'size_reduction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'extraction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'resized' into executable program
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG: Successfully compiled 5 patterns into programs
+DEBUG: Added 5 pattern-compiled candidates to candidate list
+DEBUG: Passing expected_shape to human reasoning: (15, 7)
+=== HUMAN-GRADE ANALYSIS ===
+  Object hypothesis: object_move_0 (verified: 0.000)
+  Object hypothesis: object_copy_1 (verified: 0.000)
+  Object hypothesis: object_copy_2 (verified: 0.000)
+  Object hypothesis: object_copy_3 (verified: 0.000)
+Object transformations found: 4
+Key elements identified: 0
+Generated 18 hypotheses
+  1. object_move_0: Object-level move: {'color': 5, 'shape': 'single'} -> {'direction': 'left', 'distance': 8.0, 'dr': 0.0, 'dc': -8.0} (confidence: 0.90, verified: 0.00)
+  2. object_copy_1: Object-level copy: {'color': 2, 'shape': 'line', 'size': 2} -> {'copies': 1} (confidence: 0.90, verified: 0.00)
+  3. object_copy_2: Object-level copy: {'color': 3, 'shape': 'line', 'size': 4} -> {'copies': 1} (confidence: 0.90, verified: 0.00)
+DEBUG: Human reasoning generated 18 hypotheses
+DEBUG: Added human reasoning program: relation_translation_3_2 (score: 0.686)
+DEBUG: Task signature: {'input_size': (15, 15), 'output_size': (15, 7), 'size_change': '15x15_to_15x7', 'primary_pattern': 'extraction', 'color_change': False}
+DEBUG: Looking for pattern type 'extraction' in []
+DEBUG: Added 0 extraction patterns
+DEBUG: Found 0 similar patterns
+DEBUG: Memory suggested 0 operations
+DEBUG: Size reduction detected (15, 15) -> (15, 7)
+DEBUG: Scoring human reasoning 'relation_translation_3_2': 0.686
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (15, 7)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (7, 7)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (11, 7)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: transformed
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (15, 7)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (7, 7)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (11, 7)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: size_reduction
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (15, 7)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (7, 7)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (11, 7)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: extraction
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (15, 7)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (7, 7)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (11, 7)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: resized
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (15, 7)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (7, 7)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (11, 7)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring human reasoning 'relation_translation_3_2': 0.686
+DEBUG: Found 6 programs, best score: 0.686
+DEBUG: Scoring human reasoning 'relation_translation_3_2': 0.686
+   Solve time: 28.85s
+   Programs found: 0
+PERF: Solving took 28.85s
+
+6. Checking predictions...
+   No predictions generated
+
+================================================================================
+LEARNING FROM FAILURE: 136b0064
+================================================================================
+
+🤖 LLM Analysis: Learning from correct answer...
+
+📋 Rule Issues Detected:
+  - 2 rules with <70% accuracy
+
+🧠 LLM Insights:
+  Patterns in correct solution: ['recolored', 'color_removal', 'transformed', 'size_reduction', 'resized']
+  Correct approach: Transform: Reduce from (15, 15) to (15, 7) | Remove colors: [4] | Common changes: {'color': {'from': 1, 'to': 5, 'frequency': 0.5}} | Common changes: {'color': {'from': 6, 'to': 5, 'frequency': 1.0}, 'touches_border': {'from': False, 'to': True, 'frequency': 1.0}} | Common changes: {'color': {'from': 6, 'to': 2, 'frequency': 0.6666666666666666}, 'width': {'from': 1, 'to': 2, 'frequency': 0.6666666666666666}, 'aspect_ratio': {'from': 0.5, 'to': 2.0, 'frequency': 0.6666666666666666}, 'symmetry_h': {'from': False, 'to': True, 'frequency': 1.0}, 'symmetry_v': {'from': True, 'to': False, 'frequency': 1.0}, 'height': {'from': 2, 'to': 1, 'frequency': 1.0}, 'touches_border': {'from': True, 'to': False, 'frequency': 0.6666666666666666}} | Test: (19, 15) → (19, 7)
+  Why we failed: Generated 3 rules but none matched the correct transformation
+  What to do next time: Need better pattern recognition for these transformation types
+
+✓ Failure logged and analyzed with LLM guidance
+
+================================================================================
+Task 4/5: 13e47133
+================================================================================
+
+Train pairs: 3
+Test inputs: 2
+PERF: Task setup took 0.00s
+
+1. Building object inventory...
+   Objects: 21
+   Patterns: 2
+   Transformation rules: 1
+PERF: Build object inventory took 0.01s
+
+2. RFT tracking...
+   Using cached tracking state
+   Conflicts: 29
+   Repair tasks: 29
+PERF: RFT tracking took 0.01s
+
+3. Generating pliance rules...
+   Emitted rule: auto_created (confidence: 0.80)
+   Total rules: 1
+PERF: Generate pliance rules took 0.00s
+
+4. Validating rules...
+   auto_created: 0.0% accuracy
+      Repairing (low accuracy)...
+PERF: Validating rules took 0.00s
+
+5. Solving...
+DEBUG: synthesize_enhanced called with expected_shape=None, test_input=provided
+DEBUG: Both inconsistent, chose: input=(20, 20), output=(20, 20)
+DEBUG: Enhanced task signature: {'input_shapes': [(20, 20), (20, 20), (10, 13)], 'output_shapes': [(20, 20), (20, 20), (10, 13)], 'consistent_input': False, 'consistent_output': False, 'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'recolor', 'color_change': True, 'spatial_relationships': {'has_symmetry': False, 'has_translation': False, 'has_scaling': False, 'preserves_topology': True}}
+DEBUG: Detected dynamic target shape from test input: (30, 30)
+DEBUG: Found 13 learned patterns
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'transformed' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'size_reduction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'extraction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'resized' into executable program
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'recolored' into executable program
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG: Successfully compiled 7 patterns into programs
+DEBUG: Added 7 pattern-compiled candidates to candidate list
+DEBUG: Passing expected_shape to human reasoning: (30, 30)
+=== HUMAN-GRADE ANALYSIS ===
+Object transformations found: 0
+Key elements identified: 3
+Generated 14 hypotheses
+  1. relation_translation_9_3: Translate grid using derived relational vector (confidence: 0.75, verified: 0.16)
+  2. relation_translation_5_4: Translate grid using derived relational vector (confidence: 0.75, verified: 0.16)
+  3. relation_translation_4_3: Translate grid using derived relational vector (confidence: 0.75, verified: 0.16)
+DEBUG: Human reasoning generated 14 hypotheses
+DEBUG: Task signature: {'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'recolor', 'color_change': True}
+DEBUG: Looking for pattern type 'recolor' in []
+DEBUG: Found 0 similar patterns
+DEBUG: Memory suggested 0 operations
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: transformed
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: size_reduction
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: extraction
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: resized
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: recolored
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Found 8 programs, best score: 0.000
+DEBUG: synthesize_enhanced called with expected_shape=None, test_input=provided
+DEBUG: Both inconsistent, chose: input=(20, 20), output=(20, 20)
+DEBUG: Enhanced task signature: {'input_shapes': [(20, 20), (20, 20), (10, 13)], 'output_shapes': [(20, 20), (20, 20), (10, 13)], 'consistent_input': False, 'consistent_output': False, 'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'recolor', 'color_change': True, 'spatial_relationships': {'has_symmetry': False, 'has_translation': False, 'has_scaling': False, 'preserves_topology': True}}
+DEBUG: Detected dynamic target shape from test input: (30, 30)
+DEBUG: Found 13 learned patterns
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'transformed' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'size_reduction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'extraction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'resized' into executable program
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'recolored' into executable program
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG: Successfully compiled 7 patterns into programs
+DEBUG: Added 7 pattern-compiled candidates to candidate list
+DEBUG: Passing expected_shape to human reasoning: (30, 30)
+=== HUMAN-GRADE ANALYSIS ===
+Object transformations found: 0
+Key elements identified: 3
+Generated 14 hypotheses
+  1. relation_translation_9_3: Translate grid using derived relational vector (confidence: 0.75, verified: 0.16)
+  2. relation_translation_5_4: Translate grid using derived relational vector (confidence: 0.75, verified: 0.16)
+  3. relation_translation_4_3: Translate grid using derived relational vector (confidence: 0.75, verified: 0.16)
+DEBUG: Human reasoning generated 14 hypotheses
+DEBUG: Task signature: {'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'recolor', 'color_change': True}
+DEBUG: Looking for pattern type 'recolor' in []
+DEBUG: Found 0 similar patterns
+DEBUG: Memory suggested 0 operations
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: transformed
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: size_reduction
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: extraction
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: resized
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: recolored
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (10, 13)
+DEBUG: Pattern score: 0.15
+DEBUG: Found 8 programs, best score: 0.000
+   Solve time: 15.62s
+   Programs found: 0
+PERF: Solving took 15.62s
+
+6. Checking predictions...
+   No predictions generated
+
+================================================================================
+LEARNING FROM FAILURE: 13e47133
+================================================================================
+
+🤖 LLM Analysis: Learning from correct answer...
+
+📋 Rule Issues Detected:
+  - 1 rules with <70% accuracy
+
+🧠 LLM Insights:
+  Patterns in correct solution: ['same_size_transformation', 'color_removal', 'resized']
+  Correct approach: Transform: Remove colors: [1] | Common changes: {'symmetry_h': {'from': False, 'to': True, 'frequency': 0.6}, 'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}, 'touches_border': {'from': True, 'to': False, 'frequency': 0.5}} | Test: (30, 30) → (30, 30)
+  Why we failed: Generated 1 rules but none matched the correct transformation
+  What to do next time: Need better pattern recognition for these transformation types
+
+✓ Failure logged and analyzed with LLM guidance
+
+================================================================================
+Task 5/5: 142ca369
+================================================================================
+
+Train pairs: 3
+Test inputs: 2
+PERF: Task setup took 0.00s
+
+1. Building object inventory...
+   Objects: 6
+   Patterns: 1
+   Transformation rules: 0
+PERF: Build object inventory took 0.01s
+
+2. RFT tracking...
+   Using cached tracking state
+   Conflicts: 44
+   Repair tasks: 44
+PERF: RFT tracking took 0.01s
+
+3. Generating pliance rules...
+   Total rules: 0
+PERF: Generate pliance rules took 0.00s
+
+5. Solving...
+DEBUG: synthesize_enhanced called with expected_shape=None, test_input=provided
+DEBUG: Both inconsistent, chose: input=(20, 20), output=(20, 20)
+DEBUG: Enhanced task signature: {'input_shapes': [(20, 20), (18, 18), (20, 20)], 'output_shapes': [(20, 20), (18, 18), (20, 20)], 'consistent_input': False, 'consistent_output': False, 'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'complex_same_size', 'color_change': False, 'spatial_relationships': {'has_symmetry': False, 'has_translation': True, 'has_scaling': False, 'preserves_topology': True}}
+DEBUG: Detected dynamic target shape from test input: (18, 18)
+DEBUG: Found 16 learned patterns
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'transformed' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'size_reduction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'extraction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'resized' into executable program
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'recolored' into executable program
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG: Successfully compiled 7 patterns into programs
+DEBUG: Added 7 pattern-compiled candidates to candidate list
+DEBUG: Passing expected_shape to human reasoning: (18, 18)
+=== HUMAN-GRADE ANALYSIS ===
+Object transformations found: 0
+Key elements identified: 3
+Generated 8 hypotheses
+  1. relation_translation_-1_0: Translate grid using derived relational vector (confidence: 0.75, verified: 0.86)
+  2. relation_translation_0_-1: Translate grid using derived relational vector (confidence: 0.75, verified: 0.85)
+  3. relation_translation_0_1: Translate grid using derived relational vector (confidence: 0.75, verified: 0.84)
+DEBUG: Human reasoning generated 8 hypotheses
+DEBUG: Added human reasoning program: relation_translation_-1_0 (score: 0.856)
+DEBUG: Added human reasoning program: relation_translation_0_-1 (score: 0.847)
+DEBUG: Added human reasoning program: relation_translation_0_1 (score: 0.845)
+DEBUG: Added human reasoning program: relation_translation_1_0 (score: 0.845)
+DEBUG: Added human reasoning program: relation_translation_2_1 (score: 0.840)
+DEBUG: Task signature: {'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'complex_same_size', 'color_change': False}
+DEBUG: Looking for pattern type 'complex_same_size' in []
+DEBUG: Found 0 similar patterns
+DEBUG: Memory suggested 0 operations
+DEBUG: Scoring human reasoning 'relation_translation_-1_0': 0.856
+DEBUG: Scoring human reasoning 'relation_translation_0_-1': 0.847
+DEBUG: Scoring human reasoning 'relation_translation_0_1': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_1_0': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_2_1': 0.840
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: transformed
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: size_reduction
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: extraction
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: resized
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: recolored
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (18, 18)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (18, 18)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Found 13 programs, best score: 0.000
+DEBUG: Scoring human reasoning 'relation_translation_0_1': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_1_0': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_2_1': 0.840
+DEBUG: Scoring human reasoning 'relation_translation_-1_0': 0.856
+DEBUG: Scoring human reasoning 'relation_translation_0_-1': 0.847
+DEBUG: synthesize_enhanced called with expected_shape=None, test_input=provided
+DEBUG: Both inconsistent, chose: input=(20, 20), output=(20, 20)
+DEBUG: Enhanced task signature: {'input_shapes': [(20, 20), (18, 18), (20, 20)], 'output_shapes': [(20, 20), (18, 18), (20, 20)], 'consistent_input': False, 'consistent_output': False, 'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'complex_same_size', 'color_change': False, 'spatial_relationships': {'has_symmetry': False, 'has_translation': True, 'has_scaling': False, 'preserves_topology': True}}
+DEBUG: Detected dynamic target shape from test input: (20, 19)
+DEBUG: Found 16 learned patterns
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'transformed' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'size_reduction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'extraction' into executable program
+DEBUG PatternCompiler: Successfully compiled 3 operations
+DEBUG: Compiled pattern 'resized' into executable program
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: No operations compiled from description: Transform: Common changes: {'symmetry_v': {'from': False, 'to': True, 'frequency': 0.6}} | Common ch
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'recolored' into executable program
+DEBUG PatternCompiler: Successfully compiled 2 operations
+DEBUG: Compiled pattern 'color_removal' into executable program
+DEBUG: Successfully compiled 7 patterns into programs
+DEBUG: Added 7 pattern-compiled candidates to candidate list
+DEBUG: Passing expected_shape to human reasoning: (20, 19)
+=== HUMAN-GRADE ANALYSIS ===
+Object transformations found: 0
+Key elements identified: 3
+Generated 8 hypotheses
+  1. relation_translation_-1_0: Translate grid using derived relational vector (confidence: 0.75, verified: 0.86)
+  2. relation_translation_0_-1: Translate grid using derived relational vector (confidence: 0.75, verified: 0.85)
+  3. relation_translation_0_1: Translate grid using derived relational vector (confidence: 0.75, verified: 0.84)
+DEBUG: Human reasoning generated 8 hypotheses
+DEBUG: Added human reasoning program: relation_translation_-1_0 (score: 0.856)
+DEBUG: Added human reasoning program: relation_translation_0_-1 (score: 0.847)
+DEBUG: Added human reasoning program: relation_translation_0_1 (score: 0.845)
+DEBUG: Added human reasoning program: relation_translation_1_0 (score: 0.845)
+DEBUG: Added human reasoning program: relation_translation_2_1 (score: 0.840)
+DEBUG: Task signature: {'input_size': (20, 20), 'output_size': (20, 20), 'size_change': None, 'primary_pattern': 'complex_same_size', 'color_change': False}
+DEBUG: Looking for pattern type 'complex_same_size' in []
+DEBUG: Found 0 similar patterns
+DEBUG: Memory suggested 0 operations
+DEBUG: Scoring human reasoning 'relation_translation_-1_0': 0.856
+DEBUG: Scoring human reasoning 'relation_translation_0_-1': 0.847
+DEBUG: Scoring human reasoning 'relation_translation_0_1': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_1_0': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_2_1': 0.840
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: transformed
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'transformed', compiled_program exists: True
+DEBUG: Pattern 'transformed' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: size_reduction
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'size_reduction', compiled_program exists: True
+DEBUG: Pattern 'size_reduction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: extraction
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'extraction', compiled_program exists: True
+DEBUG: Pattern 'extraction' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: resized
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (18, 18)
+DEBUG: Scoring pattern 'resized', compiled_program exists: True
+DEBUG: Pattern 'resized' shape mismatch: got (9, 3), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: recolored
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (18, 18)
+DEBUG: Scoring pattern 'recolored', compiled_program exists: True
+DEBUG: Pattern 'recolored' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Scoring pattern-compiled candidate: color_removal
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (18, 18)
+DEBUG: Scoring pattern 'color_removal', compiled_program exists: True
+DEBUG: Pattern 'color_removal' shape mismatch: got (15, 7), expected (20, 20)
+DEBUG: Pattern score: 0.15
+DEBUG: Found 13 programs, best score: 0.000
+DEBUG: Scoring human reasoning 'relation_translation_0_1': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_1_0': 0.845
+DEBUG: Scoring human reasoning 'relation_translation_2_1': 0.840
+DEBUG: Scoring human reasoning 'relation_translation_-1_0': 0.856
+DEBUG: Scoring human reasoning 'relation_translation_0_-1': 0.847
+   Solve time: 38.99s
+   Programs found: 0
+PERF: Solving took 38.99s
+
+6. Checking predictions...
+   No predictions generated
+
+================================================================================
+LEARNING FROM FAILURE: 142ca369
+================================================================================
+
+🤖 LLM Analysis: Learning from correct answer...
+
+📊 Inventory Issues Detected:
+  - No transformation rules extracted
+
+📋 Rule Issues Detected:
+  - No pliance rules generated
+
+🧠 LLM Insights:
+  Patterns in correct solution: ['same_size_transformation']
+  Correct approach: Transform: Test: (18, 18) → (18, 18)
+  Why we failed: Generated 0 rules but none matched the correct transformation
+  What to do next time: Need better pattern recognition for these transformation types
+
+✓ Failure logged and analyzed with LLM guidance
+
+Results saved to: playground_output/eval_results.json
+
+================================================================================
+EVALUATION SUMMARY
+================================================================================
+Tasks evaluated: 5
+Fully correct: 0/5 (0.0%)
+Average accuracy: 0.0%
+Failures logged: 5
+Learning entries: 5
+================================================================================

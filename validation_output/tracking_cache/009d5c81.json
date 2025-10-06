@@ -1,0 +1,5971 @@
+{
+  "task_id": "009d5c81",
+  "inventory": {
+    "objects": {
+      "obj_0": {
+        "id": "obj_0",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "input"
+          ],
+          [
+            0,
+            "output"
+          ],
+          [
+            4,
+            "input"
+          ],
+          [
+            4,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "8",
+          "shape_type": "irregular",
+          "size": 30.5,
+          "width": 9.5,
+          "height": 8,
+          "aspect_ratio": 1.1875,
+          "symmetry_h": false,
+          "symmetry_v": false,
+          "touches_border": 0.5
+        },
+        "variations": {
+          "color": [
+            "8",
+            "2",
+            "7"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            30,
+            31
+          ],
+          "width": [
+            9,
+            10
+          ],
+          "height": [
+            8
+          ],
+          "aspect_ratio": [
+            1.25,
+            1.125
+          ],
+          "symmetry_h": [
+            false
+          ],
+          "symmetry_v": [
+            false
+          ],
+          "touches_border": [
+            false,
+            true
+          ]
+        },
+        "tags": [
+          "border_object"
+        ]
+      },
+      "obj_1": {
+        "id": "obj_1",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            1,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "1",
+          "shape_type": "irregular",
+          "size": 5,
+          "width": 2.5,
+          "height": 2.5,
+          "aspect_ratio": 1.0833333333333333,
+          "symmetry_h": 0.5,
+          "symmetry_v": 0.5,
+          "touches_border": false
+        },
+        "variations": {
+          "color": [
+            "8",
+            "1",
+            "3"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            5
+          ],
+          "width": [
+            2,
+            3
+          ],
+          "height": [
+            2,
+            3
+          ],
+          "aspect_ratio": [
+            0.6666666666666666,
+            1.5
+          ],
+          "symmetry_h": [
+            false,
+            true
+          ],
+          "symmetry_v": [
+            false,
+            true
+          ],
+          "touches_border": [
+            false
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "interior_object"
+        ]
+      },
+      "obj_2": {
+        "id": "obj_2",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "output"
+          ],
+          [
+            3,
+            "output"
+          ],
+          [
+            3,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "1",
+          "shape_type": "single",
+          "size": 1,
+          "width": 1,
+          "height": 1,
+          "aspect_ratio": 1.0,
+          "symmetry_h": false,
+          "symmetry_v": false,
+          "touches_border": false
+        },
+        "variations": {
+          "color": [
+            "8",
+            "1",
+            "3"
+          ],
+          "shape_type": [
+            "single"
+          ],
+          "size": [
+            1
+          ],
+          "width": [
+            1
+          ],
+          "height": [
+            1
+          ],
+          "aspect_ratio": [
+            1.0
+          ],
+          "symmetry_h": [
+            false
+          ],
+          "symmetry_v": [
+            false
+          ],
+          "touches_border": [
+            false
+          ]
+        },
+        "tags": [
+          "marker",
+          "interior_object"
+        ]
+      },
+      "obj_3": {
+        "id": "obj_3",
+        "first_seen": 1,
+        "occurrences": [
+          [
+            1,
+            "input"
+          ],
+          [
+            2,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "output"
+          ],
+          [
+            3,
+            "output"
+          ],
+          [
+            3,
+            "output"
+          ],
+          [
+            4,
+            "input"
+          ]
+        ],
+        "attributes": {
+          "color": "1",
+          "shape_type": "L_shape",
+          "size": 4.0,
+          "width": 2.5,
+          "height": 2.5,
+          "aspect_ratio": 1.25,
+          "symmetry_h": 0.5,
+          "symmetry_v": 0.5,
+          "touches_border": false
+        },
+        "variations": {
+          "color": [
+            "8",
+            "1",
+            "3"
+          ],
+          "shape_type": [
+            "L_shape"
+          ],
+          "size": [
+            3,
+            4,
+            5
+          ],
+          "width": [
+            2,
+            3
+          ],
+          "height": [
+            2,
+            3
+          ],
+          "aspect_ratio": [
+            1.5,
+            1.0
+          ],
+          "symmetry_h": [
+            false,
+            true
+          ],
+          "symmetry_v": [
+            false,
+            true
+          ],
+          "touches_border": [
+            false
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "interior_object"
+        ]
+      },
+      "obj_4": {
+        "id": "obj_4",
+        "first_seen": 2,
+        "occurrences": [
+          [
+            2,
+            "input"
+          ],
+          [
+            2,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "8",
+          "shape_type": "irregular",
+          "size": 24,
+          "width": 9,
+          "height": 5,
+          "aspect_ratio": 1.8,
+          "symmetry_h": true,
+          "symmetry_v": false,
+          "touches_border": true
+        },
+        "variations": {
+          "color": [
+            "8",
+            "2"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            24
+          ],
+          "width": [
+            9
+          ],
+          "height": [
+            5
+          ],
+          "aspect_ratio": [
+            1.8
+          ],
+          "symmetry_h": [
+            true
+          ],
+          "symmetry_v": [
+            false
+          ],
+          "touches_border": [
+            true
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "border_object"
+        ]
+      },
+      "obj_5": {
+        "id": "obj_5",
+        "first_seen": 3,
+        "occurrences": [
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "8",
+          "shape_type": "line",
+          "size": 2,
+          "width": 2,
+          "height": 1,
+          "aspect_ratio": 2.0,
+          "symmetry_h": true,
+          "symmetry_v": false,
+          "touches_border": false
+        },
+        "variations": {
+          "color": [
+            "8",
+            "3"
+          ],
+          "shape_type": [
+            "line"
+          ],
+          "size": [
+            2
+          ],
+          "width": [
+            2
+          ],
+          "height": [
+            1
+          ],
+          "aspect_ratio": [
+            2.0
+          ],
+          "symmetry_h": [
+            true
+          ],
+          "symmetry_v": [
+            false
+          ],
+          "touches_border": [
+            false
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "interior_object"
+        ]
+      }
+    },
+    "patterns": [],
+    "transformation_rules": []
+  },
+  "relational_facts": [
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        7,
+        8,
+        10
+      ],
+      "metadata": {
+        "distance": 7.615773105863909,
+        "src_center": [
+          10,
+          5
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.39391929857916763,
+        -0.9191450300180578
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        7,
+        8,
+        10
+      ],
+      "metadata": {
+        "distance": 9.486832980505138,
+        "src_center": [
+          12,
+          5
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.31622776601683794,
+        -0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          3,
+          4
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.9486832980505138,
+        -0.31622776601683794
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 5.0,
+        "src_center": [
+          3,
+          4
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          3,
+          4
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 4.0,
+        "src_center": [
+          3,
+          4
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          3,
+          4
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.9486832980505138,
+        0.31622776601683794
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          2,
+          7
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.9486832980505138,
+        0.31622776601683794
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          2,
+          7
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          2,
+          7
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          2,
+          7
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          2,
+          7
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 5.0,
+        "src_center": [
+          3,
+          9
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          3,
+          9
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.0,
+        "src_center": [
+          3,
+          9
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.0,
+        "src_center": [
+          3,
+          9
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          3,
+          9
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          3,
+          6
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          3,
+          6
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 3.0,
+        "src_center": [
+          3,
+          6
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          3,
+          6
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          3,
+          6
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 4.0,
+        "src_center": [
+          3,
+          8
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          3,
+          8
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 1.0,
+        "src_center": [
+          3,
+          8
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          3,
+          8
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          3,
+          8
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.9486832980505138,
+        -0.31622776601683794
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 7.0710678118654755,
+        "src_center": [
+          10,
+          3
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.1414213562373095,
+        -0.9899494936611665
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.94427190999916,
+        "src_center": [
+          10,
+          3
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.4472135954999579,
+        -0.8944271909999159
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 9.219544457292887,
+        "src_center": [
+          10,
+          3
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.6507913734559685,
+        -0.7592566023652966
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 7.615773105863909,
+        "src_center": [
+          10,
+          3
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.39391929857916763,
+        -0.9191450300180578
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          10,
+          3
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5812381937190965,
+        -0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 7.211102550927978,
+        "src_center": [
+          10,
+          3
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5547001962252291,
+        -0.8320502943378437
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 7.0710678118654755,
+        "src_center": [
+          10,
+          5
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.1414213562373095,
+        -0.9899494936611665
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.246211251235321,
+        "src_center": [
+          10,
+          5
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.24253562503633297,
+        -0.9701425001453319
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 8.06225774829855,
+        "src_center": [
+          10,
+          5
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.49613893835683387,
+        -0.8682431421244593
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 7.0710678118654755,
+        "src_center": [
+          10,
+          5
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.1414213562373095,
+        -0.9899494936611665
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 7.615773105863909,
+        "src_center": [
+          10,
+          5
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.39391929857916763,
+        -0.9191450300180578
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 6.324555320336759,
+        "src_center": [
+          10,
+          5
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.31622776601683794,
+        -0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 8.0,
+        "src_center": [
+          11,
+          4
+        ],
+        "tgt_center": [
+          3,
+          4
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 9.486832980505138,
+        "src_center": [
+          11,
+          4
+        ],
+        "tgt_center": [
+          2,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.31622776601683794,
+        -0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "distance": 9.433981132056603,
+        "src_center": [
+          11,
+          4
+        ],
+        "tgt_center": [
+          3,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.52999894000318,
+        -0.847998304005088
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.246211251235321,
+        "src_center": [
+          11,
+          4
+        ],
+        "tgt_center": [
+          3,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.24253562503633297,
+        -0.9701425001453319
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.94427190999916,
+        "src_center": [
+          11,
+          4
+        ],
+        "tgt_center": [
+          3,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.4472135954999579,
+        -0.8944271909999159
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 7.615773105863909,
+        "src_center": [
+          11,
+          4
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.39391929857916763,
+        -0.9191450300180578
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        3,
+        3
+      ],
+      "object": [
+        2,
+        5,
+        9
+      ],
+      "metadata": {
+        "distance": 8.54400374531753,
+        "src_center": [
+          10,
+          8
+        ],
+        "tgt_center": [
+          2,
+          5
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.3511234415883917,
+        -0.9363291775690445
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          1,
+          8
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          1,
+          8
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          1,
+          8
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.31622776601683794,
+        0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 3.605551275463989,
+        "src_center": [
+          1,
+          8
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5547001962252291,
+        0.8320502943378437
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 4.0,
+        "src_center": [
+          1,
+          8
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 5.385164807134504,
+        "src_center": [
+          1,
+          8
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.3713906763541037,
+        0.9284766908852594
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          2,
+          6
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 3.0,
+        "src_center": [
+          2,
+          6
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          2,
+          6
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.4472135954999579,
+        0.8944271909999159
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 4.47213595499958,
+        "src_center": [
+          2,
+          6
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 3.605551275463989,
+        "src_center": [
+          2,
+          6
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5547001962252291,
+        0.8320502943378437
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 5.656854249492381,
+        "src_center": [
+          2,
+          6
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          2,
+          9
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 3.0,
+        "src_center": [
+          2,
+          9
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.8284271247461903,
+        "src_center": [
+          2,
+          9
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          2,
+          9
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.4472135954999579,
+        0.8944271909999159
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          2,
+          9
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.31622776601683794,
+        0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 4.123105625617661,
+        "src_center": [
+          2,
+          9
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.24253562503633297,
+        0.9701425001453319
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.31622776601683794,
+        -0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.4472135954999579,
+        -0.8944271909999159
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 2.8284271247461903,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 3.0,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865475,
+        0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.605551275463989,
+        "src_center": [
+          4,
+          7
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8320502943378437,
+        0.5547001962252291
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.605551275463989,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5547001962252291,
+        -0.8320502943378437
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        2
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 4.47213595499958,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        2
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.4472135954999579,
+        -0.8944271909999159
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.0,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        2,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 4.0,
+        "src_center": [
+          5,
+          8
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        2
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 3.605551275463989,
+        "src_center": [
+          5,
+          8
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5547001962252291,
+        -0.8320502943378437
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        2
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 3.1622776601683795,
+        "src_center": [
+          5,
+          8
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.31622776601683794,
+        -0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 1.4142135623730951,
+        "src_center": [
+          5,
+          8
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        2
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          5,
+          8
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          5,
+          8
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 5.385164807134504,
+        "src_center": [
+          6,
+          10
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.3713906763541037,
+        -0.9284766908852594
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 5.656854249492381,
+        "src_center": [
+          6,
+          10
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.7071067811865475,
+        -0.7071067811865475
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 4.123105625617661,
+        "src_center": [
+          6,
+          10
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.24253562503633297,
+        -0.9701425001453319
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 3.605551275463989,
+        "src_center": [
+          6,
+          10
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8320502943378437,
+        -0.5547001962252291
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 2.0,
+        "src_center": [
+          6,
+          10
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 2.23606797749979,
+        "src_center": [
+          6,
+          10
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 9.219544457292887,
+        "src_center": [
+          8,
+          2
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.6507913734559685,
+        -0.7592566023652966
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 7.211102550927978,
+        "src_center": [
+          8,
+          2
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5547001962252291,
+        -0.8320502943378437
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 9.219544457292887,
+        "src_center": [
+          8,
+          2
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7592566023652966,
+        -0.6507913734559685
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 6.4031242374328485,
+        "src_center": [
+          8,
+          2
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7808688094430304,
+        -0.6246950475544243
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 8.94427190999916,
+        "src_center": [
+          8,
+          2
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 6.708203932499369,
+        "src_center": [
+          8,
+          2
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8944271909999159,
+        -0.4472135954999579
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.246211251235321,
+        "src_center": [
+          8,
+          2
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.9701425001453319,
+        -0.24253562503633297
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.06225774829855,
+        "src_center": [
+          8,
+          4
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.49613893835683387,
+        -0.8682431421244593
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 6.324555320336759,
+        "src_center": [
+          8,
+          4
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.31622776601683794,
+        -0.9486832980505138
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 7.810249675906654,
+        "src_center": [
+          8,
+          4
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.6401843996644799,
+        -0.7682212795973759
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 5.0,
+        "src_center": [
+          8,
+          4
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.6,
+        -0.8
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 7.211102550927978,
+        "src_center": [
+          8,
+          4
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8320502943378437,
+        -0.5547001962252291
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 5.0,
+        "src_center": [
+          8,
+          4
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.8,
+        -0.6
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 6.324555320336759,
+        "src_center": [
+          8,
+          4
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.9486832980505138,
+        -0.31622776601683794
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 9.433981132056603,
+        "src_center": [
+          9,
+          3
+        ],
+        "tgt_center": [
+          1,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.52999894000318,
+        -0.847998304005088
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 7.615773105863909,
+        "src_center": [
+          9,
+          3
+        ],
+        "tgt_center": [
+          2,
+          6
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.39391929857916763,
+        -0.9191450300180578
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "distance": 9.219544457292887,
+        "src_center": [
+          9,
+          3
+        ],
+        "tgt_center": [
+          2,
+          9
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.6507913734559685,
+        -0.7592566023652966
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 6.4031242374328485,
+        "src_center": [
+          9,
+          3
+        ],
+        "tgt_center": [
+          4,
+          7
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.6246950475544243,
+        -0.7808688094430304
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          9,
+          3
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.813733471206735,
+        -0.5812381937190965
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "distance": 6.4031242374328485,
+        "src_center": [
+          9,
+          3
+        ],
+        "tgt_center": [
+          5,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7808688094430304,
+        -0.6246950475544243
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 7.615773105863909,
+        "src_center": [
+          9,
+          3
+        ],
+        "tgt_center": [
+          6,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.9191450300180578,
+        -0.39391929857916763
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        1,
+        3,
+        3
+      ],
+      "object": [
+        2,
+        8,
+        9
+      ],
+      "metadata": {
+        "distance": 8.48528137423857,
+        "src_center": [
+          10,
+          2
+        ],
+        "tgt_center": [
+          4,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.7071067811865476,
+        -0.7071067811865476
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        8,
+        10
+      ],
+      "object": [
+        7,
+        8,
+        10
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        3,
+        2
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          4.0,
+          -6.0
+        ],
+        "match_score": 1.3879369970898299,
+        "distance": 0.5150787536377127,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8320502943378437,
+        0.5547001962252291
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          2.0,
+          -6.0
+        ],
+        "match_score": 1.4385968388378996,
+        "distance": 0.45175395145262565,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.9486832980505138,
+        0.31622776601683794
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        3,
+        2
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          -8.0
+        ],
+        "match_score": 1.0095238095238095,
+        "distance": 0.5714285714285714,
+        "size_similarity": 0.6666666666666666
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        5,
+        9
+      ],
+      "object": [
+        2,
+        5,
+        9
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        2,
+        2
+      ],
+      "object": [
+        3,
+        2,
+        2
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        2
+      ],
+      "object": [
+        3,
+        1,
+        2
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          5.0,
+          -4.0
+        ],
+        "match_score": 1.4341071864324086,
+        "distance": 0.4573660169594892,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.6246950475544243,
+        0.7808688094430304
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        1,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          3.0,
+          -4.0
+        ],
+        "match_score": 1.5142857142857142,
+        "distance": 0.35714285714285715,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.8,
+        0.6
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        1,
+        2,
+        3
+      ],
+      "object": [
+        3,
+        2,
+        3
+      ],
+      "metadata": {
+        "translation": [
+          3.0,
+          -7.0
+        ],
+        "match_score": 1.3648129653792052,
+        "distance": 0.5439837932759934,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.9191450300180578,
+        0.39391929857916763
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        8,
+        8,
+        9
+      ],
+      "object": [
+        2,
+        8,
+        9
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 1.8,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        2,
+        3
+      ],
+      "object": [
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "derived_from": "object_transformation",
+        "translation": [
+          -3.0,
+          7.0
+        ],
+        "match_score": 0.9553690757654435
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.9191450300180578,
+        -0.39391929857916763
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        3,
+        2
+      ],
+      "object": [
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "derived_from": "object_transformation",
+        "translation": [
+          -0.0,
+          8.0
+        ],
+        "match_score": 0.7066666666666666
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        1.0,
+        -0.0
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        7,
+        8,
+        10
+      ],
+      "object": [
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        -0.39391929857916763,
+        0.9191450300180578
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        1,
+        1
+      ],
+      "object": [
+        1,
+        1,
+        1
+      ],
+      "metadata": {
+        "derived_from": "object_transformation",
+        "translation": [
+          -3.0,
+          4.0
+        ],
+        "match_score": 1.0599999999999998
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.8,
+        -0.6
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        1,
+        1
+      ],
+      "object": [
+        1,
+        1,
+        1
+      ],
+      "metadata": {
+        "derived_from": "object_transformation",
+        "translation": [
+          -2.0,
+          6.0
+        ],
+        "match_score": 1.0070177871865296
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.9486832980505138,
+        -0.31622776601683794
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        1,
+        1
+      ],
+      "object": [
+        1,
+        1,
+        1
+      ],
+      "metadata": {
+        "derived_from": "object_transformation",
+        "translation": [
+          -5.0,
+          4.0
+        ],
+        "match_score": 1.003875030502686
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.6246950475544243,
+        -0.7808688094430304
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        1,
+        1
+      ],
+      "object": [
+        8,
+        3,
+        2
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        -0.9486832980505138,
+        0.31622776601683794
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        2,
+        5,
+        9
+      ],
+      "object": [
+        1,
+        3,
+        3
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.3511234415883917,
+        0.9363291775690445
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        2,
+        8,
+        9
+      ],
+      "object": [
+        1,
+        3,
+        3
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        -0.7071067811865476,
+        0.7071067811865476
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        1,
+        1
+      ],
+      "object": [
+        8,
+        2,
+        3
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        -0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        1,
+        1
+      ],
+      "object": [
+        8,
+        2,
+        2
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.5547001962252291,
+        0.8320502943378437
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        2,
+        3
+      ],
+      "object": [
+        8,
+        2,
+        2
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.8944271909999159,
+        0.4472135954999579
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        1,
+        1
+      ],
+      "object": [
+        8,
+        1,
+        2
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        -0.0,
+        1.0
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        3,
+        2,
+        3
+      ],
+      "object": [
+        8,
+        1,
+        2
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.5547001962252291,
+        0.8320502943378437
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "conflict_id": "conflict_0",
+      "conflicting_rules": [
+        "transform_0",
+        "transform_1"
+      ],
+      "evidence_for": {
+        "transform_0": [
+          "{'translation': (0.0, -8.0), 'match_score': 1.0095238095238095, 'distance': 0.5714285714285714, 'size_similarity': 0.6666666666666666}"
+        ],
+        "transform_1": [
+          "{'translation': (3.0, -7.0), 'match_score': 1.3648129653792052, 'distance': 0.5439837932759934, 'size_similarity': 1.0}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.7,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_1",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2",
+        "spatial_3",
+        "spatial_4",
+        "spatial_5",
+        "spatial_6",
+        "spatial_7"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 3.1622776601683795, 'src_center': (3, 4), 'tgt_center': (2, 7)}"
+        ],
+        "spatial_1": [
+          "{'distance': 2.0, 'src_center': (3, 4), 'tgt_center': (3, 6)}"
+        ],
+        "spatial_2": [
+          "{'distance': 4.0, 'src_center': (3, 4), 'tgt_center': (3, 8)}"
+        ],
+        "spatial_3": [
+          "{'distance': 3.1622776601683795, 'src_center': (3, 4), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_4": [
+          "{'distance': 2.23606797749979, 'src_center': (3, 9), 'tgt_center': (2, 7)}"
+        ],
+        "spatial_5": [
+          "{'distance': 3.0, 'src_center': (3, 9), 'tgt_center': (3, 6)}"
+        ],
+        "spatial_6": [
+          "{'distance': 1.0, 'src_center': (3, 9), 'tgt_center': (3, 8)}"
+        ],
+        "spatial_7": [
+          "{'distance': 2.23606797749979, 'src_center': (3, 9), 'tgt_center': (4, 7)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_2",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 5.0, 'src_center': (3, 4), 'tgt_center': (3, 9)}"
+        ],
+        "spatial_1": [
+          "{'distance': 5.0, 'src_center': (3, 9), 'tgt_center': (3, 4)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_3",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2",
+        "spatial_3",
+        "spatial_4",
+        "spatial_5",
+        "spatial_6",
+        "spatial_7"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 3.1622776601683795, 'src_center': (2, 7), 'tgt_center': (3, 4)}"
+        ],
+        "spatial_1": [
+          "{'distance': 2.23606797749979, 'src_center': (2, 7), 'tgt_center': (3, 9)}"
+        ],
+        "spatial_2": [
+          "{'distance': 2.0, 'src_center': (3, 6), 'tgt_center': (3, 4)}"
+        ],
+        "spatial_3": [
+          "{'distance': 3.0, 'src_center': (3, 6), 'tgt_center': (3, 9)}"
+        ],
+        "spatial_4": [
+          "{'distance': 4.0, 'src_center': (3, 8), 'tgt_center': (3, 4)}"
+        ],
+        "spatial_5": [
+          "{'distance': 1.0, 'src_center': (3, 8), 'tgt_center': (3, 9)}"
+        ],
+        "spatial_6": [
+          "{'distance': 3.1622776601683795, 'src_center': (4, 7), 'tgt_center': (3, 4)}"
+        ],
+        "spatial_7": [
+          "{'distance': 2.23606797749979, 'src_center': (4, 7), 'tgt_center': (3, 9)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_4",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2",
+        "spatial_3",
+        "spatial_4",
+        "spatial_5",
+        "spatial_6",
+        "spatial_7",
+        "spatial_8",
+        "spatial_9",
+        "spatial_10",
+        "spatial_11",
+        "spatial_12",
+        "spatial_13",
+        "spatial_14",
+        "spatial_15",
+        "spatial_16",
+        "spatial_17"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 1.4142135623730951, 'src_center': (2, 7), 'tgt_center': (3, 6)}"
+        ],
+        "spatial_1": [
+          "{'distance': 1.4142135623730951, 'src_center': (2, 7), 'tgt_center': (3, 8)}"
+        ],
+        "spatial_2": [
+          "{'distance': 2.0, 'src_center': (2, 7), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_3": [
+          "{'distance': 1.4142135623730951, 'src_center': (3, 6), 'tgt_center': (2, 7)}"
+        ],
+        "spatial_4": [
+          "{'distance': 2.0, 'src_center': (3, 6), 'tgt_center': (3, 8)}"
+        ],
+        "spatial_5": [
+          "{'distance': 1.4142135623730951, 'src_center': (3, 6), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_6": [
+          "{'distance': 1.4142135623730951, 'src_center': (3, 8), 'tgt_center': (2, 7)}"
+        ],
+        "spatial_7": [
+          "{'distance': 2.0, 'src_center': (3, 8), 'tgt_center': (3, 6)}"
+        ],
+        "spatial_8": [
+          "{'distance': 1.4142135623730951, 'src_center': (3, 8), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_9": [
+          "{'distance': 2.0, 'src_center': (4, 7), 'tgt_center': (2, 7)}"
+        ],
+        "spatial_10": [
+          "{'distance': 1.4142135623730951, 'src_center': (4, 7), 'tgt_center': (3, 6)}"
+        ],
+        "spatial_11": [
+          "{'distance': 1.4142135623730951, 'src_center': (4, 7), 'tgt_center': (3, 8)}"
+        ],
+        "spatial_12": [
+          "{'distance': 3.1622776601683795, 'src_center': (1, 8), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_13": [
+          "{'distance': 5.385164807134504, 'src_center': (1, 8), 'tgt_center': (6, 10)}"
+        ],
+        "spatial_14": [
+          "{'distance': 3.1622776601683795, 'src_center': (4, 7), 'tgt_center': (1, 8)}"
+        ],
+        "spatial_15": [
+          "{'distance': 3.605551275463989, 'src_center': (4, 7), 'tgt_center': (6, 10)}"
+        ],
+        "spatial_16": [
+          "{'distance': 5.385164807134504, 'src_center': (6, 10), 'tgt_center': (1, 8)}"
+        ],
+        "spatial_17": [
+          "{'distance': 3.605551275463989, 'src_center': (6, 10), 'tgt_center': (4, 7)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_5",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2",
+        "spatial_3",
+        "spatial_4",
+        "spatial_5"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 2.23606797749979, 'src_center': (1, 8), 'tgt_center': (2, 6)}"
+        ],
+        "spatial_1": [
+          "{'distance': 1.4142135623730951, 'src_center': (1, 8), 'tgt_center': (2, 9)}"
+        ],
+        "spatial_2": [
+          "{'distance': 2.23606797749979, 'src_center': (4, 7), 'tgt_center': (2, 6)}"
+        ],
+        "spatial_3": [
+          "{'distance': 2.8284271247461903, 'src_center': (4, 7), 'tgt_center': (2, 9)}"
+        ],
+        "spatial_4": [
+          "{'distance': 5.656854249492381, 'src_center': (6, 10), 'tgt_center': (2, 6)}"
+        ],
+        "spatial_5": [
+          "{'distance': 4.123105625617661, 'src_center': (6, 10), 'tgt_center': (2, 9)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_6",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 3.605551275463989, 'src_center': (1, 8), 'tgt_center': (4, 10)}"
+        ],
+        "spatial_1": [
+          "{'distance': 3.0, 'src_center': (4, 7), 'tgt_center': (4, 10)}"
+        ],
+        "spatial_2": [
+          "{'distance': 2.0, 'src_center': (6, 10), 'tgt_center': (4, 10)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_7",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 4.0, 'src_center': (1, 8), 'tgt_center': (5, 8)}"
+        ],
+        "spatial_1": [
+          "{'distance': 1.4142135623730951, 'src_center': (4, 7), 'tgt_center': (5, 8)}"
+        ],
+        "spatial_2": [
+          "{'distance': 2.23606797749979, 'src_center': (6, 10), 'tgt_center': (5, 8)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_8",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2",
+        "spatial_3",
+        "spatial_4",
+        "spatial_5"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 2.23606797749979, 'src_center': (2, 6), 'tgt_center': (1, 8)}"
+        ],
+        "spatial_1": [
+          "{'distance': 2.23606797749979, 'src_center': (2, 6), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_2": [
+          "{'distance': 5.656854249492381, 'src_center': (2, 6), 'tgt_center': (6, 10)}"
+        ],
+        "spatial_3": [
+          "{'distance': 1.4142135623730951, 'src_center': (2, 9), 'tgt_center': (1, 8)}"
+        ],
+        "spatial_4": [
+          "{'distance': 2.8284271247461903, 'src_center': (2, 9), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_5": [
+          "{'distance': 4.123105625617661, 'src_center': (2, 9), 'tgt_center': (6, 10)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_9",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 3.0, 'src_center': (2, 6), 'tgt_center': (2, 9)}"
+        ],
+        "spatial_1": [
+          "{'distance': 3.0, 'src_center': (2, 9), 'tgt_center': (2, 6)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_10",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 3.605551275463989, 'src_center': (4, 10), 'tgt_center': (1, 8)}"
+        ],
+        "spatial_1": [
+          "{'distance': 3.0, 'src_center': (4, 10), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_2": [
+          "{'distance': 2.0, 'src_center': (4, 10), 'tgt_center': (6, 10)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_11",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 4.0, 'src_center': (5, 8), 'tgt_center': (1, 8)}"
+        ],
+        "spatial_1": [
+          "{'distance': 1.4142135623730951, 'src_center': (5, 8), 'tgt_center': (4, 7)}"
+        ],
+        "spatial_2": [
+          "{'distance': 2.23606797749979, 'src_center': (5, 8), 'tgt_center': (6, 10)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_12",
+      "conflicting_rules": [
+        "obj_1_deleted",
+        "obj_1_recolored"
+      ],
+      "evidence_for": {
+        "deleted": [
+          "{}"
+        ],
+        "recolored": [
+          "{'color': (np.int16(8), np.int16(3))}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.6,
+      "resolution_status": "pending",
+      "resolution_notes": "Object obj_1 has multiple transformation types: {'deleted', 'recolored'}"
+    },
+    {
+      "conflict_id": "conflict_13",
+      "conflicting_rules": [
+        "obj_2_deleted",
+        "obj_2_recolored",
+        "obj_2_recolored"
+      ],
+      "evidence_for": {
+        "deleted": [
+          "{}"
+        ],
+        "recolored": [
+          "{'color': (np.int16(1), np.int16(3))}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.6,
+      "resolution_status": "pending",
+      "resolution_notes": "Object obj_2 has multiple transformation types: {'deleted', 'recolored'}"
+    },
+    {
+      "conflict_id": "conflict_14",
+      "conflicting_rules": [
+        "obj_3_deleted",
+        "obj_3_deleted",
+        "obj_3_resized",
+        "obj_3_deleted"
+      ],
+      "evidence_for": {
+        "deleted": [
+          "{}"
+        ],
+        "resized": [
+          "{'color': (np.int16(1), np.int16(3)), 'aspect_ratio': (1.5, 1.0), 'size': (4, 3), 'width': (3, 2), 'symmetry_h': (True, False)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.6,
+      "resolution_status": "pending",
+      "resolution_notes": "Object obj_3 has multiple transformation types: {'resized', 'deleted'}"
+    }
+  ],
+  "repair_queue": [
+    {
+      "task_id": "repair_0",
+      "rule_id": "conflict_0",
+      "issue_type": "conflict",
+      "priority": 0.7,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "transform_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "transform_0",
+            "transform_1"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "transform_0",
+              "transform_1"
+            ],
+            "evidence": {
+              "transform_0": [
+                "{'translation': (0.0, -8.0), 'match_score': 1.0095238095238095, 'distance': 0.5714285714285714, 'size_similarity': 0.6666666666666666}"
+              ],
+              "transform_1": [
+                "{'translation': (3.0, -7.0), 'match_score': 1.3648129653792052, 'distance': 0.5439837932759934, 'size_similarity': 1.0}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_12",
+      "rule_id": "conflict_12",
+      "issue_type": "conflict",
+      "priority": 0.6,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "deleted",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "obj_1_deleted",
+            "obj_1_recolored"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "obj_1_deleted",
+              "obj_1_recolored"
+            ],
+            "evidence": {
+              "deleted": [
+                "{}"
+              ],
+              "recolored": [
+                "{'color': (np.int16(8), np.int16(3))}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_13",
+      "rule_id": "conflict_13",
+      "issue_type": "conflict",
+      "priority": 0.6,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "deleted",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "obj_2_deleted",
+            "obj_2_recolored",
+            "obj_2_recolored"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "obj_2_deleted",
+              "obj_2_recolored",
+              "obj_2_recolored"
+            ],
+            "evidence": {
+              "deleted": [
+                "{}"
+              ],
+              "recolored": [
+                "{'color': (np.int16(1), np.int16(3))}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_14",
+      "rule_id": "conflict_14",
+      "issue_type": "conflict",
+      "priority": 0.6,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "deleted",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "obj_3_deleted",
+            "obj_3_deleted",
+            "obj_3_resized",
+            "obj_3_deleted"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "obj_3_deleted",
+              "obj_3_deleted",
+              "obj_3_resized",
+              "obj_3_deleted"
+            ],
+            "evidence": {
+              "deleted": [
+                "{}"
+              ],
+              "resized": [
+                "{'color': (np.int16(1), np.int16(3)), 'aspect_ratio': (1.5, 1.0), 'size': (4, 3), 'width': (3, 2), 'symmetry_h': (True, False)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_1",
+      "rule_id": "conflict_1",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2",
+            "spatial_3",
+            "spatial_4",
+            "spatial_5",
+            "spatial_6",
+            "spatial_7"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2",
+              "spatial_3",
+              "spatial_4",
+              "spatial_5",
+              "spatial_6",
+              "spatial_7"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 3.1622776601683795, 'src_center': (3, 4), 'tgt_center': (2, 7)}"
+              ],
+              "spatial_1": [
+                "{'distance': 2.0, 'src_center': (3, 4), 'tgt_center': (3, 6)}"
+              ],
+              "spatial_2": [
+                "{'distance': 4.0, 'src_center': (3, 4), 'tgt_center': (3, 8)}"
+              ],
+              "spatial_3": [
+                "{'distance': 3.1622776601683795, 'src_center': (3, 4), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_4": [
+                "{'distance': 2.23606797749979, 'src_center': (3, 9), 'tgt_center': (2, 7)}"
+              ],
+              "spatial_5": [
+                "{'distance': 3.0, 'src_center': (3, 9), 'tgt_center': (3, 6)}"
+              ],
+              "spatial_6": [
+                "{'distance': 1.0, 'src_center': (3, 9), 'tgt_center': (3, 8)}"
+              ],
+              "spatial_7": [
+                "{'distance': 2.23606797749979, 'src_center': (3, 9), 'tgt_center': (4, 7)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_2",
+      "rule_id": "conflict_2",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 5.0, 'src_center': (3, 4), 'tgt_center': (3, 9)}"
+              ],
+              "spatial_1": [
+                "{'distance': 5.0, 'src_center': (3, 9), 'tgt_center': (3, 4)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_3",
+      "rule_id": "conflict_3",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2",
+            "spatial_3",
+            "spatial_4",
+            "spatial_5",
+            "spatial_6",
+            "spatial_7"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2",
+              "spatial_3",
+              "spatial_4",
+              "spatial_5",
+              "spatial_6",
+              "spatial_7"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 3.1622776601683795, 'src_center': (2, 7), 'tgt_center': (3, 4)}"
+              ],
+              "spatial_1": [
+                "{'distance': 2.23606797749979, 'src_center': (2, 7), 'tgt_center': (3, 9)}"
+              ],
+              "spatial_2": [
+                "{'distance': 2.0, 'src_center': (3, 6), 'tgt_center': (3, 4)}"
+              ],
+              "spatial_3": [
+                "{'distance': 3.0, 'src_center': (3, 6), 'tgt_center': (3, 9)}"
+              ],
+              "spatial_4": [
+                "{'distance': 4.0, 'src_center': (3, 8), 'tgt_center': (3, 4)}"
+              ],
+              "spatial_5": [
+                "{'distance': 1.0, 'src_center': (3, 8), 'tgt_center': (3, 9)}"
+              ],
+              "spatial_6": [
+                "{'distance': 3.1622776601683795, 'src_center': (4, 7), 'tgt_center': (3, 4)}"
+              ],
+              "spatial_7": [
+                "{'distance': 2.23606797749979, 'src_center': (4, 7), 'tgt_center': (3, 9)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_4",
+      "rule_id": "conflict_4",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2",
+            "spatial_3",
+            "spatial_4",
+            "spatial_5",
+            "spatial_6",
+            "spatial_7",
+            "spatial_8",
+            "spatial_9",
+            "spatial_10",
+            "spatial_11",
+            "spatial_12",
+            "spatial_13",
+            "spatial_14",
+            "spatial_15",
+            "spatial_16",
+            "spatial_17"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2",
+              "spatial_3",
+              "spatial_4",
+              "spatial_5",
+              "spatial_6",
+              "spatial_7",
+              "spatial_8",
+              "spatial_9",
+              "spatial_10",
+              "spatial_11",
+              "spatial_12",
+              "spatial_13",
+              "spatial_14",
+              "spatial_15",
+              "spatial_16",
+              "spatial_17"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 1.4142135623730951, 'src_center': (2, 7), 'tgt_center': (3, 6)}"
+              ],
+              "spatial_1": [
+                "{'distance': 1.4142135623730951, 'src_center': (2, 7), 'tgt_center': (3, 8)}"
+              ],
+              "spatial_2": [
+                "{'distance': 2.0, 'src_center': (2, 7), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_3": [
+                "{'distance': 1.4142135623730951, 'src_center': (3, 6), 'tgt_center': (2, 7)}"
+              ],
+              "spatial_4": [
+                "{'distance': 2.0, 'src_center': (3, 6), 'tgt_center': (3, 8)}"
+              ],
+              "spatial_5": [
+                "{'distance': 1.4142135623730951, 'src_center': (3, 6), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_6": [
+                "{'distance': 1.4142135623730951, 'src_center': (3, 8), 'tgt_center': (2, 7)}"
+              ],
+              "spatial_7": [
+                "{'distance': 2.0, 'src_center': (3, 8), 'tgt_center': (3, 6)}"
+              ],
+              "spatial_8": [
+                "{'distance': 1.4142135623730951, 'src_center': (3, 8), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_9": [
+                "{'distance': 2.0, 'src_center': (4, 7), 'tgt_center': (2, 7)}"
+              ],
+              "spatial_10": [
+                "{'distance': 1.4142135623730951, 'src_center': (4, 7), 'tgt_center': (3, 6)}"
+              ],
+              "spatial_11": [
+                "{'distance': 1.4142135623730951, 'src_center': (4, 7), 'tgt_center': (3, 8)}"
+              ],
+              "spatial_12": [
+                "{'distance': 3.1622776601683795, 'src_center': (1, 8), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_13": [
+                "{'distance': 5.385164807134504, 'src_center': (1, 8), 'tgt_center': (6, 10)}"
+              ],
+              "spatial_14": [
+                "{'distance': 3.1622776601683795, 'src_center': (4, 7), 'tgt_center': (1, 8)}"
+              ],
+              "spatial_15": [
+                "{'distance': 3.605551275463989, 'src_center': (4, 7), 'tgt_center': (6, 10)}"
+              ],
+              "spatial_16": [
+                "{'distance': 5.385164807134504, 'src_center': (6, 10), 'tgt_center': (1, 8)}"
+              ],
+              "spatial_17": [
+                "{'distance': 3.605551275463989, 'src_center': (6, 10), 'tgt_center': (4, 7)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_5",
+      "rule_id": "conflict_5",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2",
+            "spatial_3",
+            "spatial_4",
+            "spatial_5"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2",
+              "spatial_3",
+              "spatial_4",
+              "spatial_5"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 2.23606797749979, 'src_center': (1, 8), 'tgt_center': (2, 6)}"
+              ],
+              "spatial_1": [
+                "{'distance': 1.4142135623730951, 'src_center': (1, 8), 'tgt_center': (2, 9)}"
+              ],
+              "spatial_2": [
+                "{'distance': 2.23606797749979, 'src_center': (4, 7), 'tgt_center': (2, 6)}"
+              ],
+              "spatial_3": [
+                "{'distance': 2.8284271247461903, 'src_center': (4, 7), 'tgt_center': (2, 9)}"
+              ],
+              "spatial_4": [
+                "{'distance': 5.656854249492381, 'src_center': (6, 10), 'tgt_center': (2, 6)}"
+              ],
+              "spatial_5": [
+                "{'distance': 4.123105625617661, 'src_center': (6, 10), 'tgt_center': (2, 9)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_6",
+      "rule_id": "conflict_6",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 3.605551275463989, 'src_center': (1, 8), 'tgt_center': (4, 10)}"
+              ],
+              "spatial_1": [
+                "{'distance': 3.0, 'src_center': (4, 7), 'tgt_center': (4, 10)}"
+              ],
+              "spatial_2": [
+                "{'distance': 2.0, 'src_center': (6, 10), 'tgt_center': (4, 10)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_7",
+      "rule_id": "conflict_7",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 4.0, 'src_center': (1, 8), 'tgt_center': (5, 8)}"
+              ],
+              "spatial_1": [
+                "{'distance': 1.4142135623730951, 'src_center': (4, 7), 'tgt_center': (5, 8)}"
+              ],
+              "spatial_2": [
+                "{'distance': 2.23606797749979, 'src_center': (6, 10), 'tgt_center': (5, 8)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_8",
+      "rule_id": "conflict_8",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2",
+            "spatial_3",
+            "spatial_4",
+            "spatial_5"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2",
+              "spatial_3",
+              "spatial_4",
+              "spatial_5"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 2.23606797749979, 'src_center': (2, 6), 'tgt_center': (1, 8)}"
+              ],
+              "spatial_1": [
+                "{'distance': 2.23606797749979, 'src_center': (2, 6), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_2": [
+                "{'distance': 5.656854249492381, 'src_center': (2, 6), 'tgt_center': (6, 10)}"
+              ],
+              "spatial_3": [
+                "{'distance': 1.4142135623730951, 'src_center': (2, 9), 'tgt_center': (1, 8)}"
+              ],
+              "spatial_4": [
+                "{'distance': 2.8284271247461903, 'src_center': (2, 9), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_5": [
+                "{'distance': 4.123105625617661, 'src_center': (2, 9), 'tgt_center': (6, 10)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_9",
+      "rule_id": "conflict_9",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 3.0, 'src_center': (2, 6), 'tgt_center': (2, 9)}"
+              ],
+              "spatial_1": [
+                "{'distance': 3.0, 'src_center': (2, 9), 'tgt_center': (2, 6)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_10",
+      "rule_id": "conflict_10",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 3.605551275463989, 'src_center': (4, 10), 'tgt_center': (1, 8)}"
+              ],
+              "spatial_1": [
+                "{'distance': 3.0, 'src_center': (4, 10), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_2": [
+                "{'distance': 2.0, 'src_center': (4, 10), 'tgt_center': (6, 10)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_11",
+      "rule_id": "conflict_11",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 4.0, 'src_center': (5, 8), 'tgt_center': (1, 8)}"
+              ],
+              "spatial_1": [
+                "{'distance': 1.4142135623730951, 'src_center': (5, 8), 'tgt_center': (4, 7)}"
+              ],
+              "spatial_2": [
+                "{'distance': 2.23606797749979, 'src_center': (5, 8), 'tgt_center': (6, 10)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    }
+  ],
+  "metadata": {
+    "num_objects": 6,
+    "num_conflicts": 15,
+    "pending_repairs": 15
+  },
+  "version": 1
+}

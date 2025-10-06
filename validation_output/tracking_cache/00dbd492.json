@@ -1,0 +1,2024 @@
+{
+  "task_id": "00dbd492",
+  "inventory": {
+    "objects": {
+      "obj_0": {
+        "id": "obj_0",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "input"
+          ],
+          [
+            0,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "2",
+          "shape_type": "irregular",
+          "size": 32,
+          "width": 9,
+          "height": 9,
+          "aspect_ratio": 1.0,
+          "symmetry_h": true,
+          "symmetry_v": true,
+          "touches_border": true
+        },
+        "variations": {
+          "color": [
+            "2"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            32
+          ],
+          "width": [
+            9
+          ],
+          "height": [
+            9
+          ],
+          "aspect_ratio": [
+            1.0
+          ],
+          "symmetry_h": [
+            true
+          ],
+          "symmetry_v": [
+            true
+          ],
+          "touches_border": [
+            true
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "border_object"
+        ]
+      },
+      "obj_1": {
+        "id": "obj_1",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "input"
+          ],
+          [
+            0,
+            "input"
+          ],
+          [
+            0,
+            "output"
+          ],
+          [
+            0,
+            "output"
+          ],
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            2,
+            "input"
+          ],
+          [
+            2,
+            "input"
+          ],
+          [
+            2,
+            "output"
+          ],
+          [
+            2,
+            "output"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "2",
+          "shape_type": "single",
+          "size": 1,
+          "width": 1,
+          "height": 1,
+          "aspect_ratio": 1.0,
+          "symmetry_h": false,
+          "symmetry_v": false,
+          "touches_border": false
+        },
+        "variations": {
+          "color": [
+            "2"
+          ],
+          "shape_type": [
+            "single"
+          ],
+          "size": [
+            1
+          ],
+          "width": [
+            1
+          ],
+          "height": [
+            1
+          ],
+          "aspect_ratio": [
+            1.0
+          ],
+          "symmetry_h": [
+            false
+          ],
+          "symmetry_v": [
+            false
+          ],
+          "touches_border": [
+            false
+          ]
+        },
+        "tags": [
+          "marker",
+          "interior_object"
+        ]
+      },
+      "obj_2": {
+        "id": "obj_2",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "input"
+          ],
+          [
+            0,
+            "output"
+          ],
+          [
+            2,
+            "input"
+          ],
+          [
+            2,
+            "output"
+          ],
+          [
+            3,
+            "input"
+          ],
+          [
+            3,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "2",
+          "shape_type": "irregular",
+          "size": 16,
+          "width": 5,
+          "height": 5,
+          "aspect_ratio": 1.0,
+          "symmetry_h": true,
+          "symmetry_v": true,
+          "touches_border": true
+        },
+        "variations": {
+          "color": [
+            "2"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            16
+          ],
+          "width": [
+            5
+          ],
+          "height": [
+            5
+          ],
+          "aspect_ratio": [
+            1.0
+          ],
+          "symmetry_h": [
+            true
+          ],
+          "symmetry_v": [
+            true
+          ],
+          "touches_border": [
+            true
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "border_object"
+        ]
+      },
+      "obj_3": {
+        "id": "obj_3",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "3",
+          "shape_type": "irregular",
+          "size": 48,
+          "width": 7,
+          "height": 7,
+          "aspect_ratio": 1.0,
+          "symmetry_h": true,
+          "symmetry_v": true,
+          "touches_border": false
+        },
+        "variations": {
+          "color": [
+            "3"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            48
+          ],
+          "width": [
+            7
+          ],
+          "height": [
+            7
+          ],
+          "aspect_ratio": [
+            1.0
+          ],
+          "symmetry_h": [
+            true
+          ],
+          "symmetry_v": [
+            true
+          ],
+          "touches_border": [
+            false
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "interior_object"
+        ]
+      },
+      "obj_4": {
+        "id": "obj_4",
+        "first_seen": 0,
+        "occurrences": [
+          [
+            0,
+            "output"
+          ],
+          [
+            2,
+            "output"
+          ],
+          [
+            3,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "8",
+          "shape_type": "irregular",
+          "size": 8,
+          "width": 3,
+          "height": 3,
+          "aspect_ratio": 1.0,
+          "symmetry_h": true,
+          "symmetry_v": true,
+          "touches_border": false
+        },
+        "variations": {
+          "color": [
+            "8"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            8
+          ],
+          "width": [
+            3
+          ],
+          "height": [
+            3
+          ],
+          "aspect_ratio": [
+            1.0
+          ],
+          "symmetry_h": [
+            true
+          ],
+          "symmetry_v": [
+            true
+          ],
+          "touches_border": [
+            false
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "interior_object"
+        ]
+      },
+      "obj_5": {
+        "id": "obj_5",
+        "first_seen": 1,
+        "occurrences": [
+          [
+            1,
+            "input"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            1,
+            "output"
+          ],
+          [
+            2,
+            "input"
+          ],
+          [
+            2,
+            "output"
+          ],
+          [
+            2,
+            "output"
+          ]
+        ],
+        "attributes": {
+          "color": "2",
+          "shape_type": "irregular",
+          "size": 24,
+          "width": 6.0,
+          "height": 6.0,
+          "aspect_ratio": 1.0,
+          "symmetry_h": true,
+          "symmetry_v": true,
+          "touches_border": 0.5
+        },
+        "variations": {
+          "color": [
+            "2",
+            "4"
+          ],
+          "shape_type": [
+            "irregular"
+          ],
+          "size": [
+            24
+          ],
+          "width": [
+            5,
+            7
+          ],
+          "height": [
+            5,
+            7
+          ],
+          "aspect_ratio": [
+            1.0
+          ],
+          "symmetry_h": [
+            true
+          ],
+          "symmetry_v": [
+            true
+          ],
+          "touches_border": [
+            false,
+            true
+          ]
+        },
+        "tags": [
+          "symmetric",
+          "border_object"
+        ]
+      }
+    },
+    "patterns": [
+      {
+        "type": "consistent_transformation",
+        "transformation": "unchanged",
+        "objects": [
+          "obj_1",
+          "obj_2"
+        ],
+        "confidence": 0.8
+      },
+      {
+        "type": "stable_objects",
+        "objects": [
+          "obj_0",
+          "obj_1",
+          "obj_2",
+          "obj_4"
+        ],
+        "confidence": 0.9
+      }
+    ],
+    "transformation_rules": [
+      {
+        "transformation": "resized",
+        "common_changes": {
+          "color": {
+            "from": "2",
+            "to": "4",
+            "frequency": 1.0
+          },
+          "touches_border": {
+            "from": true,
+            "to": false,
+            "frequency": 1.0
+          },
+          "height": {
+            "from": 7,
+            "to": 5,
+            "frequency": 1.0
+          },
+          "width": {
+            "from": 7,
+            "to": 5,
+            "frequency": 1.0
+          }
+        },
+        "example_count": 2,
+        "confidence": 0.7
+      }
+    ]
+  },
+  "relational_facts": [
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        6,
+        1
+      ],
+      "metadata": {
+        "offset_row": -4.0,
+        "offset_col": -4.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        6,
+        1
+      ],
+      "metadata": {
+        "offset_row": -12.0,
+        "offset_col": 3.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        6,
+        1
+      ],
+      "metadata": {
+        "offset_row": -4.0,
+        "offset_col": -4.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        6,
+        1
+      ],
+      "metadata": {
+        "offset_row": -12.0,
+        "offset_col": 3.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        0,
+        1
+      ],
+      "metadata": {
+        "offset_row": -3.0,
+        "offset_col": -3.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        0,
+        1
+      ],
+      "metadata": {
+        "offset_row": -3.0,
+        "offset_col": -3.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        1,
+        1
+      ],
+      "metadata": {
+        "offset_row": -2.0,
+        "offset_col": -2.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        1,
+        1
+      ],
+      "metadata": {
+        "offset_row": -9.0,
+        "offset_col": -7.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        1,
+        1
+      ],
+      "metadata": {
+        "offset_row": -2.0,
+        "offset_col": -2.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        1,
+        1
+      ],
+      "metadata": {
+        "offset_row": -9.0,
+        "offset_col": -7.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        0,
+        1
+      ],
+      "metadata": {
+        "offset_row": -2.0,
+        "offset_col": -2.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "aligned",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        0,
+        0,
+        1
+      ],
+      "metadata": {
+        "offset_row": -2.0,
+        "offset_col": -2.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        9,
+        9
+      ],
+      "object": [
+        2,
+        5,
+        5
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          12,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.658504607868518,
+        0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        9,
+        9
+      ],
+      "object": [
+        8,
+        3,
+        3
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          12,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.658504607868518,
+        0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        9,
+        9
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          12,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.658504607868518,
+        0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        5,
+        5
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          12,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.658504607868518,
+        0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        8,
+        3,
+        3
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          12,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.658504607868518,
+        0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          4,
+          10
+        ],
+        "tgt_center": [
+          12,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.658504607868518,
+        0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        9,
+        9
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          12,
+          3
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        3,
+        7,
+        7
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          12,
+          3
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          12,
+          3
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        9,
+        9
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          12,
+          3
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        3,
+        7,
+        7
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          12,
+          3
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 10.63014581273465,
+        "src_center": [
+          12,
+          3
+        ],
+        "tgt_center": [
+          4,
+          10
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        7,
+        7
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          2,
+          3
+        ],
+        "tgt_center": [
+          9,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5812381937190965,
+        0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        4,
+        5,
+        5
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          2,
+          3
+        ],
+        "tgt_center": [
+          9,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5812381937190965,
+        0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          2,
+          3
+        ],
+        "tgt_center": [
+          9,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5812381937190965,
+        0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        7,
+        7
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          2,
+          3
+        ],
+        "tgt_center": [
+          9,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5812381937190965,
+        0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        4,
+        5,
+        5
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          2,
+          3
+        ],
+        "tgt_center": [
+          9,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5812381937190965,
+        0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          2,
+          3
+        ],
+        "tgt_center": [
+          9,
+          8
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        0.5812381937190965,
+        0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        7,
+        7
+      ],
+      "object": [
+        2,
+        5,
+        5
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          9,
+          8
+        ],
+        "tgt_center": [
+          2,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5812381937190965,
+        -0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        7,
+        7
+      ],
+      "object": [
+        8,
+        3,
+        3
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          9,
+          8
+        ],
+        "tgt_center": [
+          2,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5812381937190965,
+        -0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        7,
+        7
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          9,
+          8
+        ],
+        "tgt_center": [
+          2,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5812381937190965,
+        -0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        5,
+        5
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          9,
+          8
+        ],
+        "tgt_center": [
+          2,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5812381937190965,
+        -0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        8,
+        3,
+        3
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          9,
+          8
+        ],
+        "tgt_center": [
+          2,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5812381937190965,
+        -0.813733471206735
+      ]
+    },
+    {
+      "relation": "spatial_transform",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "distance": 8.602325267042627,
+        "src_center": [
+          9,
+          8
+        ],
+        "tgt_center": [
+          2,
+          3
+        ]
+      },
+      "confidence": 1.0,
+      "direction_vector": [
+        -0.5812381937190965,
+        -0.813733471206735
+      ]
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        9,
+        9
+      ],
+      "object": [
+        2,
+        9,
+        9
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        5,
+        5
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        7,
+        7
+      ],
+      "object": [
+        2,
+        7,
+        7
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        5,
+        5
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        7,
+        7
+      ],
+      "object": [
+        2,
+        7,
+        7
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        5,
+        5
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "object_transformation",
+      "subject": [
+        2,
+        1,
+        1
+      ],
+      "object": [
+        2,
+        1,
+        1
+      ],
+      "metadata": {
+        "translation": [
+          0.0,
+          0.0
+        ],
+        "match_score": 3.0,
+        "distance": 0.0,
+        "size_similarity": 1.0
+      },
+      "confidence": 1.0,
+      "direction_vector": null
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        9,
+        9
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        8,
+        3,
+        3
+      ],
+      "object": [
+        2,
+        9,
+        9
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.658504607868518,
+        -0.7525766947068778
+      ]
+    },
+    {
+      "relation": "opposite_spatial",
+      "subject": [
+        2,
+        5,
+        5
+      ],
+      "object": [
+        2,
+        7,
+        7
+      ],
+      "metadata": {
+        "derived_from": "spatial_transform",
+        "translation": null,
+        "match_score": 0.7
+      },
+      "confidence": 0.7,
+      "direction_vector": [
+        0.5812381937190965,
+        0.813733471206735
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "conflict_id": "conflict_0",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 10.63014581273465, 'src_center': (4, 10), 'tgt_center': (12, 3)}"
+        ],
+        "spatial_1": [
+          "{'distance': 8.602325267042627, 'src_center': (9, 8), 'tgt_center': (2, 3)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_1",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 10.63014581273465, 'src_center': (4, 10), 'tgt_center': (12, 3)}"
+        ],
+        "spatial_1": [
+          "{'distance': 8.602325267042627, 'src_center': (9, 8), 'tgt_center': (2, 3)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_2",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1",
+        "spatial_2",
+        "spatial_3"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 10.63014581273465, 'src_center': (4, 10), 'tgt_center': (12, 3)}"
+        ],
+        "spatial_1": [
+          "{'distance': 10.63014581273465, 'src_center': (12, 3), 'tgt_center': (4, 10)}"
+        ],
+        "spatial_2": [
+          "{'distance': 8.602325267042627, 'src_center': (2, 3), 'tgt_center': (9, 8)}"
+        ],
+        "spatial_3": [
+          "{'distance': 8.602325267042627, 'src_center': (9, 8), 'tgt_center': (2, 3)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    },
+    {
+      "conflict_id": "conflict_3",
+      "conflicting_rules": [
+        "spatial_0",
+        "spatial_1"
+      ],
+      "evidence_for": {
+        "spatial_0": [
+          "{'distance': 10.63014581273465, 'src_center': (12, 3), 'tgt_center': (4, 10)}"
+        ],
+        "spatial_1": [
+          "{'distance': 8.602325267042627, 'src_center': (2, 3), 'tgt_center': (9, 8)}"
+        ]
+      },
+      "evidence_against": {},
+      "severity": 0.5,
+      "resolution_status": "pending",
+      "resolution_notes": ""
+    }
+  ],
+  "repair_queue": [
+    {
+      "task_id": "repair_0",
+      "rule_id": "conflict_0",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 10.63014581273465, 'src_center': (4, 10), 'tgt_center': (12, 3)}"
+              ],
+              "spatial_1": [
+                "{'distance': 8.602325267042627, 'src_center': (9, 8), 'tgt_center': (2, 3)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_1",
+      "rule_id": "conflict_1",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 10.63014581273465, 'src_center': (4, 10), 'tgt_center': (12, 3)}"
+              ],
+              "spatial_1": [
+                "{'distance': 8.602325267042627, 'src_center': (9, 8), 'tgt_center': (2, 3)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_2",
+      "rule_id": "conflict_2",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1",
+            "spatial_2",
+            "spatial_3"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1",
+              "spatial_2",
+              "spatial_3"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 10.63014581273465, 'src_center': (4, 10), 'tgt_center': (12, 3)}"
+              ],
+              "spatial_1": [
+                "{'distance': 10.63014581273465, 'src_center': (12, 3), 'tgt_center': (4, 10)}"
+              ],
+              "spatial_2": [
+                "{'distance': 8.602325267042627, 'src_center': (2, 3), 'tgt_center': (9, 8)}"
+              ],
+              "spatial_3": [
+                "{'distance': 8.602325267042627, 'src_center': (9, 8), 'tgt_center': (2, 3)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    },
+    {
+      "task_id": "repair_3",
+      "rule_id": "conflict_3",
+      "issue_type": "conflict",
+      "priority": 0.5,
+      "suggested_fixes": [
+        {
+          "action": "prefer_rule",
+          "rule": "spatial_0",
+          "reason": "Most evidence (1 examples)"
+        },
+        {
+          "action": "create_conditional",
+          "condition": "context_dependent",
+          "rules": [
+            "spatial_0",
+            "spatial_1"
+          ]
+        },
+        {
+          "action": "llm_analysis",
+          "conflict_details": {
+            "rules": [
+              "spatial_0",
+              "spatial_1"
+            ],
+            "evidence": {
+              "spatial_0": [
+                "{'distance': 10.63014581273465, 'src_center': (12, 3), 'tgt_center': (4, 10)}"
+              ],
+              "spatial_1": [
+                "{'distance': 8.602325267042627, 'src_center': (2, 3), 'tgt_center': (9, 8)}"
+              ]
+            }
+          }
+        }
+      ],
+      "status": "queued"
+    }
+  ],
+  "metadata": {
+    "num_objects": 6,
+    "num_conflicts": 4,
+    "pending_repairs": 4
+  },
+  "version": 1
+}

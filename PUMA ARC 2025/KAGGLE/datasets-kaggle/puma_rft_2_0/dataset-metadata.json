@@ -1,0 +1,15 @@
+{
+  "title": "PUMA RFT 2.0 - Enhanced ARC Solver",
+  "id": "tylerbessire/puma-rft-2-0",
+  "licenses": [
+    {
+      "name": "MIT"
+    }
+  ],
+  "keywords": [
+    "arc",
+    "abstract reasoning",
+    "puma",
+    "rft"
+  ]
+}

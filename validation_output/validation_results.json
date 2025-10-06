@@ -1,0 +1,63 @@
+{
+  "summary": {
+    "total_tasks": 10,
+    "success_count": 0,
+    "error_count": 10,
+    "success_rate": 0.0,
+    "avg_test_accuracy": 0.0,
+    "avg_solve_time": 0.0,
+    "median_solve_time": 0.0
+  },
+  "results": [
+    {
+      "task_id": "00576224",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "007bbfb7",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "009d5c81",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "00d62c1b",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "00dbd492",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "017c7c7b",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "025d127b",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "03560426",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "045e512c",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    },
+    {
+      "task_id": "0520fde7",
+      "status": "error",
+      "error": "'ARCSolver' object has no attribute 'solve'"
+    }
+  ]
+}
