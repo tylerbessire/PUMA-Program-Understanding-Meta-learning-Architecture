@@ -33,10 +33,9 @@ dist/
 *.egg-info/
 pip-wheel-metadata/
 
-# Project-specific nested repo (ignore embedded git repo)
-PUMA ARC 2025/PUMA/
 
 # Large models and archives (avoid LFS/quota issues)
 PUMA ARC 2025/KAGGLE/datasets-kaggle/public-dataset/models/
 PUMA ARC 2025/KAGGLE/datasets-kaggle/zipped-datasets/
 PUMA ARC 2025/KAGGLE/datasets-kaggle/public-dataset.zip
+PUMA ARC 2025/PUMA/models/
