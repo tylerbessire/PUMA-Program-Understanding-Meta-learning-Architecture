@@ -2,10 +2,11 @@
 
 ## Overview
 
-Two major new features have been added:
+Three major new features have been added:
 
 1. **Playground Evaluation Suite** - Learn from failures on evaluation challenges
 2. **RFT Entailment Engine** - Automatic rule inference via mutual and combinatorial entailment
+3. **Architecting Abstraction Blueprint** - Comprehensive architectural playbook for large-scale libraries and the RFT DSL stack (`Architecting_Abstraction.md`).
 
 ---
 

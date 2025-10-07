@@ -55,6 +55,7 @@ eval_*.py
 build_*.py
 fix_*.py
 emergency_*.py
+!arc_solver/tests/test_architecting_abstraction_doc.py
 
 # Facts data
 facts.jsonl
