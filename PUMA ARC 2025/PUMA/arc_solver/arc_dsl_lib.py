@@ -1,28 +1,137 @@
+import inspect
+import logging
+from collections import Counter
+from typing import Callable, Iterable, List, Optional, Sequence, Tuple, Union
+
 import numpy as np
 from scipy.ndimage import label, find_objects as find_objects_scipy
-from .grid import to_array, to_list, color_map as color_map_func, crop as crop_func, translate as translate_func, flip as flip_func
+
+from .grid import (
+    color_map as color_map_func,
+    crop as crop_func,
+    to_array,
+    to_list,
+    translate as translate_func,
+    flip as flip_func,
+)
+
+
+logger = logging.getLogger("arc_dsl")
+logger.addHandler(logging.NullHandler())
+
+METRICS: Counter = Counter()
+
+# [S:DSL v2] features=paint,copy,map_objects validation=unit pass
+
+
+class DSLInvariantError(RuntimeError):
+    """Raised when a DSL operation detects an unrecoverable invariant violation."""
+
+class BoundingBox:
+    """Axis-aligned bounding box with convenience helpers."""
+
+    def __init__(self, top: int, left: int, bottom: int, right: int, grid_shape: Tuple[int, int]):
+        self.top = int(top)
+        self.left = int(left)
+        self.bottom = int(bottom)
+        self.right = int(right)
+        self._grid_shape = tuple(int(v) for v in grid_shape)
+
+    def __iter__(self):
+        yield self.top
+        yield self.left
+        yield self.bottom
+        yield self.right
+
+    def __getitem__(self, index: int) -> int:
+        return (self.top, self.left, self.bottom, self.right)[index]
+
+    def as_tuple(self) -> Tuple[int, int, int, int]:
+        return (self.top, self.left, self.bottom, self.right)
+
+    def expand(self, margin: int = 1) -> "BoundingBox":
+        """Return a new bounding box expanded by ``margin`` pixels in every direction."""
+        height, width = self._grid_shape
+        new_top = max(0, self.top - margin)
+        new_left = max(0, self.left - margin)
+        new_bottom = min(height - 1, self.bottom + margin)
+        new_right = min(width - 1, self.right + margin)
+        return BoundingBox(new_top, new_left, new_bottom, new_right, self._grid_shape)
+
+    def fill(self, color: int, *, background_color: int = 0) -> "Grid":
+        """Return a grid with the bounding box area painted ``color``."""
+        height, width = self._grid_shape
+        new_grid = np.full((height, width), background_color, dtype=int)
+        new_grid[self.top : self.bottom + 1, self.left : self.right + 1] = color
+        return Grid(new_grid)
+
+    @property
+    def width(self) -> int:
+        return self.right - self.left + 1
+
+    @property
+    def height(self) -> int:
+        return self.bottom - self.top + 1
+
 
 class Object:
-    def __init__(self, pixels, color):
+    def __init__(self, pixels, color, grid_shape: Tuple[int, int]):
         self.pixels = pixels
-        self.color = color
-        self.height = np.max(pixels[:, 0]) - np.min(pixels[:, 0]) + 1
-        self.width = np.max(pixels[:, 1]) - np.min(pixels[:, 1]) + 1
-        self.y = np.min(pixels[:, 0])
-        self.x = np.min(pixels[:, 1])
+        self.color = int(color)
+        self.height = int(np.max(pixels[:, 0]) - np.min(pixels[:, 0]) + 1)
+        self.width = int(np.max(pixels[:, 1]) - np.min(pixels[:, 1]) + 1)
+        self.y = int(np.min(pixels[:, 0]))
+        self.x = int(np.min(pixels[:, 1]))
+        self._grid_shape = tuple(int(v) for v in grid_shape)
 
     def __repr__(self):
         return f"Object(color={self.color}, shape=({self.height}, {self.width}), top_left=({self.y}, {self.x}))"
 
-    def bounding_box(self):
-        return (self.y, self.x, self.height, self.width)
+    def bounding_box(self) -> BoundingBox:
+        return BoundingBox(self.y, self.x, self.y + self.height - 1, self.x + self.width - 1, self._grid_shape)
+
+    def bbox(self) -> BoundingBox:
+        return self.bounding_box()
 
     def translate(self, offset):
         """Translate an object by an offset (dy, dx)."""
         new_pixels = self.pixels.copy()
         new_pixels[:, 0] += offset[0]  # dy
         new_pixels[:, 1] += offset[1]  # dx
-        return Object(new_pixels, self.color)
+        return Object(new_pixels, self.color, self._grid_shape)
+
+    def copy_to_grid(
+        self,
+        height: int,
+        width: int,
+        target_y: int = 0,
+        target_x: int = 0,
+        *,
+        background_color: int = 0,
+        color_transform: Optional[dict[int, int]] = None,
+    ) -> "Grid":
+        """Copy the object into a new grid of the provided shape."""
+        new_grid = np.full((height, width), background_color, dtype=int)
+        transform = color_transform or {}
+        for r, c in self.pixels:
+            dest_r = r - self.y + target_y
+            dest_c = c - self.x + target_x
+            if 0 <= dest_r < height and 0 <= dest_c < width:
+                original = self.color
+                new_grid[dest_r, dest_c] = transform.get(original, original)
+        return Grid(new_grid)
+
+    def touching(self, other: "Object", adjacent_only: bool = True) -> bool:
+        """Return True if this object touches ``other``."""
+        offsets = [(0, 1), (0, -1), (1, 0), (-1, 0)] if adjacent_only else [
+            (dr, dc) for dr in (-1, 0, 1) for dc in (-1, 0, 1) if not (dr == 0 and dc == 0)
+        ]
+        other_pixels = {(r, c) for r, c in other.pixels}
+        for r, c in self.pixels:
+            for dr, dc in offsets:
+                if (r + dr, c + dc) in other_pixels:
+                    return True
+        return False
 
     def __getitem__(self, key):
         if hasattr(self, key):
@@ -57,7 +166,7 @@ def find_objects(grid, color=None, ignore_color=0, min_size=1, **kwargs):
         if len(pixels) < min_size:
             continue
         obj_color = grid.grid[pixels[0][0], pixels[0][1]]
-        objects.append(Object(pixels, obj_color))
+        objects.append(Object(pixels, obj_color, grid.grid.shape))
         
     return objects
 
@@ -79,47 +188,309 @@ def bounding_box(obj):
         # Single object
         return (obj.x, obj.y, obj.x + obj.width - 1, obj.y + obj.height - 1)
 
-def map_objects(grid, func, filter_func=None, **kwargs):
-    """Apply a function to each object in the grid and compose the results."""
-    if not isinstance(grid, Grid):
-        grid = Grid(grid)
+def map_objects(
+    grid,
+    *args,
+    filter_func=None,
+    f=None,
+    predicate=None,
+    color=None,
+    colors=None,
+    objects=None,
+    background_color: int = 0,
+    target_color: Optional[int] = None,
+    also_color: bool = False,
+    right: bool = False,
+    right_color: Optional[int] = None,
+    **kwargs,
+):
+    """Apply a transform to objects discovered in ``grid`` with flexible filtering."""
 
-    all_objects = find_objects(grid, **kwargs)
-    objects_to_map = [obj for obj in all_objects if filter_func(obj)] if filter_func else all_objects
+    color_filter = kwargs.pop("filter_color", None)
+    if kwargs:
+        raise DSLInvariantError(f"Unsupported map_objects kwargs: {sorted(kwargs.keys())}")
 
-    result_grid = grid.copy()
+    base_grid = grid if isinstance(grid, Grid) else Grid(grid)
+    arg_list = list(args)
+    transform = None
+    selection = None
+    explicit_objects = objects
 
-    for obj in objects_to_map:
-        transformed = func(obj)
-        
-        def compose_grid(base, overlay):
-            if not isinstance(base, Grid):
-                base = Grid(base)
-            if not isinstance(overlay, Grid):
-                overlay = Grid(overlay)
-            # Create a copy of the base grid to modify
-            new_grid_array = base.grid.copy()
-            # Find non-background pixels in the overlay
-            mask = overlay.grid != 0
-            # Place them onto the new grid
-            new_grid_array[mask] = overlay.grid[mask]
-            return Grid(new_grid_array)
+    if arg_list:
+        first = arg_list.pop(0)
+        if callable(first) and f is not None:
+            predicate = first
+            transform = f
+        elif not callable(first):
+            explicit_objects = first
+        else:
+            transform = first
+        if arg_list:
+            if transform is None and callable(arg_list[0]):
+                transform = arg_list.pop(0)
+            elif selection is None:
+                selection = arg_list.pop(0)
+        if arg_list:
+            raise DSLInvariantError("Too many positional arguments for map_objects")
 
-        if isinstance(transformed, Grid):
-            result_grid = compose_grid(result_grid, transformed)
-        elif isinstance(transformed, (list, tuple)):
-            for item in transformed:
-                if isinstance(item, Grid):
-                    result_grid = compose_grid(result_grid, item)
+    if transform is None and f is not None:
+        transform = f
+    if transform is None:
+        raise DSLInvariantError("map_objects requires a transform callable")
 
-    return result_grid
+    def expand_candidates(source):
+        if source is None:
+            return []
+        if isinstance(source, Object):
+            return [source]
+        if isinstance(source, BoundingBox):
+            return [source]
+        if isinstance(source, Grid):
+            return find_objects(source)
+        if isinstance(source, np.ndarray):
+            return find_objects(Grid(source))
+        if isinstance(source, Iterable) and not isinstance(source, (str, bytes)):
+            items = []
+            for item in source:
+                if isinstance(item, tuple) and len(item) == 4:
+                    items.append(BoundingBox(item[0], item[1], item[2], item[3], base_grid.grid.shape))
+                else:
+                    items.extend(expand_candidates(item))
+            return items
+        raise DSLInvariantError(f"Unsupported object specification: {type(source)}")
 
-def paint(grid, color, mask):
-    if not isinstance(grid, Grid):
-        grid = Grid(grid)
-    new_grid = grid.grid.copy()
-    new_grid[mask] = color
-    return Grid(new_grid)
+    if explicit_objects is not None:
+        candidates = expand_candidates(explicit_objects)
+    elif selection is not None:
+        candidates = expand_candidates(selection)
+    else:
+        selected_color = None
+        if color is not None:
+            selected_color = color
+        elif colors is not None:
+            selected_color = list(colors)
+        candidates = find_objects(base_grid, color=selected_color)
+
+    def passes_filters(obj):
+        current = obj
+        obj_color = current.color if isinstance(current, Object) else None
+        if isinstance(current, BoundingBox):
+            obj_color = obj_color or base_grid.grid[current.top : current.bottom + 1, current.left : current.right + 1].max()
+        if filter_func and not filter_func(current):
+            return False
+        if predicate and not predicate(current):
+            return False
+        if color is not None and obj_color is not None and obj_color != color:
+            return False
+        if colors is not None and obj_color is not None and obj_color not in set(int(c) for c in colors):
+            return False
+        if color_filter is not None:
+            if callable(color_filter):
+                if obj_color is None or not color_filter(obj_color):
+                    return False
+            else:
+                allowed = {color_filter} if isinstance(color_filter, int) else set(color_filter)
+                if obj_color is None or obj_color not in allowed:
+                    return False
+        return True
+
+    def overlay(result_item, anchor):
+        if result_item is None:
+            return
+        if isinstance(result_item, (list, tuple)):
+            for sub in result_item:
+                overlay(sub, anchor)
+            return
+        if isinstance(result_item, dict) and "color" in result_item:
+            color_value = result_item["color"]
+            paint_object_area(anchor, color_value)
+            return
+        if isinstance(result_item, (int, np.integer)):
+            paint_object_area(anchor, int(result_item))
+            return
+        if isinstance(result_item, BoundingBox):
+            paint_object_area(result_item, target_color if target_color is not None else anchor_color(anchor))
+            return
+
+        overlay_grid = result_item
+        if isinstance(result_item, Object):
+            overlay_grid = result_item.copy_to_grid(result_item._grid_shape[0], result_item._grid_shape[1])
+        if isinstance(overlay_grid, Grid):
+            arr = overlay_grid.grid
+        else:
+            arr = np.array(overlay_grid)
+
+        if arr.shape == base_grid.grid.shape:
+            mask = arr != background_color
+            base_array[mask] = arr[mask]
+            return
+
+        top, left = anchor_position(anchor)
+        h, w = arr.shape
+        end_row = min(base_array.shape[0], top + h)
+        end_col = min(base_array.shape[1], left + w)
+        arr_h = end_row - top
+        arr_w = end_col - left
+        if arr_h <= 0 or arr_w <= 0:
+            return
+        region = base_array[top:end_row, left:end_col]
+        mask = arr[:arr_h, :arr_w] != background_color
+        region[mask] = arr[:arr_h, :arr_w][mask]
+        base_array[top:end_row, left:end_col] = region
+
+    def anchor_position(anchor):
+        if isinstance(anchor, Object):
+            return anchor.y, anchor.x
+        if isinstance(anchor, BoundingBox):
+            return anchor.top, anchor.left
+        if isinstance(anchor, tuple) and len(anchor) == 4:
+            bbox = BoundingBox(anchor[0], anchor[1], anchor[2], anchor[3], base_grid.grid.shape)
+            return bbox.top, bbox.left
+        return (0, 0)
+
+    def anchor_color(anchor):
+        if isinstance(anchor, Object):
+            return anchor.color
+        if isinstance(anchor, BoundingBox):
+            sample = base_grid.grid[anchor.top : anchor.bottom + 1, anchor.left : anchor.right + 1]
+            unique, counts = np.unique(sample, return_counts=True)
+            return int(unique[np.argmax(counts)]) if unique.size else background_color
+        return background_color
+
+    def paint_object_area(anchor, new_color):
+        if isinstance(anchor, Object):
+            for r, c in anchor.pixels:
+                if 0 <= r < base_array.shape[0] and 0 <= c < base_array.shape[1]:
+                    base_array[r, c] = new_color
+        else:
+            bbox = anchor if isinstance(anchor, BoundingBox) else BoundingBox(anchor[0], anchor[1], anchor[2], anchor[3], base_grid.grid.shape)
+            top, left = bbox.top, bbox.left
+            end_row = min(base_array.shape[0], bbox.bottom + 1)
+            end_col = min(base_array.shape[1], bbox.right + 1)
+            base_array[top:end_row, left:end_col] = new_color
+
+    base_array = base_grid.grid.copy()
+
+    for obj in candidates:
+        anchor = obj
+        if isinstance(obj, tuple) and len(obj) == 4:
+            anchor = BoundingBox(obj[0], obj[1], obj[2], obj[3], base_grid.grid.shape)
+        if not passes_filters(anchor):
+            continue
+        result = transform(anchor)
+        if target_color is not None:
+            paint_object_area(anchor, target_color)
+            if not also_color:
+                result = None
+        overlay(result, anchor)
+        if right and right_color is not None:
+            top, left = anchor_position(anchor)
+            height = anchor.height if isinstance(anchor, BoundingBox) else anchor.height
+            right_col = left + (anchor.width if isinstance(anchor, BoundingBox) else anchor.width)
+            end_row = min(base_array.shape[0], top + height)
+            if 0 <= right_col < base_array.shape[1]:
+                base_array[top:end_row, right_col] = right_color
+
+    METRICS["map_objects_calls"] += 1
+    logger.debug(
+        "map_objects",
+        extra={
+            "event": "map_objects",
+            "num_candidates": len(candidates),
+        },
+    )
+    return Grid(base_array)
+
+def paint(
+    target,
+    color: Optional[int] = None,
+    mask=None,
+    *,
+    coordinates: Optional[Iterable[Tuple[int, int]]] = None,
+    background_color: int = 0,
+) -> "Grid":
+    """General-purpose paint helper supporting mask matrices and predicates."""
+
+    if isinstance(target, Object):
+        grid = target.copy_to_grid(target.height, target.width, background_color=background_color)
+        base_array = grid.grid.copy()
+    else:
+        grid = target if isinstance(target, Grid) else Grid(target)
+        base_array = grid.grid.copy()
+
+    def resolve_color(default_color: Optional[int], mask_value) -> int:
+        if isinstance(mask_value, (np.integer, int)):
+            if mask_value <= 0 and default_color is not None:
+                return default_color
+            if mask_value <= 0 and default_color is None:
+                return background_color
+            if mask_value == 1 and default_color is not None:
+                return int(default_color)
+            return int(mask_value)
+        return int(default_color if default_color is not None else mask_value)
+
+    def apply_at(row: int, col: int, value_override=None):
+        if 0 <= row < base_array.shape[0] and 0 <= col < base_array.shape[1]:
+            if value_override is None:
+                new_color = color if color is not None else base_array[row, col]
+            else:
+                new_color = resolve_color(color, value_override)
+            base_array[row, col] = new_color
+
+    if mask is None and coordinates is None:
+        if color is None:
+            return Grid(base_array)
+        base_array[:, :] = color
+    else:
+        if mask is not None:
+            if callable(mask):
+                sig = inspect.signature(mask)
+                for r in range(base_array.shape[0]):
+                    for c in range(base_array.shape[1]):
+                        args = (r, c)
+                        if len(sig.parameters) >= 3:
+                            args += (int(grid.grid[r, c]),)
+                        if len(sig.parameters) == 1:
+                            args = (grid.grid[r, c],)
+                        if mask(*args):
+                            apply_at(r, c)
+            else:
+                mask_array = mask
+                if isinstance(mask, Grid):
+                    mask_array = mask.grid
+                mask_array = np.array(mask_array)
+                if mask_array.shape != base_array.shape:
+                    raise DSLInvariantError("Mask dimensions must match grid shape")
+                for r in range(mask_array.shape[0]):
+                    for c in range(mask_array.shape[1]):
+                        if mask_array[r, c] is None:
+                            continue
+                        if isinstance(mask_array[r, c], (int, np.integer)) and mask_array[r, c] <= 0:
+                            continue
+                        apply_at(r, c, mask_array[r, c])
+        if coordinates is not None:
+            for coord in coordinates:
+                if coord is None:
+                    continue
+                if len(coord) != 2:
+                    raise DSLInvariantError("Coordinates must be (row, col) tuples")
+                apply_at(
+                    int(coord[0]),
+                    int(coord[1]),
+                    value_override=color if color is not None else None,
+                )
+
+    METRICS["paint_calls"] += 1
+    logger.debug(
+        "paint",
+        extra={
+            "event": "paint",
+            "color": color,
+            "has_mask": mask is not None,
+            "has_coordinates": coordinates is not None,
+        },
+    )
+    return Grid(base_array)
 
 def reflect(grid, axis, offset=0):
     if not isinstance(grid, Grid):
@@ -132,15 +503,95 @@ def reflect(grid, axis, offset=0):
         return Grid(flip_func(flip_func(grid.grid, 0), 1))
     return grid
 
-def copy(grid, *args, **kwargs):
-    if isinstance(grid, Grid):
-        return grid.copy()
-    return Grid(grid)
+def copy(
+    target,
+    *,
+    dy: int = 0,
+    dx: int = 0,
+    height: Optional[int] = None,
+    width: Optional[int] = None,
+    source_y: Optional[int] = None,
+    source_x: Optional[int] = None,
+    target_y: Optional[int] = None,
+    target_x: Optional[int] = None,
+    target_grid=None,
+    color_transform: Optional[dict[int, int]] = None,
+    background_color: int = 0,
+) -> "Grid":
+    """Flexible copy utility for grids and objects."""
+
+    def resolve_target_grid(shape):
+        if target_grid is None:
+            return np.full(shape, background_color, dtype=int)
+        if isinstance(target_grid, Grid):
+            return target_grid.grid.copy()
+        if isinstance(target_grid, (tuple, list)) and len(target_grid) == 2:
+            return np.full((int(target_grid[0]), int(target_grid[1])), background_color, dtype=int)
+        array = np.array(target_grid)
+        if array.ndim != 2:
+            raise DSLInvariantError("target_grid must be 2D")
+        return array.copy()
+
+    if isinstance(target, Object):
+        dest_height = int(height if height is not None else target.height)
+        dest_width = int(width if width is not None else target.width)
+        dest = resolve_target_grid((dest_height, dest_width))
+        offset_y = max(0, -dy)
+        offset_x = max(0, -dx)
+        for r, c in target.pixels:
+            rel_r = r - target.y + offset_y
+            rel_c = c - target.x + offset_x
+            if 0 <= rel_r < dest_height and 0 <= rel_c < dest_width:
+                color = target.color
+                if color_transform and color in color_transform:
+                    color = color_transform[color]
+                dest[rel_r, rel_c] = color
+        result = Grid(dest)
+    else:
+        grid = target if isinstance(target, Grid) else Grid(target)
+        sy = int(source_y if source_y is not None else 0)
+        sx = int(source_x if source_x is not None else 0)
+        h = int(height if height is not None else grid.height - sy)
+        w = int(width if width is not None else grid.width - sx)
+        sy = max(0, sy)
+        sx = max(0, sx)
+        h = max(0, min(h, grid.height - sy))
+        w = max(0, min(w, grid.width - sx))
+        source_slice = grid.grid[sy : sy + h, sx : sx + w]
+
+        if target_grid is None:
+            dest = resolve_target_grid(grid.grid.shape)
+        else:
+            dest = resolve_target_grid((h, w))
+
+        ty = int(target_y) if target_y is not None else sy + dy
+        tx = int(target_x) if target_x is not None else sx + dx
+        for r in range(h):
+            for c in range(w):
+                dest_r = ty + r
+                dest_c = tx + c
+                if 0 <= dest_r < dest.shape[0] and 0 <= dest_c < dest.shape[1]:
+                    value = source_slice[r, c]
+                    if color_transform and value in color_transform:
+                        value = color_transform[value]
+                    dest[dest_r, dest_c] = value
+        result = Grid(dest)
+
+    METRICS["copy_calls"] += 1
+    logger.debug(
+        "copy",
+        extra={
+            "event": "copy",
+            "is_object": isinstance(target, Object),
+            "dy": dy,
+            "dx": dx,
+        },
+    )
+    return result
 
 def copy_grid(grid):
-    print(f"DEBUG: copy_grid received grid type: {type(grid)}")
     result = grid.copy()
-    print(f"DEBUG: copy_grid returning type: {type(result)}")
+    logger.debug("copy_grid", extra={"event": "copy_grid", "input_type": type(grid).__name__})
     return result
 
 def deepcopy(obj):
@@ -160,8 +611,87 @@ def filter_color(grid, color):
     new_grid = np.where(np.isin(grid.grid, list(colors)), grid.grid, 0)
     return Grid(new_grid)
 
-def paint_diagonal(grid, *args, **kwargs):
-    raise NotImplementedError("paint_diagonal is not implemented")
+def paint_diagonal(
+    grid,
+    *,
+    direction: str = "anti",
+    include_self: bool = True,
+    background_color: int = 0,
+    colors: Optional[Sequence[int]] = None,
+    stop_on_collision: bool = True,
+):
+    """Propagate colored pixels along a diagonal direction.
+
+    Parameters
+    ----------
+    grid: Grid | Sequence[Sequence[int]]
+        The source grid to transform.
+    direction: {"anti", "main", "both"}
+        Which diagonal to extend along. "anti" expands top-right → bottom-left,
+        "main" expands top-left → bottom-right, and "both" applies both directions.
+    include_self: bool
+        Whether to keep the seed pixels in the result. When ``False`` the original
+        pixels are reset to ``background_color`` after propagation.
+    background_color: int
+        Color treated as empty. Pixels with this color are overwritten by the
+        propagation.
+    colors: Optional[Sequence[int]]
+        Restrict propagation to the provided colors. When ``None`` every
+        non-background pixel acts as a seed.
+    stop_on_collision: bool
+        If ``True`` propagation halts when encountering a non-background pixel
+        that is not the seed color; otherwise it overwrites encountered pixels.
+    """
+
+    if not isinstance(grid, Grid):
+        grid = Grid(grid)
+
+    direction = direction.lower()
+    direction_vectors: dict[str, Tuple[Tuple[int, int], ...]] = {
+        "anti": ((1, -1), (-1, 1)),
+        "main": ((1, 1), (-1, -1)),
+        "both": ((1, -1), (-1, 1), (1, 1), (-1, -1)),
+    }
+    if direction not in direction_vectors:
+        raise DSLInvariantError(f"Unsupported diagonal direction '{direction}'")
+
+    seeds = (
+        np.argwhere(np.isin(grid.grid, list(colors)))
+        if colors is not None
+        else np.argwhere(grid.grid != background_color)
+    )
+
+    new_grid = grid.grid.copy()
+    height, width = new_grid.shape
+
+    for r, c in seeds:
+        color = grid.grid[r, c]
+        if color == background_color:
+            continue
+
+        for dr, dc in direction_vectors[direction]:
+            nr, nc = r + dr, c + dc
+            while 0 <= nr < height and 0 <= nc < width:
+                if stop_on_collision and new_grid[nr, nc] not in (background_color, color):
+                    break
+                new_grid[nr, nc] = color
+                nr += dr
+                nc += dc
+
+        if not include_self:
+            new_grid[r, c] = background_color
+
+    METRICS["paint_diagonal_calls"] += 1
+    logger.debug(
+        "paint_diagonal",
+        extra={
+            "event": "paint_diagonal",
+            "direction": direction,
+            "include_self": include_self,
+            "colors": None if colors is None else list(colors),
+        },
+    )
+    return Grid(new_grid)
 
 def fill_rectangle(target, color):
     """Fills the bounding box of an Object or the entire Grid with a specified color."""
@@ -185,11 +715,35 @@ def translate(obj, offset):
             obj = Grid(obj)
         return Grid(translate_func(obj.grid, offset[0], offset[1], fill=0))
 
-def crop(grid, top, left, height, width):
-    """Crop a grid to the specified rectangle."""
+def crop(
+    grid,
+    top: Optional[int] = None,
+    left: Optional[int] = None,
+    height: Optional[int] = None,
+    width: Optional[int] = None,
+    *,
+    x0: Optional[int] = None,
+    y0: Optional[int] = None,
+    x1: Optional[int] = None,
+    y1: Optional[int] = None,
+):
+    """Crop a grid using either (top, left, height, width) or (x0, y0, x1, y1)."""
     if not isinstance(grid, Grid):
         grid = Grid(grid)
-    return grid.crop(top, left, height, width)
+
+    top_val = y0 if y0 is not None else top if top is not None else 0
+    left_val = x0 if x0 is not None else left if left is not None else 0
+
+    if x1 is not None and y1 is not None:
+        height_val = y1 - top_val + 1
+        width_val = x1 - left_val + 1
+    else:
+        if height is None or width is None:
+            raise DSLInvariantError("crop requires height and width when x1/y1 are not provided")
+        height_val = height
+        width_val = width
+
+    return grid.crop(int(top_val), int(left_val), int(height_val), int(width_val))
 
 def row(grid, index):
     """Get a specific row from the grid."""
@@ -278,13 +832,33 @@ def paint_object(grid, obj, color=None):
         if 0 <= y < grid.grid.shape[0] and 0 <= x < grid.grid.shape[1]:
             grid.grid[y, x] = paint_color
 
+class ObjectCollection(list):
+    def __init__(self, objects):
+        super().__init__(objects)
+
+    def __call__(self, color=None):
+        if color is None:
+            return list(self)
+        if isinstance(color, (list, tuple, set)):
+            colors = set(int(c) for c in color)
+            return [obj for obj in self if obj.color in colors]
+        return [obj for obj in self if obj.color == color]
+
+
 class Grid:
     def __init__(self, grid_data):
-        print(f"DEBUG: Grid constructor called with grid_data type: {type(grid_data)}")
         if isinstance(grid_data, Grid):
             self.grid = grid_data.grid.copy()
         else:
             self.grid = to_array(grid_data)
+        logger.debug(
+            "grid_init",
+            extra={
+                "event": "grid_init",
+                "shape": tuple(self.grid.shape),
+                "dtype": str(self.grid.dtype),
+            },
+        )
 
     @property
     def shape(self):
@@ -300,13 +874,19 @@ class Grid:
 
     @property
     def objects(self):
-        return find_objects(self)
+        return ObjectCollection(find_objects(self))
+
+    def objects_by_color(self, color):
+        return ObjectCollection(find_objects(self, color=color))
 
     def to_list(self):
         return self.grid.tolist()
 
-    def __array__(self):
-        return self.grid
+    def copy(self):
+        return Grid(self.grid.copy())
+
+    def __array__(self, dtype=None):
+        return np.asarray(self.grid, dtype=dtype)
 
     def __len__(self):
         return len(self.grid)
@@ -315,7 +895,21 @@ class Grid:
         return iter(self.grid)
 
     def __getitem__(self, item):
-        return self.grid[item]
+        if isinstance(item, str):
+            if item == "grid":
+                return self.grid
+            if item == "height":
+                return self.height
+            if item == "width":
+                return self.width
+            raise KeyError(item)
+        result = self.grid[item]
+        if isinstance(result, np.ndarray) and result.ndim >= 2:
+            return Grid(result)
+        return result
+
+    def __call__(self, *args, **kwargs):
+        return self
 
     def __setitem__(self, key, value):
         self.grid[key] = value
@@ -389,6 +983,67 @@ class Grid:
 
     def subgrid(self, r, c, h, w):
         return Grid(self.grid[r:r+h, c:c+w])
+
+    def bounding_box(self, ignore_color: int = 0) -> Optional[Tuple[int, int, int, int]]:
+        """Return (left, top, right, bottom) around non-background pixels."""
+        coords = np.argwhere(self.grid != ignore_color)
+        if coords.size == 0:
+            return None
+
+        rows = coords[:, 0]
+        cols = coords[:, 1]
+        return (int(cols.min()), int(rows.min()), int(cols.max()), int(rows.max()))
+
+    def filter_color(self, color):
+        return filter_color(self, color)
+
+    def pattern_fill(
+        self,
+        region: Union[Tuple[int, int, int, int], "Object", "Grid", None],
+        color: int,
+        *,
+        background_color: int = 0,
+    ):
+        """Fill the provided region with ``color``.
+
+        ``region`` may be a bounding-box tuple, another grid, or an ``Object``.
+        If the region is ``None`` the grid is returned unchanged.
+        """
+
+        bbox: Optional[Tuple[int, int, int, int]] = None
+        if region is None:
+            return Grid(self.grid.copy())
+        if isinstance(region, Grid):
+            bbox = region.bounding_box(ignore_color=background_color)
+        elif hasattr(region, "bounding_box"):
+            bbox = region.bounding_box()
+        elif isinstance(region, (list, tuple)):
+            if len(region) != 4:
+                raise DSLInvariantError("Bounding box tuples must have four elements")
+            bbox = tuple(int(v) for v in region)  # type: ignore[assignment]
+        else:
+            raise DSLInvariantError(f"Unsupported region type for pattern_fill: {type(region)}")
+
+        if bbox is None:
+            return Grid(self.grid.copy())
+
+        left, top, right, bottom = bbox
+        if not (0 <= left <= right < self.width and 0 <= top <= bottom < self.height):
+            raise DSLInvariantError("Bounding box extends outside grid bounds")
+
+        new_grid = self.grid.copy()
+        new_grid[top : bottom + 1, left : right + 1] = color
+
+        METRICS["pattern_fill_calls"] += 1
+        logger.debug(
+            "pattern_fill",
+            extra={
+                "event": "pattern_fill",
+                "color": color,
+                "bbox": [left, top, right, bottom],
+            },
+        )
+        return Grid(new_grid)
 
     def expand_to_grid(self, width, height, **kwargs):
         """Tiles the current grid to fill a new grid of specified dimensions."""
@@ -476,10 +1131,6 @@ class Grid:
         for r in range(self.height):
             new_grid[r] = func(self.grid[r])
         return Grid(new_grid)
-
-
-    def copy(self, *args, **kwargs): return self
-
     def fill_until_collision(self, background_color=0):
         """Performs a multi-source flood fill from all non-background pixels."""
         new_grid = self.grid.copy()
@@ -552,8 +1203,8 @@ class Grid:
                                 
         return Grid(new_grid)
 
-    def map_objects(self, func, filter_func=None, **kwargs):
-        return map_objects(self, func, filter_func=filter_func, **kwargs)
+    def map_objects(self, *args, **kwargs):
+        return map_objects(self, *args, **kwargs)
 
     def filter(self, filter_func, background_color=0):
         """Applies a filter function to each pixel, setting non-matching pixels to background_color."""
@@ -575,10 +1226,9 @@ class Grid:
         for r in range(height):
             for c in range(width):
                 current_color = self.grid[r, c]
-                new_color = func(c, r, current_color) # Pass x, y, color
+                new_color = func(c, r, current_color)  # Pass x, y, color
                 new_grid[r, c] = new_color
         return Grid(new_grid)
-    def pattern_fill(self, *args, **kwargs): raise NotImplementedError(".pattern_fill() is not implemented")
     def align(self, anchor_color, moving_color, direction):
         """Aligns the moving_color object relative to the anchor_color object."""
         objects = find_objects(self)
@@ -625,11 +1275,6 @@ class Grid:
         for y, x in obj.pixels:
             if 0 <= y < grid.grid.shape[0] and 0 <= x < grid.grid.shape[1]:
                 grid.grid[y, x] = obj.color
-
-class Task:
-    """A wrapper for a single ARC task, providing convenient access to train/test cases."""
-
-
 class Case:
     def __init__(self, case_data):
         self._data = case_data
@@ -645,9 +1290,9 @@ class Case:
     
     def __getitem__(self, key):
         if key == 'input':
-            return self._data['input']
+            return self.input
         elif key == 'output':
-            return self._data.get('output')
+            return self.output
         raise KeyError(f"Case has no key '{key}'")
 
     @property
@@ -658,15 +1303,24 @@ class Case:
     def in_grid(self): return self.input
 
 class DualAccessList(list):
+    """List-like container that supports both list and dict-style access."""
+
     def __init__(self, case_objects, raw_dicts):
         super().__init__(case_objects)
-        self._raw = raw_dicts
-    
-    def __getitem__(self, index):
-        item = super().__getitem__(index)
-        if isinstance(index, int):
-            return DualAccessProxy(item, self._raw[index])
-        return item
+        self._raw = list(raw_dicts)
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            return DualAccessList(super().__getitem__(key), self._raw[key])
+        if isinstance(key, int):
+            return DualAccessProxy(super().__getitem__(key), self._raw[key])
+        if isinstance(key, str):
+            return [DualAccessProxy(case, raw)[key] for case, raw in zip(list.__iter__(self), self._raw)]
+        return super().__getitem__(key)
+
+    def __iter__(self):
+        for case_obj, raw in zip(list.__iter__(self), self._raw):
+            yield DualAccessProxy(case_obj, raw)
 
 class DualAccessProxy:
     def __init__(self, case_obj, raw_dict):
@@ -685,18 +1339,28 @@ class DualAccessProxy:
 
 class Task(dict):
     def __init__(self, task_data):
-        dict.__init__(self)
+        super().__init__()
         self.task_id = task_data.get("task_id")
-        self.train = [Case(p) for p in task_data.get("train", [])]
-        self.test = [Case(p) for p in task_data.get("test", [])]
         self._raw_data = task_data
+        self._train_cases: List[Case] = [Case(p) for p in task_data.get("train", [])]
+        self._test_cases: List[Case] = [Case(p) for p in task_data.get("test", [])]
+        self._train_view = DualAccessList(self._train_cases, task_data.get("train", []))
+        self._test_view = DualAccessList(self._test_cases, task_data.get("test", []))
 
     def __getitem__(self, key):
-        if key == 'train':
-            return DualAccessList(self.train, self._raw_data.get('train', []))
-        elif key == 'test':
-            return DualAccessList(self.test, self._raw_data.get('test', []))
-        elif key in self._raw_data:
+        if key == "train":
+            return self.train
+        if key == "test":
+            return self.test
+        if key == "input":
+            return self.input
+        if key == "inputs":
+            return self.inputs
+        if key == "output":
+            return self._train_cases[0].output if self._train_cases and self._train_cases[0].output is not None else None
+        if key == "outputs":
+            return [case.output for case in self._train_cases if case.output is not None]
+        if key in self._raw_data:
             return self._raw_data[key]
         raise KeyError(key)
     
@@ -710,37 +1374,50 @@ class Task(dict):
         return key in self._raw_data
 
     @property
+    def train(self) -> DualAccessList:
+        return self._train_view
+
+    @property
+    def test(self) -> DualAccessList:
+        return self._test_view
+
+    @property
     def test_cases(self):
         return self.test
 
     @property
+    def test_tasks(self):
+        return self.test
+
+    @property
     def input(self):
-        return self.train[0].input
+        first = self.train[0]
+        return first["input"] if isinstance(first, DualAccessProxy) else first.input
 
     @property
     def inputs(self):
-        return [p.input for p in self.train]
+        return [case.input for case in self._train_cases]
 
     @property
     def input_grid(self):
-        return self.train[0].input
+        return self._train_cases[0].input
 
     @property
     def input_height(self):
-        return self.train[0].input.height
+        return self._train_cases[0].input.height
 
     @property
     def input_width(self):
-        return self.train[0].input.width
+        return self._train_cases[0].input.width
 
     @property
     def grids(self):
-        return [case.input for case in self.train]
+        return [case.input for case in self._train_cases]
 
     def map(self, func):
-        if not self.test:
+        if not self._test_cases:
             return []
-        result_grid = func(self.test[0].input)
+        result_grid = func(self._test_cases[0].input)
         if isinstance(result_grid, Grid):
             return result_grid.to_list()
         else:
@@ -759,10 +1436,15 @@ class Task(dict):
         return self.map(lambda i: i.repeat(factor, factor))
 
     @property
-    def train_tasks(self): return self.train
+    def train_tasks(self):
+        return self.train
+
     @property
-    def object_reasoning(self): return None
-    def i(self, index): return self.train[index].input
+    def object_reasoning(self):
+        return None
+
+    def i(self, index):
+        return self._train_cases[index].input
     def build_grid(self, height, width, func):
         """Constructs a new grid of specified dimensions, filling each cell with a color determined by a function."""
         new_grid_arr = np.zeros((height, width), dtype=int)
@@ -771,4 +1453,5 @@ class Task(dict):
                 new_grid_arr[i, j] = func(i, j)
         return Grid(new_grid_arr)
     @property
-    def train_input(self): return self.train[0].input
+    def train_input(self):
+        return self._train_cases[0].input

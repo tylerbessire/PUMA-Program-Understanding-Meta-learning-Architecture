@@ -467,3 +467,11 @@ Your original vision is now fully implemented:
 - Keep all existing features (memory, heuristics, beam search, etc.) ✅
 
 **The system now reasons like a human, learning from mistakes and automatically inferring new knowledge!**
+
+## Feature: DSL Runtime Upgrades (2025-10)
+
+- **What changed:** Enhanced `paint`, `copy`, `map_objects`, and `crop` semantics to match the generated DSL usage, including rich masks, region translation, flexible object filtering, and alternate cropping signatures.
+- **Why it matters:** Generated programs no longer fail due to signature mismatches or missing convenience helpers, unlocking dozens of additional verification attempts without manual intervention.
+- **Operational notes:** Metrics are exposed through `arc_solver.arc_dsl_lib.METRICS` (`paint_calls`, `copy_calls`, `map_objects_calls`) and structured logging under the `arc_dsl` logger for observability. When integrating new programs, inspect these counters to confirm runtime coverage before shipping to Kaggle.
+
+# [S:DOC v1] topic=dsl-runtime synopsis=updated pass
