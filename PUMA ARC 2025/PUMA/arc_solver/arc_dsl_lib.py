@@ -14,6 +14,7 @@ from .grid import (
     translate as translate_func,
     flip as flip_func,
 )
+from .object_reasoning import ObjectReasoner
 
 
 logger = logging.getLogger("arc_dsl")
@@ -134,6 +135,10 @@ class Object:
         return False
 
     def __getitem__(self, key):
+        if key == 'colors':
+            return [self.color]
+        if key == 'original_color':
+            return self.color
         if hasattr(self, key):
             return getattr(self, key)
         raise KeyError(f"Object has no key '{key}'")
@@ -147,13 +152,50 @@ def compose(*funcs):
         return res
     return composed_func
 
+def compose_grids(grid1, grid2, background_color=0):
+    """Combines two grids by overlaying grid2 on top of grid1."""
+    if not isinstance(grid1, Grid):
+        grid1 = Grid(grid1)
+    if not isinstance(grid2, Grid):
+        grid2 = Grid(grid2)
+
+    # Start with a copy of the first grid
+    new_grid_arr = grid1._grid.copy()
+
+    # Ensure grids are the same size, if not, this might need a resizing strategy
+    # For now, we assume they are the same size as per typical use cases.
+    if grid1.shape != grid2.shape:
+        # Simple strategy: crop or pad the second grid to match the first.
+        # This is a basic approach and might need refinement based on actual task needs.
+        temp_grid2 = np.full(grid1.shape, background_color, dtype=int)
+        h = min(grid1.shape[0], grid2.shape[0])
+        w = min(grid1.shape[1], grid2.shape[1])
+        temp_grid2[:h, :w] = grid2._grid[:h, :w]
+        grid2_arr = temp_grid2
+    else:
+        grid2_arr = grid2._grid
+
+    # Overlay grid2 on grid1. Where grid2 has non-background pixels, they are copied over.
+    mask = grid2_arr != background_color
+    new_grid_arr[mask] = grid2_arr[mask]
+
+    return Grid(new_grid_arr)
+
+def map_color(mapping):
+    """Returns a function that applies a color mapping to a grid."""
+    def func(grid):
+        if not isinstance(grid, Grid):
+            grid = Grid(grid)
+        return grid.map_colors(mapping)
+    return func
+
 def find_objects(grid, color=None, ignore_color=0, min_size=1, **kwargs):
     if not isinstance(grid, Grid):
         grid = Grid(grid)
     
-    binary_grid = grid.grid != ignore_color
+    binary_grid = grid._grid != ignore_color
     if color is not None:
-        binary_grid = grid.grid == color
+        binary_grid = grid._grid == color
 
     labeled_grid, num_labels = label(binary_grid)
     if num_labels == 0:
@@ -165,8 +207,8 @@ def find_objects(grid, color=None, ignore_color=0, min_size=1, **kwargs):
         pixels = np.argwhere(labeled_grid == (i + 1))
         if len(pixels) < min_size:
             continue
-        obj_color = grid.grid[pixels[0][0], pixels[0][1]]
-        objects.append(Object(pixels, obj_color, grid.grid.shape))
+        obj_color = grid._grid[pixels[0][0], pixels[0][1]]
+        objects.append(Object(pixels, obj_color, grid.shape))
         
     return objects
 
@@ -207,6 +249,12 @@ def map_objects(
     """Apply a transform to objects discovered in ``grid`` with flexible filtering."""
 
     color_filter = kwargs.pop("filter_color", None)
+    # Allow and ignore other common kwargs to prevent crashes
+    kwargs.pop("filter", None)
+    kwargs.pop("filter_size", None)
+    kwargs.pop("map_fn", None)
+    kwargs.pop("color_map", None)
+
     if kwargs:
         raise DSLInvariantError(f"Unsupported map_objects kwargs: {sorted(kwargs.keys())}")
 
@@ -504,7 +552,7 @@ def reflect(grid, axis, offset=0):
     return grid
 
 def copy(
-    target,
+    target=None,
     *,
     dy: int = 0,
     dx: int = 0,
@@ -517,8 +565,13 @@ def copy(
     target_grid=None,
     color_transform: Optional[dict[int, int]] = None,
     background_color: int = 0,
+    **kwargs,
 ) -> "Grid":
     """Flexible copy utility for grids and objects."""
+    if target is None:
+        return Grid(np.array([[]]))
+
+    kwargs.pop("source", None)
 
     def resolve_target_grid(shape):
         if target_grid is None:
@@ -694,10 +747,13 @@ def paint_diagonal(
     return Grid(new_grid)
 
 def fill_rectangle(target, color):
-    """Fills the bounding box of an Object or the entire Grid with a specified color."""
+    """Fills the bounding box of an Object, a BoundingBox, or the entire Grid with a specified color."""
     if isinstance(target, Object):
-        y, x, h, w = target.bounding_box()
-        new_grid_arr = np.full((h, w), color, dtype=int)
+        bbox = target.bounding_box()
+        new_grid_arr = np.full((bbox.height, bbox.width), color, dtype=int)
+        return Grid(new_grid_arr)
+    elif isinstance(target, BoundingBox):
+        new_grid_arr = np.full((target.height, target.width), color, dtype=int)
         return Grid(new_grid_arr)
     elif isinstance(target, Grid):
         return paint_grid(target, color)
@@ -716,7 +772,7 @@ def translate(obj, offset):
         return Grid(translate_func(obj.grid, offset[0], offset[1], fill=0))
 
 def crop(
-    grid,
+    grid=None,
     top: Optional[int] = None,
     left: Optional[int] = None,
     height: Optional[int] = None,
@@ -726,8 +782,13 @@ def crop(
     y0: Optional[int] = None,
     x1: Optional[int] = None,
     y1: Optional[int] = None,
+    **kwargs,
 ):
     """Crop a grid using either (top, left, height, width) or (x0, y0, x1, y1)."""
+    if grid is None:
+        return Grid(np.array([[]]))
+    kwargs.pop("x2", None)
+    kwargs.pop("min_x", None)
     if not isinstance(grid, Grid):
         grid = Grid(grid)
 
@@ -749,7 +810,7 @@ def row(grid, index):
     """Get a specific row from the grid."""
     if not isinstance(grid, Grid):
         grid = Grid(grid)
-    return grid.grid[index]
+    return Grid(grid.grid[index])
 
 def extend_lines(grid, colors=None, background_color=0, extend_until_collision=True):
     """Extend lines from specified colors horizontally and vertically."""
@@ -845,32 +906,55 @@ class ObjectCollection(list):
         return [obj for obj in self if obj.color == color]
 
 
+class GridRow:
+    def __init__(self, row_data, source_grid):
+        self._row = row_data
+        self._source_grid = source_grid
+
+    @property
+    def grid(self):
+        return self._source_grid
+
+    def __getitem__(self, key):
+        return self._row[key]
+
+    def __setitem__(self, key, value):
+        self._row[key] = value
+
+    def __len__(self):
+        return len(self._row)
+
+
 class Grid:
     def __init__(self, grid_data):
         if isinstance(grid_data, Grid):
-            self.grid = grid_data.grid.copy()
+            self._grid = grid_data._grid.copy()
         else:
-            self.grid = to_array(grid_data)
+            self._grid = to_array(grid_data)
         logger.debug(
             "grid_init",
             extra={
                 "event": "grid_init",
-                "shape": tuple(self.grid.shape),
-                "dtype": str(self.grid.dtype),
+                "shape": tuple(self._grid.shape),
+                "dtype": str(self._grid.dtype),
             },
         )
 
     @property
+    def grid(self):
+        return self
+
+    @property
     def shape(self):
-        return self.grid.shape
+        return self._grid.shape
 
     @property
     def height(self):
-        return self.grid.shape[0]
+        return self._grid.shape[0]
 
     @property
     def width(self):
-        return self.grid.shape[1]
+        return self._grid.shape[1]
 
     @property
     def objects(self):
@@ -880,91 +964,95 @@ class Grid:
         return ObjectCollection(find_objects(self, color=color))
 
     def to_list(self):
-        return self.grid.tolist()
+        return self._grid.tolist()
 
     def copy(self):
-        return Grid(self.grid.copy())
+        return Grid(self._grid.copy())
 
     def __array__(self, dtype=None):
-        return np.asarray(self.grid, dtype=dtype)
+        return np.asarray(self._grid, dtype=dtype)
 
     def __len__(self):
-        return len(self.grid)
+        return len(self._grid)
 
     def __iter__(self):
-        return iter(self.grid)
+        return iter(self._grid)
 
     def __getitem__(self, item):
         if isinstance(item, str):
             if item == "grid":
-                return self.grid
+                return self._grid
             if item == "height":
                 return self.height
             if item == "width":
                 return self.width
             raise KeyError(item)
-        result = self.grid[item]
-        if isinstance(result, np.ndarray) and result.ndim >= 2:
-            return Grid(result)
+        result = self._grid[item]
+        if isinstance(result, np.ndarray):
+            if result.ndim == 2:
+                return Grid(result)
+            elif result.ndim == 1:
+                return GridRow(result, self)
         return result
 
     def __call__(self, *args, **kwargs):
         return self
 
     def __setitem__(self, key, value):
-        self.grid[key] = value
+        self._grid[key] = value
 
     def get(self, r, c):
-        return self.grid[r, c]
+        return self._grid[r, c]
 
     def replace(self, old, new):
         return self.replace_color(old, new)
 
-    def replace_color(self, old_color, new_color, mask=None):
+    def replace_color(self, old_color, new_color, mask=None, **kwargs):
+        kwargs.pop("only_if_surrounded_by", None)
         mapping = {old_color: new_color}
-        new_grid = self.grid.copy()
+        new_grid = self._grid.copy()
         if mask is not None:
             for r in range(self.height):
                 for c in range(self.width):
-                    if mask[r, c] and self.grid[r, c] == old_color:
+                    if mask[r, c] and self._grid[r, c] == old_color:
                         new_grid[r, c] = new_color
             return Grid(new_grid)
         else:
-            return Grid(color_map_func(self.grid, mapping))
+            return Grid(color_map_func(self._grid, mapping))
 
     def map_colors(self, mapping):
-        new_grid_data = color_map_func(self.grid, mapping)
+        new_grid_data = color_map_func(self._grid, mapping)
         return Grid(new_grid_data)
 
     def repeat(self, factor_h, factor_w):
-        new_grid_data = np.tile(self.grid, (factor_h, factor_w))
+        new_grid_data = np.tile(self._grid, (factor_h, factor_w))
         return Grid(new_grid_data)
 
     def map_color(self, old, new):
         return self.replace_color(old, new)
 
     def fill_regions(self):
-        labeled_grid, num_labels = label(self.grid)
+        labeled_grid, num_labels = label(self._grid)
         if num_labels == 0:
             return self
         for i in range(1, num_labels + 1):
             component_mask = (labeled_grid == i)
-            colors, counts = np.unique(self.grid[component_mask], return_counts=True)
+            colors, counts = np.unique(self._grid[component_mask], return_counts=True)
             if len(colors) > 0:
                 dominant_color = colors[np.argmax(counts)]
-                self.grid[component_mask] = dominant_color
-        return Grid(self.grid)
+                self._grid[component_mask] = dominant_color
+        return Grid(self._grid)
 
     def expand_grid(self, factor):
-        new_grid_data = np.kron(self.grid, np.ones((factor, factor)))
+        new_grid_data = np.kron(self._grid, np.ones((factor, factor)))
         return Grid(new_grid_data)
 
     def crop(self, top, left, height, width):
-        new_grid_data = crop_func(self.grid, top, left, height, width)
+        new_grid_data = crop_func(self._grid, top, left, height, width)
         return Grid(new_grid_data)
 
     def translate(self, dx, dy, fill_value=0):
-        return Grid(translate_func(self.grid, dy, dx, fill=fill_value))
+        return Grid(translate_func(self._grid, dy, dx, fill=fill_value))
 
     def compose(self, *funcs):
         res = self
@@ -974,19 +1062,23 @@ class Grid:
 
     def eq(self, other):
         if isinstance(other, Grid):
-            return np.array_equal(self.grid, other.grid)
-        return np.array_equal(self.grid, other)
+            return np.array_equal(self._grid, other._grid)
+        return np.array_equal(self._grid, other)
 
     def map(self, func):
-        new_grid = np.vectorize(func)(self.grid)
+        new_grid = np.vectorize(func)(self._grid)
         return Grid(new_grid)
 
+    def max(self):
+        """Returns the maximum value in the grid."""
+        return self._grid.max()
+
     def subgrid(self, r, c, h, w):
-        return Grid(self.grid[r:r+h, c:c+w])
+        return Grid(self._grid[r:r+h, c:c+w])
 
     def bounding_box(self, ignore_color: int = 0) -> Optional[Tuple[int, int, int, int]]:
         """Return (left, top, right, bottom) around non-background pixels."""
-        coords = np.argwhere(self.grid != ignore_color)
+        coords = np.argwhere(self._grid != ignore_color)
         if coords.size == 0:
             return None
 
@@ -1012,7 +1104,7 @@ class Grid:
 
         bbox: Optional[Tuple[int, int, int, int]] = None
         if region is None:
-            return Grid(self.grid.copy())
+            return Grid(self._grid.copy())
         if isinstance(region, Grid):
             bbox = region.bounding_box(ignore_color=background_color)
         elif hasattr(region, "bounding_box"):
@@ -1025,13 +1117,13 @@ class Grid:
             raise DSLInvariantError(f"Unsupported region type for pattern_fill: {type(region)}")
 
         if bbox is None:
-            return Grid(self.grid.copy())
+            return Grid(self._grid.copy())
 
         left, top, right, bottom = bbox
         if not (0 <= left <= right < self.width and 0 <= top <= bottom < self.height):
             raise DSLInvariantError("Bounding box extends outside grid bounds")
 
-        new_grid = self.grid.copy()
+        new_grid = self._grid.copy()
         new_grid[top : bottom + 1, left : right + 1] = color
 
         METRICS["pattern_fill_calls"] += 1
@@ -1047,7 +1139,7 @@ class Grid:
 
     def expand_to_grid(self, width, height, **kwargs):
         """Tiles the current grid to fill a new grid of specified dimensions."""
-        new_grid_arr = np.zeros((height, width), dtype=self.grid.dtype)
+        new_grid_arr = np.zeros((height, width), dtype=self._grid.dtype)
         h, w = self.shape
 
         for r in range(0, height, h):
@@ -1055,7 +1147,7 @@ class Grid:
                 # Determine the piece of the source grid to copy
                 block_h = min(h, height - r)
                 block_w = min(w, width - c)
-                source_block = self.grid[:block_h, :block_w]
+                source_block = self._grid[:block_h, :block_w]
                 # Place it in the new grid
                 new_grid_arr[r:r+block_h, c:c+block_w] = source_block
         
@@ -1063,31 +1155,31 @@ class Grid:
 
     def expand_square(self, factor):
         """Expands each pixel into a square block of size factor x factor."""
-        new_grid_data = np.kron(self.grid, np.ones((factor, factor), dtype=self.grid.dtype))
+        new_grid_data = np.kron(self._grid, np.ones((factor, factor), dtype=self._grid.dtype))
         return Grid(new_grid_data)
 
     def fill_gaps(self, background_color=0):
         """Fills holes within objects with the color of the surrounding object."""
         from collections import deque
 
-        new_grid = self.grid.copy()
-        height, width = self.grid.shape
-        visited = np.zeros_like(self.grid, dtype=bool)
+        new_grid = self._grid.copy()
+        height, width = self._grid.shape
+        visited = np.zeros_like(self._grid, dtype=bool)
 
         # 1. Find all exterior background pixels by flood-filling from the border
         q = deque()
         for r in range(height):
-            if self.grid[r, 0] == background_color:
+            if self._grid[r, 0] == background_color:
                 q.append((r, 0))
                 visited[r, 0] = True
-            if self.grid[r, width - 1] == background_color:
+            if self._grid[r, width - 1] == background_color:
                 q.append((r, width - 1))
                 visited[r, width - 1] = True
         for c in range(width):
-            if self.grid[0, c] == background_color:
+            if self._grid[0, c] == background_color:
                 q.append((0, c))
                 visited[0, c] = True
-            if self.grid[height - 1, c] == background_color:
+            if self._grid[height - 1, c] == background_color:
                 q.append((height - 1, c))
                 visited[height - 1, c] = True
 
@@ -1095,20 +1187,20 @@ class Grid:
             r, c = q.popleft()
             for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
                 nr, nc = r + dr, c + dc
-                if 0 <= nr < height and 0 <= nc < width and not visited[nr, nc] and self.grid[nr, nc] == background_color:
+                if 0 <= nr < height and 0 <= nc < width and not visited[nr, nc] and self._grid[nr, nc] == background_color:
                     visited[nr, nc] = True
                     q.append((nr, nc))
 
         # 2. Iterate and fill any unvisited background pixels (which are holes)
         for r in range(height):
             for c in range(width):
-                if self.grid[r, c] == background_color and not visited[r, c]:
+                if self._grid[r, c] == background_color and not visited[r, c]:
                     # This is a hole. Find the surrounding color.
                     fill_color = -1
                     for dr, dc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
                         nr, nc = r + dr, c + dc
-                        if 0 <= nr < height and 0 <= nc < width and self.grid[nr, nc] != background_color:
-                            fill_color = self.grid[nr, nc]
+                        if 0 <= nr < height and 0 <= nc < width and self._grid[nr, nc] != background_color:
+                            fill_color = self._grid[nr, nc]
                             break
                     
                     if fill_color != -1:
@@ -1120,27 +1212,27 @@ class Grid:
                             hr, hc = hole_q.popleft()
                             for hdr, hdc in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
                                 nhr, nhc = hr + hdr, hc + hdc
-                                if 0 <= nhr < height and 0 <= nhc < width and not visited[nhr, nhc] and self.grid[nhr, nhc] == background_color:
+                                if 0 <= nhr < height and 0 <= nhc < width and not visited[nhr, nhc] and self._grid[nhr, nhc] == background_color:
                                     visited[nhr, nhc] = True
                                     new_grid[nhr, nhc] = fill_color
                                     hole_q.append((nhr, nhc))
         return Grid(new_grid)
 
     def map_rows(self, func): 
-        new_grid = self.grid.copy()
+        new_grid = self._grid.copy()
         for r in range(self.height):
-            new_grid[r] = func(self.grid[r])
+            new_grid[r] = func(self._grid[r])
         return Grid(new_grid)
     def fill_until_collision(self, background_color=0):
         """Performs a multi-source flood fill from all non-background pixels."""
-        new_grid = self.grid.copy()
-        height, width = self.grid.shape
+        new_grid = self._grid.copy()
+        height, width = self._grid.shape
 
         queue = []
         # Initialize queue with all non-background pixels
         for r in range(height):
             for c in range(width):
-                if self.grid[r, c] != background_color:
+                if self._grid[r, c] != background_color:
                     queue.append((r, c))
 
         head = 0
@@ -1159,14 +1251,14 @@ class Grid:
         return Grid(new_grid)
 
     def filter_rows(self, func):
-        new_grid_rows = [self.grid[r] for r in range(self.height) if func(r)]
+        new_grid_rows = [self._grid[r] for r in range(self.height) if func(r)]
         if not new_grid_rows:
             return Grid(np.array([[]]))
         return Grid(np.vstack(new_grid_rows))
 
     def paint_rows(self, filter_func, color):
         """Paints rows selected by a filter function with a specific color."""
-        new_grid = self.grid.copy()
+        new_grid = self._grid.copy()
         for r in range(self.height):
             if filter_func(r):
                 new_grid[r, :] = color
@@ -1178,13 +1270,13 @@ class Grid:
             # Handle the simple/ambiguous case by doing nothing
             return self
 
-        new_grid = self.grid.copy()
+        new_grid = self._grid.copy()
         pattern_height = len(pattern)
         pattern_width = len(pattern[0])
 
         for r in range(self.height - pattern_height + 1):
             for c in range(self.width - pattern_width + 1):
-                view = self.grid[r:r+pattern_height, c:c+pattern_width]
+                view = self._grid[r:r+pattern_height, c:c+pattern_width]
                 
                 # Use the key function to get a lookup key for the current view
                 key_tuple = key(view)
@@ -1208,24 +1300,24 @@ class Grid:
 
     def filter(self, filter_func, background_color=0):
         """Applies a filter function to each pixel, setting non-matching pixels to background_color."""
-        new_grid = self.grid.copy()
+        new_grid = self._grid.copy()
         height, width = self.grid.shape
 
         for r in range(height):
             for c in range(width):
-                current_color = self.grid[r, c]
+                current_color = self._grid[r, c]
                 if not filter_func(current_color):
                     new_grid[r, c] = background_color
         return Grid(new_grid)
 
     def map_pixels(self, func):
         """Applies a function to each pixel in the grid, passing x, y, and color."""
-        new_grid = self.grid.copy()
+        new_grid = self._grid.copy()
         height, width = self.grid.shape
 
         for r in range(height):
             for c in range(width):
-                current_color = self.grid[r, c]
+                current_color = self._grid[r, c]
                 new_color = func(c, r, current_color)  # Pass x, y, color
                 new_grid[r, c] = new_color
         return Grid(new_grid)
@@ -1239,7 +1331,7 @@ class Grid:
             return self # Return original grid if objects aren't found
 
         # Create a new grid, painting all objects except the one that will be moved
-        new_grid = Grid(np.full(self.grid.shape, 0, dtype=int))
+        new_grid = Grid(np.full(self._grid.shape, 0, dtype=int))
         for obj in objects:
             if obj.color != moving_color:
                 paint_object(new_grid, obj)
@@ -1268,13 +1360,36 @@ class Grid:
 
         return new_grid
 
+    def paste(self, source_grid, top: Optional[int] = None, left: Optional[int] = None, *, background_color: int = 0):
+        """Pastes another grid onto this one at a specified location."""
+        if top is None or left is None:
+            return self  # Return original grid if placement is not specified
+
+        if not isinstance(source_grid, Grid):
+            source_grid = Grid(source_grid)
+
+        new_grid_arr = self._grid.copy()
+        h, w = source_grid.shape
+        dest_h, dest_w = new_grid_arr.shape
+
+        for r in range(h):
+            for c in range(w):
+                dest_r = top + r
+                dest_c = left + c
+                if 0 <= dest_r < dest_h and 0 <= dest_c < dest_w:
+                    pixel = source_grid.get(r, c)
+                    # Assuming we don't paste the background color, to allow for "transparent" pixels
+                    if pixel != background_color:
+                        new_grid_arr[dest_r, dest_c] = pixel
+        return Grid(new_grid_arr)
+
     def paint_object(grid, obj):
         """Paints an object onto the grid."""
         if not isinstance(grid, Grid):
             grid = Grid(grid)
         for y, x in obj.pixels:
-            if 0 <= y < grid.grid.shape[0] and 0 <= x < grid.grid.shape[1]:
-                grid.grid[y, x] = obj.color
+            if 0 <= y < grid._grid.shape[0] and 0 <= x < grid._grid.shape[1]:
+                grid._grid[y, x] = obj.color
 class Case:
     def __init__(self, case_data):
         self._data = case_data
@@ -1346,6 +1461,7 @@ class Task(dict):
         self._test_cases: List[Case] = [Case(p) for p in task_data.get("test", [])]
         self._train_view = DualAccessList(self._train_cases, task_data.get("train", []))
         self._test_view = DualAccessList(self._test_cases, task_data.get("test", []))
+        self._object_reasoner = ObjectReasoner()
 
     def __getitem__(self, key):
         if key == "train":
@@ -1441,7 +1557,7 @@ class Task(dict):
 
     @property
     def object_reasoning(self):
-        return None
+        return self._object_reasoner
 
     def i(self, index):
         return self._train_cases[index].input

@@ -8,7 +8,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent / 'PUMA'))
 from arc_solver.arc_dsl_lib import (
     Task, Grid, Object, compose, map_objects, paint, reflect, copy, get_objects, find_objects, bounding_box,
-    copy_grid, deepcopy, filter_color, paint_diagonal, fill_largest_object, paint_grid, translate, crop, row, extend_lines, fill_rectangle, paint_object
+    copy_grid, deepcopy, filter_color, paint_diagonal, fill_largest_object, paint_grid, translate, crop, row, extend_lines, fill_rectangle, paint_object,
+    compose_grids, map_color
 )
 
 def execute_solution(dsl_string, task_data):
@@ -39,6 +40,8 @@ def execute_solution(dsl_string, task_data):
         "extend_lines": extend_lines,
         "fill_rectangle": fill_rectangle,
         "paint_object": paint_object,
+        "compose_grids": compose_grids,
+        "map_color": map_color,
     }
     
     exec(dsl_string, exec_globals)

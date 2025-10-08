@@ -63,7 +63,7 @@ class ObjectTransformation:
 class ObjectExtractor:
     """Extracts discrete objects from ARC grids."""
     
-    def extract_objects(self, grid: Array, ignore_color: int = 0) -> List[ARCObject]:
+    def extract_objects(self, grid: Array, ignore_color: int = 0, color_to_find: Optional[int] = None) -> List[ARCObject]:
         """Extract all objects from a grid using connected components."""
         objects = []
         visited = np.zeros_like(grid, dtype=bool)
@@ -73,13 +73,16 @@ class ObjectExtractor:
         
         for r in range(h):
             for c in range(w):
-                if not visited[r, c] and grid[r, c] != ignore_color:
+                current_pixel_color = grid[r, c]
+                if not visited[r, c] and current_pixel_color != ignore_color:
+                    if color_to_find is not None and current_pixel_color != color_to_find:
+                        continue
+
                     # Found new object - flood fill to get all positions
-                    color = grid[r, c]
-                    positions = self._flood_fill(grid, visited, r, c, color)
+                    positions = self._flood_fill(grid, visited, r, c, current_pixel_color)
                     
                     if len(positions) > 0:
-                        obj = self._create_object(grid, obj_id, color, positions)
+                        obj = self._create_object(grid, obj_id, current_pixel_color, positions)
                         objects.append(obj)
                         obj_id += 1
         
@@ -291,6 +294,17 @@ class ObjectReasoner:
     def __init__(self):
         self.extractor = ObjectExtractor()
         self.analyzer = SpatialAnalyzer()
+
+    def find_connected_components(self, grid: Array, color: int) -> List[List[Tuple[int, int]]]:
+        """Finds connected components of a specific color, returning a list of pixel lists."""
+        if isinstance(grid, np.ndarray):
+            grid_array = grid
+        else: # Assuming it's a Grid object
+            grid_array = grid._grid
+
+        objects = self.extractor.extract_objects(grid_array, color_to_find=color)
+        # Convert ARCObject positions to the expected format (list of lists of tuples)
+        return [list(obj.positions) for obj in objects]
     
     def analyze_transformation(self, input_grid: Array, output_grid: Array) -> List[ObjectTransformation]:
         """Analyze what object-level transformations occurred."""
