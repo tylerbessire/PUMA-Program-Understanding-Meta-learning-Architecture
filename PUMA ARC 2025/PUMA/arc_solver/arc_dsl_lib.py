@@ -1,7 +1,7 @@
 import inspect
 import logging
 from collections import Counter
-from typing import Callable, Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
 import numpy as np
 from scipy.ndimage import label, find_objects as find_objects_scipy
@@ -916,7 +916,10 @@ class GridRow:
         return self._source_grid
 
     def __getitem__(self, key):
-        return self._row[key]
+        try:
+            return self._row[key]
+        except IndexError:
+            return 0
 
     def __setitem__(self, key, value):
         self._row[key] = value
@@ -976,7 +979,7 @@ class Grid:
         return len(self._grid)
 
     def __iter__(self):
-        return iter(self._grid)
+        return iter(self._grid.tolist())
 
     def __getitem__(self, item):
         if isinstance(item, str):
@@ -987,13 +990,16 @@ class Grid:
             if item == "width":
                 return self.width
             raise KeyError(item)
-        result = self._grid[item]
-        if isinstance(result, np.ndarray):
-            if result.ndim == 2:
-                return Grid(result)
-            elif result.ndim == 1:
-                return GridRow(result, self)
-        return result
+        try:
+            result = self._grid[item]
+            if isinstance(result, np.ndarray):
+                if result.ndim == 2:
+                    return Grid(result)
+                elif result.ndim == 1:
+                    return GridRow(result, self)
+            return result
+        except IndexError:
+            return GridRow(np.zeros(self.width, dtype=int), self)
 
     def __call__(self, *args, **kwargs):
         return self
@@ -1031,21 +1037,46 @@ class Grid:
     def map_color(self, old, new):
         return self.replace_color(old, new)
 
-    def fill_regions(self):
-        labeled_grid, num_labels = label(self._grid)
+    def fill_regions(self, background_color=0):
+        """Fills holes within objects and solidifies their color."""
+        # First, fill the gaps (holes)
+        gaps_filled_grid = self.fill_gaps(background_color)
+
+        # Then, solidify the color of each object
+        labeled_grid, num_labels = label(gaps_filled_grid._grid)
         if num_labels == 0:
-            return self
+            return gaps_filled_grid
+
+        final_grid_arr = gaps_filled_grid._grid.copy()
         for i in range(1, num_labels + 1):
             component_mask = (labeled_grid == i)
-            colors, counts = np.unique(self._grid[component_mask], return_counts=True)
+            # We only care about non-background components
+            if np.all(final_grid_arr[component_mask] == background_color):
+                continue
+
+            colors, counts = np.unique(final_grid_arr[component_mask], return_counts=True)
+            # Exclude background color from dominant color calculation
+            non_bg_mask = colors != background_color
+            colors = colors[non_bg_mask]
+            counts = counts[non_bg_mask]
+
             if len(colors) > 0:
                 dominant_color = colors[np.argmax(counts)]
-                self._grid[component_mask] = dominant_color
-        return Grid(self._grid)
+                final_grid_arr[component_mask] = dominant_color
+        return Grid(final_grid_arr)
 
-    def expand_grid(self, factor):
-        new_grid_data = np.kron(self._grid, np.ones((factor, factor)))
-        return Grid(new_grid_data)
+    def expand_grid(self, factor, background_color=0):
+        """Expands each non-background pixel into a block of size factor x factor."""
+        h, w = self.shape
+        new_h, new_w = h * factor, w * factor
+        new_grid_arr = np.full((new_h, new_w), background_color, dtype=self._grid.dtype)
+
+        for r in range(h):
+            for c in range(w):
+                color = self.get(r, c)
+                if color != background_color:
+                    new_grid_arr[r*factor:(r+1)*factor, c*factor:(c+1)*factor] = color
+        return Grid(new_grid_arr)
 
     def crop(self, top, left, height, width):
         new_grid_data = crop_func(self._grid, top, left, height, width)
@@ -1571,3 +1602,585 @@ class Task(dict):
     @property
     def train_input(self):
         return self._train_cases[0].input
+
+class Op:
+    """Represents a primitive transformation on a grid."""
+
+    def __init__(self, name: str, fn: Callable[..., "Grid"], arity: int, param_names: List[str]):
+        self.name = name
+        self.fn = fn
+        self.arity = arity
+        self.param_names = param_names
+
+    def __call__(self, *args: any, **kwargs: any) -> "Grid":
+        return self.fn(*args, **kwargs)
+
+def op_identity(grid: Grid) -> Grid:
+    """Return a copy of the input grid."""
+    return grid.copy()
+
+def op_rotate(grid: Grid, k: int) -> Grid:
+    """Rotate grid by ``k`` quarter turns clockwise."""
+    return Grid(np.rot90(grid._grid, k=-k))
+
+def op_flip(grid: Grid, axis: int) -> Grid:
+    """Flip grid along the specified axis (0=vertical, 1=horizontal)."""
+    return Grid(flip_func(grid._grid, axis))
+
+def op_transpose(grid: Grid) -> Grid:
+    """Transpose the grid."""
+    return Grid(np.transpose(grid._grid))
+
+def op_recolor(grid: Grid, mapping: dict[int, int]) -> Grid:
+    """Recolour grid according to a mapping from old to new colours."""
+    return grid.map_colors(mapping)
+
+def op_pad(grid: Grid, out_h: int, out_w: int, fill_value: int = 0) -> Grid:
+    """Pad grid to a specific height and width using background colour."""
+    h, w = grid.shape
+    out = np.full((out_h, out_w), fill_value, dtype=grid._grid.dtype)
+    out[0:h, 0:w] = grid._grid
+    return Grid(out)
+
+def op_tile(grid: Grid, factor_h: int, factor_w: int) -> Grid:
+    """Tile the grid by the given factors."""
+    return grid.repeat(factor_h, factor_w)
+
+def op_find_color_region(grid: Grid, color: int) -> Grid:
+    """Extract the bounding box of all cells with the specified color."""
+    mask = (grid._grid == color)
+    rows, cols = np.where(mask)
+    if len(rows) == 0:
+        return Grid(np.array([[color]], dtype=grid._grid.dtype))
+
+    top, bottom = rows.min(), rows.max() + 1
+    left, right = cols.min(), cols.max() + 1
+    return Grid(grid._grid[top:bottom, left:right].copy())
+
+def op_extract_marked_region(grid: Grid, marker_color: int = 8) -> Grid:
+    """Extract region that is marked/surrounded by marker_color."""
+    a = grid._grid
+    h, w = a.shape
+
+    marker_mask = (a == marker_color)
+    if not marker_mask.any():
+        return grid
+
+    marker_rows, marker_cols = np.where(marker_mask)
+    top, bottom = marker_rows.min(), marker_rows.max() + 1
+    left, right = marker_cols.min(), marker_cols.max() + 1
+
+    region = a[top:bottom, left:right].copy()
+    region_h, region_w = region.shape
+
+    if left < w // 2:
+        mirror_left = w - right
+        mirror_right = w - left
+        if mirror_right <= w and mirror_left >= 0:
+            mirror_region = a[top:bottom, mirror_left:mirror_right].copy()
+            if not (mirror_region == marker_color).any():
+                return Grid(mirror_region)
+
+    elif left >= w // 2:
+        mirror_right = left
+        mirror_left = left - region_w
+        if mirror_left >= 0 and mirror_right <= w:
+            mirror_region = a[top:bottom, mirror_left:mirror_right].copy()
+            if not (mirror_region == marker_color).any():
+                return Grid(mirror_region)
+
+    non_marker_mask = (region != marker_color)
+    if non_marker_mask.any():
+        non_marker_rows, non_marker_cols = np.where(non_marker_mask)
+        inner_top, inner_bottom = non_marker_rows.min(), non_marker_rows.max() + 1
+        inner_left, inner_right = non_marker_cols.min(), non_marker_cols.max() + 1
+        inner_region = region[inner_top:inner_bottom, inner_left:inner_right].copy()
+
+        if inner_region.size < region.size * 0.8:
+            return Grid(inner_region)
+
+    if region_h > 2 and region_w > 2:
+        core_region = region[1:-1, 1:-1].copy()
+        if not (core_region == marker_color).all():
+            return Grid(core_region)
+
+    return Grid(region)
+
+def op_smart_crop_auto(grid: Grid) -> Grid:
+    """Automatically detect and crop interesting region based on patterns."""
+    a = grid._grid
+    h, w = a.shape
+
+    for marker_color in [8, 9, 7]:
+        if (a == marker_color).any():
+            try:
+                return op_extract_marked_region(grid, marker_color)
+            except:
+                continue
+
+    bg = 0 # Assuming background color is 0
+
+    best_region = a
+    best_score = 0
+
+    for crop_h in range(3, min(15, h)):
+        for crop_w in range(3, min(15, w)):
+            for top in range(h - crop_h + 1):
+                for left in range(w - crop_w + 1):
+                    region = a[top:top+crop_h, left:left+crop_w]
+
+                    unique_colors = len(np.unique(region))
+                    non_bg_ratio = np.sum(region != bg) / region.size
+                    score = unique_colors * non_bg_ratio
+
+                    if score > best_score:
+                        best_score = score
+                        best_region = region
+
+    return Grid(best_region)
+
+def op_extract_symmetric_region(grid: Grid) -> Grid:
+    """Extract interesting region by looking for symmetric patterns."""
+    a = grid._grid
+    h, w = a.shape
+
+    if w >= 6:
+        mid = w // 2
+        left_side = a[:, :mid]
+        right_side = a[:, -mid:]
+
+        if np.array_equal(left_side, np.fliplr(right_side)):
+            middle_region = a[:, mid-1:mid+2] if mid > 0 else a[:, mid:mid+1]
+            return Grid(middle_region)
+
+    if h >= 6:
+        mid = h // 2
+        top_side = a[:mid, :]
+        bottom_side = a[-mid:, :]
+
+        if np.array_equal(top_side, np.flipud(bottom_side)):
+            middle_region = a[mid-1:mid+2, :] if mid > 0 else a[mid:mid+1, :]
+            return Grid(middle_region)
+
+    if h >= 4 and w >= 4:
+        mid_h, mid_w = h // 2, w // 2
+        top_left = a[:mid_h, :mid_w]
+        top_right = a[:mid_h, -mid_w:]
+        bottom_left = a[-mid_h:, :mid_w]
+        bottom_right = a[-mid_h:, -mid_w:]
+
+        quadrants = [top_left, top_right, bottom_left, bottom_right]
+        for i, quad in enumerate(quadrants):
+            others = [q for j, q in enumerate(quadrants) if j != i]
+            if all(np.array_equal(quad, other) for other in others):
+                return Grid(others[0])
+
+    return grid
+
+def op_extract_pattern_region(grid: Grid, marker_color: int = 8) -> Grid:
+    """Advanced pattern extraction using multiple strategies to find the hidden content."""
+    a = grid._grid
+    h, w = a.shape
+
+    marker_mask = (a == marker_color)
+    if not marker_mask.any():
+        return grid
+
+    marker_rows, marker_cols = np.where(marker_mask)
+    top, bottom = marker_rows.min(), marker_rows.max() + 1
+    left, right = marker_cols.min(), marker_cols.max() + 1
+    region_h, region_w = bottom - top, right - left
+
+    strategies = []
+
+    for tile_h in [10, 15]:
+        for tile_w in [10, 15]:
+            if h % tile_h == 0 and w % tile_w == 0:
+                tiles_v, tiles_h = h // tile_h, w // tile_w
+                marker_tile_row = top // tile_h
+                marker_tile_col = left // tile_w
+
+                in_tile_top = top % tile_h
+                in_tile_left = left % tile_w
+                in_tile_bottom = in_tile_top + region_h
+                in_tile_right = in_tile_left + region_w
+
+                if (in_tile_bottom <= tile_h and in_tile_right <= tile_w):
+                    for tr in range(tiles_v):
+                        for tc in range(tiles_h):
+                            if tr == marker_tile_row and tc == marker_tile_col:
+                                continue
+
+                            tile_start_row = tr * tile_h
+                            tile_start_col = tc * tile_w
+
+                            candidate = a[tile_start_row + in_tile_top:tile_start_row + in_tile_bottom,
+                                        tile_start_col + in_tile_left:tile_start_col + in_tile_right]
+
+                            if not (candidate == marker_color).any() and len(np.unique(candidate)) > 1:
+                                strategies.append((f'tile_{tr}_{tc}', candidate.copy()))
+
+    section_width = region_w
+    for start_col in range(0, w - section_width + 1, section_width):
+        if start_col == left:
+            continue
+        candidate = a[top:bottom, start_col:start_col + section_width]
+        if not (candidate == marker_color).any() and len(np.unique(candidate)) > 1:
+            strategies.append((f'vertical_section_{start_col}', candidate.copy()))
+
+    section_height = region_h
+    for start_row in range(0, h - section_height + 1, section_height):
+        if start_row == top:
+            continue
+        candidate = a[start_row:start_row + section_height, left:right]
+        if not (candidate == marker_color).any() and len(np.unique(candidate)) > 1:
+            strategies.append((f'horizontal_section_{start_row}', candidate.copy()))
+
+    if strategies:
+        best_strategy = max(strategies, key=lambda x: len(np.unique(x[1])))
+        return Grid(best_strategy[1])
+
+    return Grid(a[top:bottom, left:right])
+
+def op_extract_content_region(grid: Grid) -> Grid:
+    """Extract the most content-dense rectangular region."""
+    a = grid._grid
+    h, w = a.shape
+
+    if h <= 2 or w <= 2:
+        return grid
+
+    bg_color = np.argmax(np.bincount(a.flatten()))
+
+    best_region = a
+    best_density = 0
+
+    for region_h in range(3, min(15, h + 1)):
+        for region_w in range(3, min(15, w + 1)):
+            for top in range(h - region_h + 1):
+                for left in range(w - region_w + 1):
+                    region = a[top:top+region_h, left:left+region_w]
+
+                    non_bg_pixels = np.sum(region != bg_color)
+                    total_pixels = region.size
+                    density = non_bg_pixels / total_pixels
+
+                    color_diversity = len(np.unique(region))
+                    score = density * color_diversity
+
+                    if score > best_density:
+                        best_density = score
+                        best_region = region
+
+    return Grid(best_region)
+
+def op_extract_bounded_region(grid: Grid, boundary_color: int = 8) -> Grid:
+    """Extract region bounded by a specific color (default: 8)."""
+    a = grid._grid
+    h, w = a.shape
+
+    boundary_positions = np.where(a == boundary_color)
+
+    if len(boundary_positions[0]) == 0:
+        return op_extract_content_region(grid)
+
+    min_row, max_row = boundary_positions[0].min(), boundary_positions[0].max()
+    min_col, max_col = boundary_positions[1].min(), boundary_positions[1].max()
+
+    if min_row < max_row and min_col < max_col:
+        inner_region = a[min_row+1:max_row, min_col+1:max_col]
+        if inner_region.size > 0:
+            return Grid(inner_region)
+
+    return Grid(a[min_row:max_row+1, min_col:max_col+1])
+
+def _largest_rectangle_in_histogram(heights):
+    """Find the largest rectangle in a histogram."""
+    stack = []
+    max_area = 0
+    best_left, best_right, best_height = 0, 0, 0
+
+    for i, h in enumerate(heights):
+        start = i
+        while stack and stack[-1][1] > h:
+            index, height = stack.pop()
+            area = height * (i - index)
+            if area > max_area:
+                max_area = area
+                best_left, best_right, best_height = index, i, height
+            start = index
+        stack.append((start, h))
+
+    for index, height in stack:
+        area = height * (len(heights) - index)
+        if area > max_area:
+            max_area = area
+            best_left, best_right, best_height = index, len(heights), height
+
+    return max_area, best_left, best_right, best_height
+
+def op_extract_largest_rect(grid: Grid, ignore_color: Optional[int] = None) -> Grid:
+    """Extract the largest rectangle of non-ignore color."""
+    a = grid._grid
+    h, w = a.shape
+
+    if ignore_color is None:
+        ignore_color = np.argmax(np.bincount(a.flatten()))
+
+    mask = (a != ignore_color).astype(int)
+
+    max_area = 0
+    best_region = a
+
+    heights = np.zeros(w, dtype=int)
+
+    for row in range(h):
+        for col in range(w):
+            if mask[row, col] == 0:
+                heights[col] = 0
+            else:
+                heights[col] += 1
+
+        area, left, right, height = _largest_rectangle_in_histogram(heights)
+
+        if area > max_area:
+            max_area = area
+            top = row - height + 1
+            bottom = row + 1
+            best_region = a[top:bottom, left:right]
+
+    return Grid(best_region if max_area > 0 else a)
+
+def op_extract_central_pattern(grid: Grid) -> Grid:
+    """Extract central pattern by removing uniform border regions."""
+    a = grid._grid
+    h, w = a.shape
+
+    if h <= 4 or w <= 4:
+        return grid
+
+    top, bottom, left, right = 0, h, 0, w
+
+    for row in range(h // 3):
+        if len(set(a[row, :])) <= 2:
+            top = row + 1
+        else:
+            break
+
+    for row in range(h - 1, max(top, h * 2 // 3) - 1, -1):
+        if len(set(a[row, :])) <= 2:
+            bottom = row
+        else:
+            break
+
+    for col in range(w // 3):
+        if len(set(a[top:bottom, col])) <= 2:
+            left = col + 1
+        else:
+            break
+
+    for col in range(w - 1, max(left, w * 2 // 3) - 1, -1):
+        if len(set(a[top:bottom, col])) <= 2:
+            right = col
+        else:
+            break
+
+    if top < bottom and left < right:
+        return Grid(a[top:bottom, left:right])
+
+    return grid
+
+def op_extract_pattern_blocks(grid: Grid, block_size: int = 4) -> Grid:
+    """Extract rectangular blocks based on internal pattern analysis."""
+    a = grid._grid
+    h, w = a.shape
+
+    if h < block_size or w < block_size:
+        return grid
+
+    best_region = a
+    best_score = -1
+
+    for test_h in range(max(3, block_size-2), min(15, block_size+3)):
+        for test_w in range(max(3, block_size-2), min(15, block_size+3)):
+            for top in range(0, h - test_h + 1, 2):
+                for left in range(0, w - test_w + 1, 2):
+                    region = a[top:top+test_h, left:left+test_w]
+
+                    colors, counts = np.unique(region, return_counts=True)
+
+                    max_color_ratio = np.max(counts) / region.size
+                    if max_color_ratio > 0.7:
+                        continue
+
+                    color_diversity = len(colors)
+                    if color_diversity < 2:
+                        continue
+
+                    diversity_score = min(color_diversity / 5.0, 1.0)
+                    balance_score = 1.0 - max_color_ratio
+
+                    size_bonus = 0
+                    if 3 <= test_h <= 10 and 3 <= test_w <= 10:
+                        size_bonus = 0.2
+
+                    score = diversity_score * balance_score + size_bonus
+
+                    if score > best_score:
+                        best_score = score
+                        best_region = region
+
+    return Grid(best_region)
+
+def op_extract_distinct_regions(grid: Grid) -> Grid:
+    """Extract regions that stand out from background patterns."""
+    a = grid._grid
+    h, w = a.shape
+
+    if h <= 6 or w <= 6:
+        return grid
+
+    border_pixels = np.concatenate([
+        a[0, :], a[-1, :], a[:, 0], a[:, -1]
+    ])
+    bg_candidates = np.unique(border_pixels)
+
+    best_region = a
+    best_score = 0
+
+    for region_h in range(4, min(12, h)):
+        for region_w in range(4, min(12, w)):
+            for top in range(h - region_h + 1):
+                for left in range(w - region_w + 1):
+                    region = a[top:top+region_h, left:left+region_w]
+
+                    non_bg_pixels = 0
+                    total_pixels = region.size
+
+                    for bg_candidate in bg_candidates:
+                        non_bg_pixels = max(non_bg_pixels,
+                                          np.sum(region != bg_candidate))
+
+                    distinctiveness = non_bg_pixels / total_pixels
+                    color_count = len(np.unique(region))
+
+                    score = distinctiveness * (color_count / 6.0)
+
+                    if score > best_score:
+                        best_score = score
+                        best_region = region
+
+    return Grid(best_region)
+
+def op_human_spatial_reasoning(grid: Grid, hypothesis_name: str = "",
+                              hypothesis_id: int = 0, confidence: float = 1.0,
+                              verification_score: float = 1.0) -> Grid:
+    """
+    Apply human-grade spatial reasoning to solve the transformation.
+    NOTE: This is a placeholder that will be handled specially by the enhanced search.
+    The actual reasoning is performed by external components like HumanGradeReasoner.
+    """
+    return grid
+
+def op_crop_bbox(grid: Grid, top: int, left: int, height: int, width: int) -> Grid:
+    """Crop a bounding box from the grid ensuring bounds are valid."""
+    h, w = grid.shape
+    top = max(0, min(top, h - 1))
+    left = max(0, min(left, w - 1))
+    height = max(1, min(height, h - top))
+    width = max(1, min(width, w - left))
+    return grid.crop(top, left, height, width)
+
+OPS: Dict[str, Op] = {
+    "identity": Op("identity", op_identity, 1, []),
+    "rotate": Op("rotate", op_rotate, 1, ["k"]),
+    "flip": Op("flip", op_flip, 1, ["axis"]),
+    "transpose": Op("transpose", op_transpose, 1, []),
+    "translate": Op("translate", translate, 1, ["dy", "dx", "fill"]),
+    "recolor": Op("recolor", op_recolor, 1, ["mapping"]),
+    "crop": Op("crop", op_crop_bbox, 1, ["top", "left", "height", "width"]),
+    "pad": Op("pad", op_pad, 1, ["out_h", "out_w", "fill_value"]),
+    "tile": Op("tile", op_tile, 1, ["factor_h", "factor_w"]),
+    "find_color_region": Op("find_color_region", op_find_color_region, 1, ["color"]),
+    "extract_marked_region": Op("extract_marked_region", op_extract_marked_region, 1, ["marker_color"]),
+    "smart_crop_auto": Op("smart_crop_auto", op_smart_crop_auto, 1, []),
+    "extract_symmetric_region": Op("extract_symmetric_region", op_extract_symmetric_region, 1, []),
+    "extract_pattern_region": Op("extract_pattern_region", op_extract_pattern_region, 1, ["marker_color"]),
+    "extract_content_region": Op("extract_content_region", op_extract_content_region, 1, []),
+    "extract_bounded_region": Op("extract_bounded_region", op_extract_bounded_region, 1, ["boundary_color"]),
+    "extract_largest_rect": Op("extract_largest_rect", op_extract_largest_rect, 1, ["ignore_color"]),
+    "extract_central_pattern": Op("extract_central_pattern", op_extract_central_pattern, 1, []),
+    "extract_pattern_blocks": Op("extract_pattern_blocks", op_extract_pattern_blocks, 1, ["block_size"]),
+    "extract_distinct_regions": Op("extract_distinct_regions", op_extract_distinct_regions, 1, []),
+    "human_spatial_reasoning": Op("human_spatial_reasoning", op_human_spatial_reasoning, 1,
+                                  ["hypothesis_name", "hypothesis_id", "confidence", "verification_score"]),
+}
+
+_sem_cache: Dict[Tuple[bytes, str, Tuple[Tuple[str, Any], ...]], Grid] = {}
+
+def _canonical_params(name: str, params: Dict[str, Any]) -> Dict[str, Any]:
+    """Return a copy of ``params`` with legacy aliases normalised and typed."""
+    new_params = dict(params)
+    if name == "recolor":
+        mapping = new_params.get("mapping") or new_params.pop("color_map", {})
+        if mapping:
+            new_params["mapping"] = {int(k): int(v) for k, v in mapping.items()}
+    elif name == "translate":
+        if "fill" not in new_params and "fill_value" in new_params:
+            new_params["fill"] = new_params.pop("fill_value")
+        for key in ("dy", "dx", "fill"):
+            if key in new_params and new_params[key] is not None:
+                new_params[key] = int(new_params[key])
+    return new_params
+
+def _norm_params(params: Dict[str, Any]) -> Tuple[Tuple[str, Any], ...]:
+    """Normalise parameters to a hashable tuple."""
+    items: List[Tuple[str, Any]] = []
+    for k, v in sorted(params.items()):
+        if isinstance(v, dict):
+            items.append((k, tuple(sorted(v.items()))))
+        else:
+            items.append((k, v))
+    return tuple(items)
+
+def apply_op(grid: Grid, name: str, params: Dict[str, Any]) -> Grid:
+    """
+    Apply a primitive operation with semantic caching.
+    NOTE: The '_source' parameter is used to dispatch to specialized handlers
+    for human reasoning and pattern compilation, which are external to this module.
+    """
+    if params.get('_source') == 'human_reasoner':
+        hypothesis = params.get('_hypothesis_obj')
+        if hypothesis:
+            return hypothesis.construction_rule(grid)
+        else:
+            return grid
+
+    if params.get('_source') == 'pattern_compiler':
+        compiled_program = params.get('_compiled_program')
+        if compiled_program:
+            return compiled_program(grid)
+        else:
+            return grid
+
+    params = _canonical_params(name, params)
+    key = (grid._grid.tobytes(), name, _norm_params(params))
+    cached = _sem_cache.get(key)
+    if cached is not None:
+        return cached
+    op = OPS[name]
+    out = op(grid, **params)
+    _sem_cache[key] = out
+    return out
+
+def apply_program(grid: Grid, program: List[Tuple[str, Dict[str, Any]]]) -> Grid:
+    """Apply a sequence of operations to the input grid."""
+    out = grid
+    for idx, (name, params) in enumerate(program):
+        try:
+            out = apply_op(out, name, params)
+        except Exception as exc:
+            raise ValueError(
+                f"Failed to apply operation '{name}' at position {idx} with params {params}"
+            ) from exc
+    return out
