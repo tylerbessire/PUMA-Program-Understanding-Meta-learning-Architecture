@@ -13,6 +13,7 @@ from .tracking import (
 )
 from .orchestrator import solve_with_rft, insert_after_stuck_rule
 from .explain import explain_last_run, record_trace
+from .reasoning import RFTEngine, RelationType, RelationalFrame
 
 __all__ = [
     "RFT_ENABLED",
@@ -34,4 +35,7 @@ __all__ = [
     "insert_after_stuck_rule",
     "explain_last_run",
     "record_trace",
+    "RFTEngine",
+    "RelationType",
+    "RelationalFrame",
 ]
