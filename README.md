@@ -36,6 +36,22 @@ PUMA is a layered cognitive architecture combining symbolic reasoning (Hyperon/M
 - MeTTa-based reasoning and program execution
 - RocksDB/PostgreSQL persistence layer
 
+### Hyperon Subagents System
+- **Parallel Distributed Reasoning**: Pool of specialized MeTTa subagents for concurrent execution
+- **5 Core Components**:
+  - **SubAgentManager**: Orchestrates agent pool, task routing, and load balancing
+  - **MeTTaExecutionEngine**: MeTTa program execution with multiple modes (batch/interactive/async)
+  - **SubAgentCoordinator**: Advanced coordination strategies (parallel, sequential, competitive, consensus)
+  - **RFTHyperonBridge**: Bridges RFT relational frames with MeTTa symbolic reasoning
+  - **HyperonSubAgent**: Individual agents with specialized capabilities (reasoning, pattern matching, memory retrieval, goal planning)
+- **Advanced Capabilities**:
+  - Capability-based task routing (8 agent capability types)
+  - Map-reduce distributed reasoning
+  - Inter-agent communication (broadcast, P2P, pub-sub via Atomspace)
+  - Consensus mechanisms for multi-agent validation
+  - Integration with PUMA consciousness states
+  - Performance monitoring and fault tolerance
+
 ### PUMA Meta-Cognitive Framework
 - **Episodic Memory System**: Timestamped experience nodes with context
 - **Memory Consolidation**: Background pattern extraction and concept formation
@@ -79,6 +95,9 @@ cd hyperon-core
 cargo build --release
 cd ..
 
+# Install Hyperon Python bindings
+pip install hyperon
+
 # Install GUI dependencies
 cd gui
 npm install
@@ -110,12 +129,18 @@ export PUMA_ENABLE_SELF_MODIFICATION=1
 │   ├── rft/                # Relational Frame Theory engine
 │   ├── curiosity/          # Intrinsic motivation system
 │   ├── goals/              # Goal formation and intention
-│   └── shop/               # Self-modification system
+│   ├── shop/               # Self-modification system
+│   └── hyperon_subagents/  # Hyperon subagent system
+│       ├── manager.py      # SubAgent pool management
+│       ├── metta_engine.py # MeTTa execution engine
+│       ├── coordinator.py  # Advanced coordination strategies
+│       └── rft_bridge.py   # RFT-Hyperon integration bridge
 ├── gemini-interface/       # Gemini Live integration
 ├── web-agent/              # Autonomous browsing
 ├── atomspace-db/           # Persistence layer
 ├── gui/                    # Real-time visualization dashboard
 ├── bootstrap/              # Consciousness initialization
+├── examples/               # Usage examples and demos
 └── tests/                  # Integration and unit tests
 ```
 
@@ -148,6 +173,34 @@ await consciousness.converse("Hello, how are you?")
 # Resume autonomous activity
 consciousness.resume()
 ```
+
+### Using Hyperon Subagents
+```python
+from puma.hyperon_subagents import SubAgentManager, SubAgentTask, AgentCapability
+
+# Initialize manager with specialized agent pool
+manager = SubAgentManager(max_agents=10)
+manager.create_specialized_agents()
+
+# Execute a reasoning task
+task = SubAgentTask(
+    task_type="reasoning",
+    metta_program="(infer (premise) (rule))",
+    priority=0.8
+)
+result = await manager.execute_task(task, required_capability=AgentCapability.REASONING)
+
+# Parallel execution across multiple agents
+tasks = [create_task(i) for i in range(10)]
+results = await manager.execute_parallel(tasks)
+
+# Map-reduce distributed reasoning
+map_programs = ["(match &self (pattern1 $x) $x)", "(match &self (pattern2 $y) $y)"]
+reduce_program = "(synthesize-concept $results)"
+result = await manager.map_reduce_reasoning(map_programs, reduce_program)
+```
+
+See `/home/user/PUMA-Program-Understanding-Meta-learning-Architecture/examples/hyperon_subagents_demo.py` for complete examples.
 
 ### GUI Dashboard
 ```bash
@@ -218,15 +271,24 @@ EmotionalStateNode(valence)
 - [x] Basic project structure
 - [x] RFT framework foundation
 - [x] Frequency ledger tracking system
+- [x] Hyperon subagents integration
+  - [x] SubAgentManager with pool management
+  - [x] MeTTa execution engine (batch/interactive/async modes)
+  - [x] SubAgentCoordinator with 6 coordination strategies
+  - [x] RFT-Hyperon bridge for symbolic reasoning
+  - [x] Inter-agent communication (broadcast/P2P/pub-sub)
+  - [x] Capability-based task routing
+  - [x] Map-reduce distributed reasoning
+  - [x] Consensus mechanisms
 
 ### In Progress
-- [ ] Hyperon Atomspace integration
+- [ ] Hyperon Atomspace persistence integration
 - [ ] Bootstrap consciousness seed
 - [ ] Gemini Live interface
 - [ ] Web agent
-- [ ] Memory consolidation
+- [ ] Memory consolidation with Hyperon
 - [ ] Self-modification system
-- [ ] GUI dashboard
+- [ ] GUI dashboard with subagent visualization
 
 ### Planned
 - [ ] Full autonomous operation
@@ -287,6 +349,13 @@ MIT License - See LICENSE file for details
   url={https://github.com/tylerbessire/PUMA-Program-Understanding-Meta-learning-Architecture}
 }
 ```
+
+## Documentation
+
+For detailed documentation on specific components:
+- **Hyperon Subagents System**: See `/home/user/PUMA-Program-Understanding-Meta-learning-Architecture/docs/HYPERON_SUBAGENTS.md`
+- **RFT Architecture**: See `/home/user/PUMA-Program-Understanding-Meta-learning-Architecture/docs/functional_contextualist_architecture.md`
+- **Architecture Overview**: See `/home/user/PUMA-Program-Understanding-Meta-learning-Architecture/docs/architecture.md`
 
 ## References
 

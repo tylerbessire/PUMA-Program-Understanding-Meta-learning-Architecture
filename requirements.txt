@@ -4,7 +4,7 @@ hypothesis==6.100.2
 scipy==1.12.0
 
 # Cognitive architecture
-# hyperon will be built from source
+hyperon>=0.3.0  # Hyperon experimental for MeTTa reasoning and Atomspace
 
 # API integrations
 google-generativeai  # Gemini API
