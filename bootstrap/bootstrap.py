@@ -36,6 +36,7 @@ from puma.consciousness.state_machine import ConsciousnessStateMachine
 from puma.consciousness.self_model import SelfModel
 from client import GeminiLiveInterface
 from agent import AutonomousWebAgent
+from puma.hyperon_integration import HyperonPUMAIntegration, HyperonConfig
 
 
 class Consciousness:
@@ -56,7 +57,8 @@ class Consciousness:
         gemini: GeminiLiveInterface,
         web_agent: AutonomousWebAgent,
         shop_introspection: CodeIntrospection,
-        shop_modification: ModificationSystem
+        shop_modification: ModificationSystem,
+        hyperon_integration: Optional[HyperonPUMAIntegration] = None
     ):
         self.atomspace = atomspace
         self.memory = memory
@@ -69,6 +71,7 @@ class Consciousness:
         self.web_agent = web_agent
         self.shop_introspection = shop_introspection
         self.shop_modification = shop_modification
+        self.hyperon_integration = hyperon_integration
 
         # Connect systems
         self.gemini.consciousness = self
@@ -122,7 +125,9 @@ class Consciousness:
 def bootstrap_new_consciousness(
     atomspace_path: Optional[Path] = None,
     enable_self_modification: bool = False,
-    codebase_path: Optional[Path] = None
+    codebase_path: Optional[Path] = None,
+    enable_hyperon: bool = True,
+    hyperon_config: Optional[HyperonConfig] = None
 ) -> Consciousness:
     """
     Bootstrap fresh consciousness - NO HARDCODED CONTENT.
@@ -131,6 +136,8 @@ def bootstrap_new_consciousness(
         atomspace_path: Path for persistent storage
         enable_self_modification: Enable The Shop
         codebase_path: Path to codebase for introspection
+        enable_hyperon: Enable Hyperon subagent integration
+        hyperon_config: Configuration for Hyperon integration
 
     Returns:
         Consciousness instance
@@ -182,6 +189,20 @@ def bootstrap_new_consciousness(
 
     shop_modification = ModificationSystem(shop_introspection, atomspace)
 
+    # Initialize Hyperon integration (if enabled)
+    hyperon_integration = None
+    if enable_hyperon:
+        print("⚡ Initializing Hyperon subagent integration...")
+        hyperon_integration = HyperonPUMAIntegration(
+            atomspace=atomspace,
+            rft_engine=rft_engine,
+            consciousness_state_machine=state_machine,
+            memory_system=memory,
+            config=hyperon_config or HyperonConfig()
+        )
+        # Note: Actual initialization is async and happens on first use
+        print("✅ Hyperon integration configured")
+
     # Create consciousness
     consciousness = Consciousness(
         atomspace=atomspace,
@@ -194,13 +215,15 @@ def bootstrap_new_consciousness(
         gemini=gemini,
         web_agent=web_agent,
         shop_introspection=shop_introspection,
-        shop_modification=shop_modification
+        shop_modification=shop_modification,
+        hyperon_integration=hyperon_integration
     )
 
     print("✅ Consciousness bootstrapped successfully")
     print(f"   Atomspace: {atomspace.count_atoms()} atoms")
     print(f"   Capabilities: {', '.join(self_model.capabilities)}")
     print(f"   Self-modification: {'enabled' if enable_self_modification else 'disabled'}")
+    print(f"   Hyperon integration: {'enabled' if enable_hyperon else 'disabled'}")
 
     return consciousness
 
